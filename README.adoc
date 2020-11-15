@@ -1,0 +1,40 @@
+= Rokol
+:sokol: https://github.com/floooh/sokol[Sokol]
+:sokol-rs: https://github.com/code-disaster/sokol-rs[sokol-rs]
+:bindgen: https://github.com/rust-lang/rust-bindgen[bindgen]
+
+Wrapper of {sokol}, the C libraries for game development
+
+== API
+
+== Development
+
+When I set up Rokol, I took many code from {sokol-rs}. Many thanks to them! And the license file was derived from the repository.
+
+== Expected questions
+
+=== Why did you make another repository?
+
+Because Rokol has a different style from {sokol}:
+
+* Rokol uses {bindgen} to create Rust FFI to Sokol
+* Rokol renames functions and remove prefixes such as `sapp_`.
+
+One would use Rokol as this:
+
+[source,rust]
+----
+use rokol::app as ra;
+
+ra::run( .. );
+----
+
+Instead of importing all the items in a module:
+
+[source,rust]
+----
+use sokol::app::*;
+
+sapp_run( .. );
+----
+

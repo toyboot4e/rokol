@@ -70,12 +70,6 @@ impl Renderer {
 
 /// Compiles the given `wrapper` file and create FFI to it
 fn make_sokol(wrapper: &str, ffi_file: &str) {
-    let mut build = Build::new();
-    let tool = build.try_get_compiler().unwrap();
-
-    let is_debug = env::var("DEBUG").ok().is_some();
-    let is_msvc = tool.is_like_msvc();
-
     let root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
     let sokol_dir = root.join("sokol");
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
@@ -83,9 +77,17 @@ fn make_sokol(wrapper: &str, ffi_file: &str) {
     // ----------------------------------------
     // Generate FFI
 
+    // We have to use `.n` extension in macOS even if the file contents are the same
+    let wrapper = if cfg!(target_os = "macos") {
+        PathBuf::from(wrapper).with_extension("m")
+    } else {
+        PathBuf::from(wrapper)
+    };
+    let wrapper = format!("{}", wrapper.display());
+
     let bindings = bindgen::builder()
         // .header(format!("{}", root.join(wrapper).display()))
-        .header(wrapper)
+        .header(&wrapper)
         .clang_arg(format!("-I{}", sokol_dir.display()))
         .generate()
         .unwrap();
@@ -94,10 +96,14 @@ fn make_sokol(wrapper: &str, ffi_file: &str) {
         .write_to_file(out_dir.join(ffi_file))
         .expect("Couldn't write bindings!");
 
-    return;
-
     // ----------------------------------------
-    // Setup compiler flags
+    // Set up compiler flags
+
+    let mut build = Build::new();
+    let tool = build.try_get_compiler().unwrap();
+
+    let is_debug = env::var("DEBUG").ok().is_some();
+    let is_msvc = tool.is_like_msvc();
 
     build.include(format!("{}/sokol", root.display()));
 
@@ -107,13 +113,11 @@ fn make_sokol(wrapper: &str, ffi_file: &str) {
     }
 
     // TODO: order?
-    build.file(wrapper);
+    build.file(&wrapper);
 
-    {
-        let rdr = Renderer::get(is_msvc);
-        rdr.set_flag(&mut build);
-        rdr.link();
-    }
+    let renderer = Renderer::get(is_msvc);
+    renderer.set_flag(&mut build);
+    renderer.link();
 
     // x86_64-pc-windows-gnu: additional compile/link flags
     if cfg!(target_os = "windows") && !is_msvc {
@@ -145,8 +149,16 @@ fn make_sokol(wrapper: &str, ffi_file: &str) {
     if cfg!(target_os = "macos") {
         println!("cargo:rustc-link-lib=framework=Cocoa");
         println!("cargo:rustc-link-lib=framework=QuartzCore");
-        println!("cargo:rustc-link-lib=framework=Metal");
-        println!("cargo:rustc-link-lib=framework=MetalKit");
+        match renderer {
+            Renderer::Metal => {
+                println!("cargo:rustc-link-lib=framework=Metal");
+                println!("cargo:rustc-link-lib=framework=MetalKit");
+            }
+            Renderer::GlCore33 => {
+                todo!();
+            }
+            Renderer::D3D11 => panic!("Trying to use D3D11 on macOS"),
+        }
         println!("cargo:rustc-link-lib=framework=AudioToolbox");
     }
 

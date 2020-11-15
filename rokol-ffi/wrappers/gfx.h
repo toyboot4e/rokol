@@ -1,4 +1,4 @@
-/// Degine `SOKOL_IMPL`
+//! Degine `SOKOL_IMPL`
 
 #define SOKOL_NO_ENTRY
 #define SOKOL_NO_DEPRECATED

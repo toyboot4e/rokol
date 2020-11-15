@@ -9,3 +9,10 @@ pub mod app {
     // Include generated bindings
     include!(concat!(env!("OUT_DIR"), "/sokol_app_ffi.rs"));
 }
+
+#[cfg(test)]
+mod test {
+    fn link_test() {
+        let _desc = unsafe { crate::app::sokol_main(0, std::ptr::null_mut()) };
+    }
+}

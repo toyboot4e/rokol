@@ -104,6 +104,7 @@ fn make_sokol(wrapper: &str, ffi_file: &str) {
         let b = b.header(&wrapper);
         let b = b.clang_arg(format!("-I{}", sokol_dir.display()));
         // let b = renderer.set_bindgen_flag(b);
+        let b = b.derive_default(true);
         b.generate().unwrap()
     };
 

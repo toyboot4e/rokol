@@ -1,0 +1,14 @@
+[package]
+name = "rokol-sys"
+version = "0.1.0"
+authors = ["toyboot4e <toyboot4e@gmail.com>"]
+edition = "2018"
+
+# https://doc.rust-lang.org/cargo/reference/build-scripts.html#the-links-manifest-key
+links = "sokol"
+
+[dependencies]
+
+[build-dependencies]
+cc = "1.0.62"
+bindgen = "0.55.1"

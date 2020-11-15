@@ -12,6 +12,7 @@ pub mod app {
 
 #[cfg(test)]
 mod test {
+    #[test]
     fn link_test() {
         let _desc = unsafe { crate::app::sokol_main(0, std::ptr::null_mut()) };
     }

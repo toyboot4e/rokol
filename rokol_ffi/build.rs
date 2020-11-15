@@ -10,13 +10,9 @@
 //!
 //! Or a default renderer will be chosen.
 
-use std::{
-    env,
-    path::{Path, PathBuf},
-    process::Command,
-};
+use std::{env, path::PathBuf};
 
-use cc::{Build, Tool};
+use cc::Build;
 
 fn main() {
     self::make_sokol("wrappers/app.h", "sokol_app_ffi.rs");
@@ -51,7 +47,15 @@ impl Renderer {
         }
     }
 
-    pub fn set_flag(&self, build: &mut Build) {
+    // pub fn set_bindgen_flag(&self, b: bindgen::Builder) -> bindgen::Builder {
+    //     match self {
+    //         Self::D3D11 => b.clang_arg("-DSOKOL_D3D11"),
+    //         Self::Metal => b.clang_arg("-DSOKOL_METAL"),
+    //         Self::GlCore33 => b.clang_arg("-DSOKOL_GLCORE33"),
+    //     }
+    // }
+
+    pub fn set_cflag(&self, build: &mut Build) {
         match self {
             Self::D3D11 => build.flag("-DSOKOL_D3D11"),
             Self::Metal => build.flag("-DSOKOL_METAL"),
@@ -75,6 +79,16 @@ fn make_sokol(wrapper: &str, ffi_file: &str) {
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
 
     // ----------------------------------------
+    // Get metadata
+
+    let mut build = Build::new();
+    let tool = build.try_get_compiler().unwrap();
+    let is_msvc = tool.is_like_msvc();
+    let will_set_debug_flags = env::var("DEBUG").ok().is_some();
+
+    let renderer = Renderer::get(is_msvc);
+
+    // ----------------------------------------
     // Generate FFI
 
     // We have to use `.n` extension in macOS even if the file contents are the same
@@ -85,12 +99,13 @@ fn make_sokol(wrapper: &str, ffi_file: &str) {
     };
     let wrapper = format!("{}", wrapper.display());
 
-    let bindings = bindgen::builder()
-        // .header(format!("{}", root.join(wrapper).display()))
-        .header(&wrapper)
-        .clang_arg(format!("-I{}", sokol_dir.display()))
-        .generate()
-        .unwrap();
+    let bindings = {
+        let b = bindgen::builder();
+        let b = b.header(&wrapper);
+        let b = b.clang_arg(format!("-I{}", sokol_dir.display()));
+        // let b = renderer.set_bindgen_flag(b);
+        b.generate().unwrap()
+    };
 
     bindings
         .write_to_file(out_dir.join(ffi_file))
@@ -98,12 +113,6 @@ fn make_sokol(wrapper: &str, ffi_file: &str) {
 
     // ----------------------------------------
     // Set up compiler flags
-
-    let mut build = Build::new();
-    let tool = build.try_get_compiler().unwrap();
-
-    let is_debug = env::var("DEBUG").ok().is_some();
-    let is_msvc = tool.is_like_msvc();
 
     build.include(format!("{}/sokol", root.display()));
 
@@ -115,8 +124,7 @@ fn make_sokol(wrapper: &str, ffi_file: &str) {
     // TODO: order?
     build.file(&wrapper);
 
-    let renderer = Renderer::get(is_msvc);
-    renderer.set_flag(&mut build);
+    renderer.set_cflag(&mut build);
     renderer.link();
 
     // x86_64-pc-windows-gnu: additional compile/link flags
@@ -131,8 +139,8 @@ fn make_sokol(wrapper: &str, ffi_file: &str) {
         println!("cargo:rustc-link-lib=static=ole32");
     }
 
-    if is_debug {
-        // TODO: is this correct: `_DEBUG`
+    // TODO: enable overriding sokol debug flags
+    if will_set_debug_flags {
         build.flag("-D_DEBUG").flag("-DSOKOL_DEBUG");
     }
 

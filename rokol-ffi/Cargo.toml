@@ -1,5 +1,5 @@
 [package]
-name = "rokol-sys"
+name = "rokol-ffi"
 version = "0.1.0"
 authors = ["toyboot4e <toyboot4e@gmail.com>"]
 edition = "2018"

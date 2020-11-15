@@ -5,28 +5,34 @@
 
 Wrapper of {sokol}, the C libraries for games
 
-== API
+== About
 
-== Development
+=== Status
 
-When I set up Rokol, I took many code from {sokol-rs}. Many thanks to them! And the license file was derived from the repository.
+Rokol only cares about desktop platforms.
+
+**Rokol is tested on macOS only**. You could find it doesn't compile out of the box. Please make open an issue then!
+
+=== Relation to sokol-rs
+
+Rokol was based on {sokol-rs} when it was started. Many thanks to them! And the license file was derived from the repository.
 
 == Expected questions
 
-=== Why did you make another repository?
+=== Why did you make another repository when there's sokol-rs?
 
-Because Rokol has a different style from {sokol}:
+Rokol has different styles from {sokol-rs}:
 
-* Rokol uses {bindgen} to create Rust FFI to Sokol
-* Rokol renames functions and remove prefixes such as `sapp_`.
+* Rokol uses {bindgen} to create Rust FFI to Sokol.
+* Rokol changes function names.
 
 One would use Rokol as this:
 
 [source,rust]
 ----
-use rokol::app as ra;
+use rokol::app as rapp;
 
-ra::run( .. );
+rapp::run( .. );
 ----
 
 Instead of importing all the items in a module:
@@ -37,4 +43,13 @@ use sokol::app::*;
 
 sapp_run( .. );
 ----
+
+=== Why do you use Rokol when there's macroquad?
+
+Because single-header libraries in C are attractive. The only one file does all the jobs? That's cool!
+
+== Other crates you might be interested in
+
+* https://github.com/not-fl3/miniquad[miniquad]
+* https://github.com/not-fl3/macroquad[macroquad]
 

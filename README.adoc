@@ -3,7 +3,7 @@
 :sokol-rs: https://github.com/code-disaster/sokol-rs[sokol-rs]
 :bindgen: https://github.com/rust-lang/rust-bindgen[bindgen]
 
-Wrapper of {sokol}, the C libraries for game development
+Wrapper of {sokol}, the C libraries for games
 
 == API
 

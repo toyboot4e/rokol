@@ -1,0 +1,3 @@
+[submodule "rokol/sokol"]
+	path = rokol-ffi/sokol
+	url = https://github.com/floooh/sokol

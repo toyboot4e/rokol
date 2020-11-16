@@ -27,13 +27,28 @@ use cc::Build;
 
 fn main() {
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
+    let mut build = Build::new();
 
     let debug = env::var("ROKOL_FORCE_DEBUG").ok().is_some() || env::var("DEBUG").ok().is_some();
+    let is_msvc = {
+        let tool = build.try_get_compiler().unwrap();
+        tool.is_like_msvc()
+    };
 
-    self::gen_bindings("wrappers/app.h", &out_dir.join("sokol_app_ffi.rs"));
-    self::gen_bindings("wrappers/gfx.h", &out_dir.join("sokol_gfx_ffi.rs"));
+    let renderer = Renderer::select(is_msvc);
 
-    self::compile("src/sokol.c", debug);
+    self::gen_bindings(
+        "wrappers/app.h",
+        &out_dir.join("sokol_app_ffi.rs"),
+        &renderer,
+    );
+    self::gen_bindings(
+        "wrappers/gfx.h",
+        &out_dir.join("sokol_gfx_ffi.rs"),
+        &renderer,
+    );
+
+    self::compile(&mut build, is_msvc, &renderer, "src/sokol.c", debug);
 }
 
 /// Helper for selecting Sokol renderer
@@ -44,12 +59,12 @@ enum Renderer {
 }
 
 impl Renderer {
-    pub fn get(is_msvc: bool) -> Self {
+    pub fn select(is_msvc: bool) -> Self {
         if let Ok(rdr) = env::var("ROKOL_RENDERER") {
             match rdr.as_str() {
-                "D3D11" => Renderer::D3D11,
-                "METAL" => Renderer::Metal,
-                "GlCore33" => Renderer::GlCore33,
+                "D3D11" => Self::D3D11,
+                "METAL" => Self::Metal,
+                "GlCore33" => Self::GlCore33,
                 _ => panic!("ROKOL_RENDERER is invalid: {}", rdr),
             }
         } else {
@@ -67,32 +82,17 @@ impl Renderer {
         }
     }
 
-    pub fn set_bindgen_flag(&self, b: bindgen::Builder) -> bindgen::Builder {
+    /// `-D` flag name
+    pub fn sokol_flag_name(&self) -> &str {
         match self {
-            Self::D3D11 => b.clang_arg("-DSOKOL_D3D11"),
-            Self::Metal => b.clang_arg("-DSOKOL_METAL"),
-            Self::GlCore33 => b.clang_arg("-DSOKOL_GLCORE33"),
-        }
-    }
-
-    pub fn set_cflag(&self, build: &mut Build) {
-        match self {
-            Self::D3D11 => build.flag("-DSOKOL_D3D11"),
-            Self::Metal => build.flag("-DSOKOL_METAL"),
-            Self::GlCore33 => build.flag("-DSOKOL_GLCORE33"),
-        };
-    }
-
-    pub fn link(&self) {
-        match self {
-            Self::D3D11 => println!("cargo:rustc-cfg=gfx=\"d3d11\""),
-            Self::Metal => println!("cargo:rustc-cfg=gfx=\"metal\""),
-            Self::GlCore33 => println!("cargo:rustc-cfg=gfx=\"glcore33\""),
+            Self::D3D11 => "SOKOL_D3D11",
+            Self::Metal => "SOKOL_METAL",
+            Self::GlCore33 => "SOKOL_GLCORE33",
         }
     }
 }
 
-/// Select `.m` file if we're on macOS
+/// Change extension to `.` on macOS
 fn maybe_select_objective_c(wrapper: &str) -> PathBuf {
     if cfg!(target_os = "macos") {
         PathBuf::from(wrapper).with_extension("m")
@@ -101,17 +101,9 @@ fn maybe_select_objective_c(wrapper: &str) -> PathBuf {
     }
 }
 
-fn gen_bindings(wrapper_str: &str, ffi_output: &Path) {
+fn gen_bindings(wrapper_str: &str, ffi_output: &Path, renderer: &Renderer) {
     let root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
     let sokol_dir = root.join("sokol");
-
-    // Seems like the renderer doesn't change the header declaration though
-    let renderer = {
-        let build = Build::new();
-        let tool = build.try_get_compiler().unwrap();
-        let is_msvc = tool.is_like_msvc();
-        Renderer::get(is_msvc)
-    };
 
     // ----------------------------------------
     // Generate FFI
@@ -122,7 +114,7 @@ fn gen_bindings(wrapper_str: &str, ffi_output: &Path) {
         let b = bindgen::builder();
         let b = b.header(format!("{}", wrapper.display()));
         let b = b.clang_arg(format!("-I{}", sokol_dir.display()));
-        let b = renderer.set_bindgen_flag(b);
+        let b = b.clang_arg(format!("-D{}", renderer.sokol_flag_name()));
         let b = b.derive_default(true);
         b.generate().unwrap()
     };
@@ -133,17 +125,15 @@ fn gen_bindings(wrapper_str: &str, ffi_output: &Path) {
 }
 
 /// Compiles the given `wrapper` file and create FFI to it
-fn compile(src_path_str: &str, will_set_debug_flags: bool) {
+fn compile(
+    build: &mut Build,
+    is_msvc: bool,
+    renderer: &Renderer,
+    src_path_str: &str,
+    will_set_debug_flags: bool,
+) {
     let root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
     let sokol_dir = root.join("sokol");
-
-    // ----------------------------------------
-    // Get metadata
-
-    let mut build = Build::new();
-    let tool = build.try_get_compiler().unwrap();
-    let is_msvc = tool.is_like_msvc();
-    let renderer = Renderer::get(is_msvc);
 
     // ----------------------------------------
     // Set up compiler flags
@@ -152,8 +142,8 @@ fn compile(src_path_str: &str, will_set_debug_flags: bool) {
     let src = self::maybe_select_objective_c(src_path_str);
     build.file(&src);
 
-    renderer.set_cflag(&mut build);
-    renderer.link();
+    build.flag(&format!("-D{}", renderer.sokol_flag_name()));
+    // renderer.link();
 
     // MacOS: need ARC
     if cfg!(target_os = "macos") {

@@ -9,6 +9,14 @@
 //! ```
 //!
 //! Or a default renderer will be chosen.
+//!
+//! # Forcing debug flag for Sokol
+//!
+//! Set `ROKOL_FORCE_DEBUG` to any value to enable debug mode in release build:
+//!
+//! ```no_run
+//! println!("cargo:rustc-env=ROKOL_FORCE_DEBUG=TRUE");
+//! ```
 
 use std::{
     env,
@@ -19,7 +27,8 @@ use cc::Build;
 
 fn main() {
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
-    let debug = env::var("DEBUG").ok().is_some();
+
+    let debug = env::var("ROKOL_FORCE_DEBUG").ok().is_some() || env::var("DEBUG").ok().is_some();
 
     self::gen_bindings("wrappers/app.h", &out_dir.join("sokol_app_ffi.rs"));
     self::gen_bindings("wrappers/gfx.h", &out_dir.join("sokol_gfx_ffi.rs"));

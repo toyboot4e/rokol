@@ -180,10 +180,10 @@ bitflags! {
     /// Rokol modifier keys as bitflags
     #[repr(C)]
     pub struct Mod: u32 {
-        const SHIFT = 0x01;
-        const CONTROL = 0x02;
-        const ALT = 0x04;
-        const SUPER = 0x08;
+        const SHIFT = ffi::SAPP_MODIFIER_SHIFT;
+        const CONTROL = ffi::SAPP_MODIFIER_CTRL;
+        const ALT = ffi::SAPP_MODIFIER_ALT;
+        const SUPER = ffi::SAPP_MODIFIER_SUPER;
     }
 }
 
@@ -233,7 +233,7 @@ pub trait RApp {
 
 /// `rokol::app` callbacks for C
 ///
-/// It's implemented and used under the hood. It's just for making [`RApp`] a normal rusty trait.
+/// It's makes [`RApp`] a normal rusty trait. It's implemented and used under the hood.
 pub trait RAppFfiCallback {
     #[no_mangle]
     extern "C" fn init_userdata_cb(user_data: *mut c_void);

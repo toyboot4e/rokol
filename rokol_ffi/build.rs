@@ -53,6 +53,7 @@ impl Renderer {
                 _ => panic!("ROKOL_RENDERER is invalid: {}", rdr),
             }
         } else {
+            // Select default renderer
             // - Windows: D3D11 with MSVC, GLCORE33 otherwise
             // - MacOS: Metal
             // - Linux: GLCORE33
@@ -66,14 +67,13 @@ impl Renderer {
         }
     }
 
-    // It doesn't change the Sokol header
-    // pub fn set_bindgen_flag(&self, b: bindgen::Builder) -> bindgen::Builder {
-    //     match self {
-    //         Self::D3D11 => b.clang_arg("-DSOKOL_D3D11"),
-    //         Self::Metal => b.clang_arg("-DSOKOL_METAL"),
-    //         Self::GlCore33 => b.clang_arg("-DSOKOL_GLCORE33"),
-    //     }
-    // }
+    pub fn set_bindgen_flag(&self, b: bindgen::Builder) -> bindgen::Builder {
+        match self {
+            Self::D3D11 => b.clang_arg("-DSOKOL_D3D11"),
+            Self::Metal => b.clang_arg("-DSOKOL_METAL"),
+            Self::GlCore33 => b.clang_arg("-DSOKOL_GLCORE33"),
+        }
+    }
 
     pub fn set_cflag(&self, build: &mut Build) {
         match self {
@@ -105,6 +105,14 @@ fn gen_bindings(wrapper_str: &str, ffi_output: &Path) {
     let root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
     let sokol_dir = root.join("sokol");
 
+    // Seems like the renderer doesn't change the header declaration though
+    let renderer = {
+        let build = Build::new();
+        let tool = build.try_get_compiler().unwrap();
+        let is_msvc = tool.is_like_msvc();
+        Renderer::get(is_msvc)
+    };
+
     // ----------------------------------------
     // Generate FFI
 
@@ -114,7 +122,7 @@ fn gen_bindings(wrapper_str: &str, ffi_output: &Path) {
         let b = bindgen::builder();
         let b = b.header(format!("{}", wrapper.display()));
         let b = b.clang_arg(format!("-I{}", sokol_dir.display()));
-        // let b = renderer.set_bindgen_flag(b);
+        let b = renderer.set_bindgen_flag(b);
         let b = b.derive_default(true);
         b.generate().unwrap()
     };
@@ -135,7 +143,6 @@ fn compile(src_path_str: &str, will_set_debug_flags: bool) {
     let mut build = Build::new();
     let tool = build.try_get_compiler().unwrap();
     let is_msvc = tool.is_like_msvc();
-
     let renderer = Renderer::get(is_msvc);
 
     // ----------------------------------------

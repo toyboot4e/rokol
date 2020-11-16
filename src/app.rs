@@ -106,8 +106,6 @@ impl<T: RApp> RAppFfiCallback for T {
 
     #[no_mangle]
     extern "C" fn event_userdata_cb(event: *const ffi::sapp_event, user_data: *mut c_void) {
-        let e = *unsafe { &*event };
-
         let me: &mut Self = unsafe { &mut *(user_data as *mut Self) };
         // note that `RAppEvent` is just an alias of `sapp_event`
         let ev: &RAppEvent = unsafe { &*(event as *const _) };
@@ -362,8 +360,6 @@ pub fn size() -> [u32; 2] {
     [self::width(), self::height()]
 }
 
-// TODO: prefer u32 and enums
-
 /// TODO: use [`PixelFormat`] in rokol::gfx
 pub fn color_fmt() -> i32 {
     unsafe { ffi::sapp_color_format() }
@@ -375,8 +371,8 @@ pub fn depth_format() -> i32 {
 }
 
 /// Default frame buffer count
-pub fn sample_count() -> i32 {
-    unsafe { ffi::sapp_sample_count() }
+pub fn sample_count() -> u32 {
+    unsafe { ffi::sapp_sample_count() as u32 }
 }
 
 /// True when high_dpi was requested and actually running in a high-dpi scenario
@@ -433,10 +429,10 @@ pub fn is_mouse_locked() -> bool {
     unsafe { ffi::sapp_mouse_locked() }
 }
 
-/// The userdata pointer provided in [`RAppDesc`]
-pub fn userdata() -> *mut c_void {
-    unsafe { ffi::sapp_userdata() }
-}
+// /// The userdata pointer provided in [`RAppDesc`]
+// pub fn userdata() -> *mut c_void {
+//     unsafe { ffi::sapp_userdata() }
+// }
 
 // /// Copy of the sapp_desc structure
 // pub fn query_desc() -> RAppDesc {
@@ -496,12 +492,12 @@ pub fn set_win_title(title: &str) -> Result<(), std::ffi::NulError> {
     Ok(())
 }
 
-/// The total number of dropped files (after an `SAPP_EVENTTYPE_FILES_DROPPED` event)
+/// [Drag] The total number of dropped files (after an `SAPP_EVENTTYPE_FILES_DROPPED` event)
 pub fn n_dropped_files() -> u32 {
     unsafe { ffi::sapp_get_num_dropped_files() as u32 }
 }
 
-/// The dropped file paths
+/// [Drag] The dropped file paths
 pub fn dropped_file_path(ix: u32) -> Result<String, std::str::Utf8Error> {
     let ptr = unsafe { ffi::sapp_get_dropped_file_path(ix as i32) };
     let c_str = unsafe { CString::from_raw(ptr as *mut _) };

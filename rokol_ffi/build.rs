@@ -8,7 +8,7 @@
 //! println!("cargo:rustc-env=ROKOL_RENDERER=<renderer_of_your_preference>");
 //! ```
 //!
-//! Or a default renderer will be chosen.
+//! Or a default renderer for each backend will be chosen.
 //!
 //! # Forcing debug flag for Sokol
 //!

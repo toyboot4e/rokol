@@ -32,9 +32,31 @@ use {
 ///
 /// [`SApp`] functions are called from [`RAppFfiCallback`] functions, which is set to [`RAppDesc`].
 pub trait RApp {
+    /// Called once after the rendering surface
     fn init(&mut self) {}
+
+    /// Called on the same thread as the init callback, but might be on a different thread than the
+    /// `sokol_main()` function
     fn frame(&mut self) {}
+
+    /// Called once after the user quits the application
+    ///
+    /// Suitable place to implement "really quit?" diaglog.
+    ///
+    /// # Note
+    ///
+    /// The cleanup-callback isn't guaranteed to be called on the web and mobile platforms.
     fn cleanup(&mut self) {}
+
+    /// Event handling
+    ///
+    /// # Note
+    ///
+    /// Do *not* call any 3D API rendering functions in the event
+    /// callback function, since the 3D API context may not be active when the
+    /// event callback is called (it may work on some platforms and 3D APIs,
+    /// but not others, and the exact behaviour may change between
+    /// sokol-app versions).
     fn event(&mut self, _ev: &RAppEvent) {}
 
     fn fail(&mut self, msg: &str) {
@@ -438,6 +460,9 @@ pub fn is_mouse_locked() -> bool {
 // pub fn query_desc() -> RAppDesc {
 //     unsafe { ffi::sapp_query_desc() }
 // }
+
+// --------------------------------------------------------------------------------
+// Quit protocol
 
 /// Initiate a "soft quit" (sends `SAPP_EVENTTYPE_QUIT_REQUESTED`)
 pub fn request_quit() {

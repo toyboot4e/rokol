@@ -8,6 +8,7 @@ pub use rokol_ffi as ffi;
 use std::ffi::CString;
 
 pub mod app;
+pub mod gfx;
 
 /// Any error upcasted to [`Box`]
 pub type Error = Box<dyn std::error::Error>;
@@ -115,4 +116,10 @@ impl Rokol {
 
         Ok(())
     }
+}
+
+pub fn create_app_desc() -> rokol_ffi::gfx::sg_desc {
+    let mut desc: rokol_ffi::gfx::sg_desc = Default::default();
+    desc.context = unsafe { rokol_ffi::glue::sapp_sgcontext() };
+    desc
 }

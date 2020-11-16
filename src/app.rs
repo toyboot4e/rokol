@@ -1,8 +1,21 @@
-use rokol_ffi::app as ffi;
+//! `rokol::app`
 
+use {
+    bitflags::bitflags,
+    rokol_ffi::app as ffi,
+    std::{
+        ffi::{c_void, CStr},
+        os::raw::{c_char, c_int},
+    },
+};
+
+// --------------------------------------------------------------------------------
+// enums
+
+/// `rokol::app` event type
 #[repr(C)]
-#[derive(Copy, Clone, PartialEq, Debug)]
-pub enum SAppEventType {
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum EventType {
     Invalid,
     KeyDown,
     KeyUp,
@@ -26,7 +39,8 @@ pub enum SAppEventType {
     QuitRequested,
 }
 
-#[derive(Copy, Clone, PartialEq, Debug)]
+/// `rokol::app` keycode
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u32)]
 pub enum Key {
     Invalid = ffi::sapp_keycode_SAPP_KEYCODE_INVALID,
@@ -152,18 +166,20 @@ pub enum Key {
     Menu = ffi::sapp_keycode_SAPP_KEYCODE_MENU,
 }
 
-#[repr(C)]
-#[derive(Copy, Clone, PartialEq, Debug)]
-pub enum SAppMouseButton {
-    Invalid = -1,
-    Left = 0,
-    Right = 1,
-    Middle = 2,
+/// `rokol::app` mouse input
+#[repr(i32)]
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum Mouse {
+    Invalid = ffi::sapp_mousebutton_SAPP_MOUSEBUTTON_INVALID,
+    Left = ffi::sapp_mousebutton_SAPP_MOUSEBUTTON_LEFT,
+    Right = ffi::sapp_mousebutton_SAPP_MOUSEBUTTON_RIGHT,
+    Middle = ffi::sapp_mousebutton_SAPP_MOUSEBUTTON_MIDDLE,
 }
 
 bitflags! {
+    /// Rokol modifier keys as bitflags
     #[repr(C)]
-    pub struct SAppModifier: u32 {
+    pub struct Mod: u32 {
         const SHIFT = 0x01;
         const CONTROL = 0x02;
         const ALT = 0x04;
@@ -171,73 +187,31 @@ bitflags! {
     }
 }
 
-#[repr(C)]
-#[derive(Copy, Clone, Debug)]
-pub struct SAppTouchPoint {
-    pub identifier: usize,
-    pub pos_x: f32,
-    pub pos_y: f32,
-    pub changed: bool,
-}
+// --------------------------------------------------------------------------------
+// Re-exports
+//
+// `Debug` and `Default` are implemented by `bindgen`. If we need more, we add methods in the FFI
+// module.
 
-#[derive(Debug)]
-pub struct SAppEvent {
-    pub frame_count: u64,
-    pub event_type: SAppEventType,
-    pub key_code: Key,
-    pub char_code: u32,
-    pub key_repeat: bool,
-    pub modifiers: SAppModifier,
-    pub mouse_button: SAppMouseButton,
-    pub mouse_x: f32,
-    pub mouse_y: f32,
-    pub scroll_x: f32,
-    pub scroll_y: f32,
-    pub num_touches: i32,
-    pub touches: [SAppTouchPoint; ffi::SAPP_MAX_TOUCHPOINTS],
-    pub window_width: i32,
-    pub window_height: i32,
-    pub framebuffer_width: i32,
-    pub framebuffer_height: i32,
-}
+/// `rokol::app` touch input
+pub type TouchPoint = ffi::sapp_touchpoint;
 
-#[derive(Default, Debug)]
-pub struct SAppDesc {
-    pub width: i32,
-    pub height: i32,
-    pub sample_count: i32,
-    pub swap_interval: i32,
-    pub high_dpi: bool,
-    pub fullscreen: bool,
-    pub alpha: bool,
-    pub window_title: String,
-    pub user_cursor: bool,
+/// `rokol::app` application description
+pub type RAppDesc = ffi::sapp_desc;
 
-    pub html5_canvas_name: String,
-    pub html5_canvas_resize: bool,
-    pub html5_preserve_drawing_buffer: bool,
-    pub html5_premultiplied_alpha: bool,
-    pub html5_ask_leave_site: bool,
-    pub ios_keyboard_resizes_canvas: bool,
-    pub gl_force_gles2: bool,
-}
+/// `rokol::app` application event
+pub type RAppEvent = ffi::sapp_event;
 
-pub trait SApp {
-    /// Init callback function.
-    fn sapp_init(&mut self);
-
-    /// Frame callback function.
-    fn sapp_frame(&mut self);
-
-    /// Cleanup callback function.
-    fn sapp_cleanup(&mut self);
-
-    /// Event callback function.
-    fn sapp_event(&mut self, event: SAppEvent);
-
-    /// Optional `sokol_app` error reporting callback function.
-    fn sapp_fail(&mut self, msg: &str) {
-        print!("{}", msg);
+/// `rokol::app` callbacks
+///
+/// Called from [`RAppFfiCallback`] functions.
+pub trait RApp {
+    fn init(&mut self);
+    fn frame(&mut self);
+    fn cleanup(&mut self);
+    fn event(&mut self, event: &RAppEvent);
+    fn fail(&mut self, msg: &str) {
+        eprint!("{}", msg);
     }
 
     /// Function called by `sokol_audio` in callback mode.
@@ -246,118 +220,336 @@ pub trait SApp {
     /// using this mode are expected to mix audio data into the buffer.
     ///
     /// This is called from a separate thread on all desktop platforms.
-    fn saudio_stream(&mut self, buffer: &mut [f32], num_frames: i32, num_channels: i32) {
+    fn audio_stream(&mut self, buffer: &mut [f32], num_frames: i32, num_channels: i32) {
         let len = (num_frames * num_channels) as usize;
         for i in 0..len {
             buffer[i] = 0.0;
         }
     }
+
+    // --------------------------------------------------------------------------------
+    // C callback functions set to [`RAppDesc`]
 }
 
-pub struct SAppImpl {
-    callbacks: Box<SApp>,
-    desc: SAppDesc,
+/// `rokol::app` callbacks for C
+///
+/// It's implemented and used under the hood. It's just for making [`RApp`] a normal rusty trait.
+pub trait RAppFfiCallback {
+    #[no_mangle]
+    extern "C" fn init_userdata_cb(user_data: *mut c_void);
+    #[no_mangle]
+    extern "C" fn frame_userdata_cb(user_data: *mut c_void);
+    #[no_mangle]
+    extern "C" fn cleanup_userdata_cb(user_data: *mut c_void);
+    #[no_mangle]
+    extern "C" fn event_userdata_cb(event: *const ffi::sapp_event, user_data: *mut c_void);
+    #[no_mangle]
+    extern "C" fn fail_userdata_cb(message: *const c_char, user_data: *mut c_void);
+    #[no_mangle]
+    extern "C" fn stream_userdata_cb(
+        buffer: *mut f32,
+        num_frames: c_int,
+        num_channels: c_int,
+        user_data: *mut c_void,
+    );
 }
 
-impl SAppImpl {
-    fn new<S: SApp + 'static>(callbacks: S, desc: SAppDesc) -> SAppImpl {
-        SAppImpl {
-            callbacks: Box::new(callbacks),
-            desc,
-        }
+// Why `#[no_mangle]` for C callback functions? I'm not sure, but the nomicon has some note:
+// https://doc.rust-lang.org/nomicon/ffi.html#calling-rust-code-from-c
+// Also, you might be interested in "name mangling". I would google about it.
+
+impl<T: RApp> RAppFfiCallback for T {
+    #[no_mangle]
+    extern "C" fn init_userdata_cb(user_data: *mut c_void) {
+        let me: &mut Self = unsafe { &mut *(user_data as *mut Self) };
+        me.init();
     }
 
-    pub fn init_cb(&mut self) {
-        self.callbacks.sapp_init();
+    #[no_mangle]
+    extern "C" fn frame_userdata_cb(user_data: *mut c_void) {
+        let me: &mut Self = unsafe { &mut *(user_data as *mut Self) };
+        me.frame();
     }
 
-    pub fn frame_cb(&mut self) {
-        self.callbacks.sapp_frame();
+    #[no_mangle]
+    extern "C" fn cleanup_userdata_cb(user_data: *mut c_void) {
+        let me: &mut Self = unsafe { &mut *(user_data as *mut Self) };
+        me.cleanup();
     }
 
-    pub fn cleanup_cb(&mut self) {
-        self.callbacks.sapp_cleanup();
+    #[no_mangle]
+    extern "C" fn event_userdata_cb(event: *const ffi::sapp_event, user_data: *mut c_void) {
+        let e = *unsafe { &*event };
+
+        let me: &mut Self = unsafe { &mut *(user_data as *mut Self) };
+        // note that `RAppEvent` is just an alias of `sapp_event`
+        let ev: &RAppEvent = unsafe { &*(event as *const _) };
+
+        me.event(ev);
     }
 
-    pub fn event_cb(&mut self, event: SAppEvent) {
-        self.callbacks.sapp_event(event);
+    #[no_mangle]
+    extern "C" fn fail_userdata_cb(message: *const c_char, user_data: *mut c_void) {
+        let msg = unsafe { CStr::from_ptr(message) };
+
+        let msg = match msg.to_str() {
+            Ok(msg) => msg,
+            Err(err) => {
+                eprintln!("Failed to read sokol_app message: {}", err);
+                return;
+            }
+        };
+
+        let me: &mut Self = unsafe { &mut *(user_data as *mut Self) };
+        me.fail(msg);
     }
 
-    pub fn fail_cb(&mut self, msg: &str) {
-        self.callbacks.sapp_fail(msg);
-    }
+    #[no_mangle]
+    extern "C" fn stream_userdata_cb(
+        buffer: *mut f32,
+        num_frames: c_int,
+        num_channels: c_int,
+        user_data: *mut c_void,
+    ) {
+        let arr = unsafe {
+            let n_bytes = num_frames * num_channels;
+            std::slice::from_raw_parts_mut(buffer, n_bytes as usize)
+        };
 
-    pub fn stream_cb(&mut self, buffer: &mut [f32], num_frames: i32, num_channels: i32) {
-        self.callbacks
-            .saudio_stream(buffer, num_frames, num_channels);
-    }
-
-    pub fn get(user_data: *mut c_void) -> &'static mut SAppImpl {
-        unsafe {
-            let app_ptr = user_data as *mut SAppImpl;
-            &mut *app_ptr
-        }
+        let me: &mut Self = unsafe { &mut *(user_data as *mut Self) };
+        me.audio_stream(arr, num_frames, num_channels);
     }
 }
 
-pub fn sapp_run<S: SApp + 'static>(callbacks: S, desc: SAppDesc) -> i32 {
-    let app = SAppImpl::new(callbacks, desc);
-
-    unsafe { ffi::sapp_run(&ffi::sapp_make_desc(&app)) }
-}
-
-pub fn sapp_isvalid() -> bool {
+/// Returns true after Rokol app is initialized
+pub fn is_valid() -> bool {
     unsafe { ffi::sapp_isvalid() }
 }
 
-pub fn sapp_width() -> i32 {
-    unsafe { ffi::sapp_width() }
+/// Width of the current frame buffer in pixels
+pub fn width() -> u32 {
+    // it's always bigger than zero, so this is safe
+    unsafe { ffi::sapp_width() as u32 }
 }
 
-pub fn sapp_height() -> i32 {
-    unsafe { ffi::sapp_height() }
+/// Height of the current frame buffer in pixels
+pub fn height() -> u32 {
+    // it's always bigger than zero, so this is safe
+    unsafe { ffi::sapp_height() as u32 }
 }
 
-pub fn sapp_high_dpi() -> bool {
+/// Width and height of the current frame buffer in pixels
+///
+/// This function is Rokol-only and Sokol doesn't have a corresponding function.
+pub fn size() -> [u32; 2] {
+    [self::width(), self::height()]
+}
+
+// TODO: prefer u32
+
+// TODO: use [`PixelFormat`] in rokol::gfx
+pub fn color_fmt() -> i32 {
+    unsafe { ffi::sapp_color_format() }
+}
+
+// TODO: use [`DeapthFormat`] in rokol::gfx
+pub fn depth_format() -> i32 {
+    unsafe { ffi::sapp_depth_format() }
+}
+
+/// Default frame buffer count
+pub fn sample_count() -> i32 {
+    unsafe { ffi::sapp_sample_count() }
+}
+
+/// True when high_dpi was requested and actually running in a high-dpi scenario
+pub fn is_high_dpi() -> bool {
     unsafe { ffi::sapp_high_dpi() }
 }
 
-pub fn sapp_dpi_scale() -> f32 {
+/// Dpi scaling factor (window pixels to framebuffer pixels)
+pub fn dpi_scale() -> f32 {
     unsafe { ffi::sapp_dpi_scale() }
 }
 
-pub fn sapp_show_keyboard(visible: bool) {
+/// [mobile] Show or hide the mobile device onscreen keyboard
+pub fn set_show_kbd(do_show: bool) {
     unsafe {
-        ffi::sapp_show_keyboard(visible);
+        ffi::sapp_show_keyboard(do_show);
     }
 }
 
-pub fn sapp_keyboard_shown() -> bool {
+/// [mobile] True if the mobile device onscreen keyboard is currently shown
+pub fn is_kbd_shown() -> bool {
     unsafe { ffi::sapp_keyboard_shown() }
 }
 
-pub fn sapp_request_quit() {
+pub fn is_fullscreen() -> bool {
+    unsafe { ffi::sapp_is_fullscreen() }
+}
+
+pub fn toggle_fullscreen() {
+    unsafe { ffi::sapp_toggle_fullscreen() }
+}
+
+/// Show or hide the mouse cursor
+pub fn set_show_mouse(show: bool) {
     unsafe {
-        ffi::sapp_request_quit();
+        ffi::sapp_show_mouse(show);
     }
 }
 
-pub fn sapp_cancel_quit() {
+/// Show or hide the mouse cursor
+pub fn is_mouse_shown() -> bool {
+    unsafe { ffi::sapp_mouse_shown() }
+}
+//
+// Enable/disable mouse-pointer-lock mode
+pub fn set_lock_mouse(lock: bool) {
     unsafe {
-        ffi::sapp_cancel_quit();
+        ffi::sapp_lock_mouse(lock);
     }
 }
 
-pub fn sapp_quit() {
+/// True if in mouse-pointer-lock mode (this may toggle a few frames later)
+pub fn is_mouse_locked() -> bool {
+    unsafe { ffi::sapp_mouse_locked() }
+}
+
+/// The userdata pointer provided in [`RAppDesc`]
+pub fn userdata() -> *mut c_void {
+    unsafe { ffi::sapp_userdata() }
+}
+
+/// Copy of the sapp_desc structure
+pub fn query_desc() -> RAppDesc {
+    unsafe { ffi::sapp_query_desc() }
+}
+
+/// Initiate a "soft quit" (sends SAPP_EVENTTYPE_QUIT_REQUESTED)
+pub fn request_quit() {
+    unsafe { ffi::sapp_request_quit() }
+}
+
+/// cancel a pending quit (when SAPP_EVENTTYPE_QUIT_REQUESTED has been received)
+pub fn cancel_quit() {
+    unsafe { ffi::sapp_cancel_quit() }
+}
+
+/// Initiate a "hard quit" (quit application without sending SAPP_EVENTTYPE_QUIT_REQUSTED)
+pub fn quit() {
     unsafe {
         ffi::sapp_quit();
     }
 }
 
-pub fn sapp_frame_count() -> u64 {
-    unsafe { ffi::sapp_frame_count() }
+/// Call from inside event callback to consume the current event (don't forward to platform)
+pub fn consume_event() {
+    unsafe {
+        ffi::sapp_consume_event();
+    }
 }
 
-pub fn sapp_gles2() -> bool {
-    unsafe { ffi::sapp_gles2() }
-}
+// // /* get the current frame counter (for comparison with sapp_event.frame_count) */
+// // SOKOL_API_DECL uint64_t sapp_frame_count(void);
+// // /* write string into clipboard */
+// // SOKOL_API_DECL void sapp_set_clipboard_string(const char* str);
+// // /* read string from clipboard (usually during SAPP_EVENTTYPE_CLIPBOARD_PASTED) */
+// // SOKOL_API_DECL const char* sapp_get_clipboard_string(void);
+// // /* set the window title (only on desktop platforms) */
+// // SOKOL_API_DECL void sapp_set_window_title(const char* str);
+// // /* gets the total number of dropped files (after an SAPP_EVENTTYPE_FILES_DROPPED event) */
+// // SOKOL_API_DECL int sapp_get_num_dropped_files(void);
+// // /* gets the dropped file paths */
+// // SOKOL_API_DECL const char* sapp_get_dropped_file_path(int index);
+// //
+// // /* special run-function for SOKOL_NO_ENTRY (in standard mode this is an empty stub) */
+// // SOKOL_API_DECL int sapp_run(const sapp_desc* desc);
+// //
+// // /* GL: return true when GLES2 fallback is active (to detect fallback from GLES3) */
+// // SOKOL_API_DECL bool sapp_gles2(void);
+// //
+// // /* HTML5: enable or disable the hardwired "Leave Site?" dialog box */
+// // SOKOL_API_DECL void sapp_html5_ask_leave_site(bool ask);
+// // /* HTML5: get byte size of a dropped file */
+// // SOKOL_API_DECL uint32_t sapp_html5_get_dropped_file_size(int index);
+// // /* HTML5: asynchronously load the content of a dropped file */
+// // SOKOL_API_DECL void sapp_html5_fetch_dropped_file(const sapp_html5_fetch_request* request);
+// //
+// // /* Metal: get bridged pointer to Metal device object */
+// // SOKOL_API_DECL const void* sapp_metal_get_device(void);
+// // /* Metal: get bridged pointer to this frame's renderpass descriptor */
+// // SOKOL_API_DECL const void* sapp_metal_get_renderpass_descriptor(void);
+// // /* Metal: get bridged pointer to current drawable */
+// // SOKOL_API_DECL const void* sapp_metal_get_drawable(void);
+// // /* macOS: get bridged pointer to macOS NSWindow */
+// // SOKOL_API_DECL const void* sapp_macos_get_window(void);
+// // /* iOS: get bridged pointer to iOS UIWindow */
+// // SOKOL_API_DECL const void* sapp_ios_get_window(void);
+// //
+// // /* D3D11: get pointer to ID3D11Device object */
+// // SOKOL_API_DECL const void* sapp_d3d11_get_device(void);
+// // /* D3D11: get pointer to ID3D11DeviceContext object */
+// // SOKOL_API_DECL const void* sapp_d3d11_get_device_context(void);
+// // /* D3D11: get pointer to ID3D11RenderTargetView object */
+// // SOKOL_API_DECL const void* sapp_d3d11_get_render_target_view(void);
+// // /* D3D11: get pointer to ID3D11DepthStencilView */
+// // SOKOL_API_DECL const void* sapp_d3d11_get_depth_stencil_view(void);
+// // /* Win32: get the HWND window handle */
+// // SOKOL_API_DECL const void* sapp_win32_get_hwnd(void);
+// //
+// // /* WebGPU: get WGPUDevice handle */
+// // SOKOL_API_DECL const void* sapp_wgpu_get_device(void);
+// // /* WebGPU: get swapchain's WGPUTextureView handle for rendering */
+// // SOKOL_API_DECL const void* sapp_wgpu_get_render_view(void);
+// // /* WebGPU: get swapchain's MSAA-resolve WGPUTextureView (may return null) */
+// // SOKOL_API_DECL const void* sapp_wgpu_get_resolve_view(void);
+// // /* WebGPU: get swapchain's WGPUTextureView for the depth-stencil surface */
+// // SOKOL_API_DECL const void* sapp_wgpu_get_depth_stencil_view(void);
+// //
+// // /* Android: get native activity handle */
+// // SOKOL_API_DECL const void* sapp_android_get_native_activity(void);
+
+// pub fn sapp_high_dpi() -> bool {
+//     unsafe { ffi::sapp_high_dpi() }
+// }
+//
+// pub fn sapp_dpi_scale() -> f32 {
+//     unsafe { ffi::sapp_dpi_scale() }
+// }
+//
+// pub fn sapp_show_keyboard(visible: bool) {
+//     unsafe {
+//         ffi::sapp_show_keyboard(visible);
+//     }
+// }
+//
+// pub fn sapp_keyboard_shown() -> bool {
+//     unsafe { ffi::sapp_keyboard_shown() }
+// }
+//
+// pub fn sapp_request_quit() {
+//     unsafe {
+//         ffi::sapp_request_quit();
+//     }
+// }
+//
+// pub fn sapp_cancel_quit() {
+//     unsafe {
+//         ffi::sapp_cancel_quit();
+//     }
+// }
+//
+// pub fn sapp_quit() {
+//     unsafe {
+//         ffi::sapp_quit();
+//     }
+// }
+//
+// pub fn sapp_frame_count() -> u64 {
+//     unsafe { ffi::sapp_frame_count() }
+// }
+//
+// pub fn sapp_gles2() -> bool {
+//     unsafe { ffi::sapp_gles2() }
+// }

@@ -4,4 +4,6 @@
 //!
 //! [sokol-rs]: https://github.com/code-disaster/sokol-rs
 
+pub use rokol_ffi as ffi;
+
 pub mod app;

@@ -19,10 +19,15 @@ use cc::Build;
 
 fn main() {
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
-    self::make_sokol("wrappers/app.h", &out_dir.join("sokol_app_ffi.rs"));
-    self::make_sokol("wrappers/gfx.h", &out_dir.join("sokol_gfx_ffi.rs"));
+    let debug = env::var("DEBUG").ok().is_some();
+
+    self::gen_bindings("wrappers/app.h", &out_dir.join("sokol_app_ffi.rs"));
+    self::gen_bindings("wrappers/gfx.h", &out_dir.join("sokol_gfx_ffi.rs"));
+
+    self::compile("src/sokol.c", debug);
 }
 
+/// Helper for selecting Sokol renderer
 enum Renderer {
     D3D11,
     Metal,
@@ -78,35 +83,27 @@ impl Renderer {
     }
 }
 
-/// Compiles the given `wrapper` file and create FFI to it
-fn make_sokol(wrapper: &str, ffi_output: &Path) {
+/// Select `.m` file if we're on macOS
+fn maybe_select_objective_c(wrapper: &str) -> PathBuf {
+    if cfg!(target_os = "macos") {
+        PathBuf::from(wrapper).with_extension("m")
+    } else {
+        PathBuf::from(wrapper)
+    }
+}
+
+fn gen_bindings(wrapper_str: &str, ffi_output: &Path) {
     let root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
     let sokol_dir = root.join("sokol");
 
     // ----------------------------------------
-    // Get metadata
-
-    let mut build = Build::new();
-    let tool = build.try_get_compiler().unwrap();
-    let is_msvc = tool.is_like_msvc();
-    let will_set_debug_flags = env::var("DEBUG").ok().is_some();
-
-    let renderer = Renderer::get(is_msvc);
-
-    // ----------------------------------------
     // Generate FFI
 
-    // We have to use `.m` extension on macOS (even if the contents are the same)
-    let wrapper = if cfg!(target_os = "macos") {
-        PathBuf::from(wrapper).with_extension("m")
-    } else {
-        PathBuf::from(wrapper)
-    };
-    let wrapper = format!("{}", wrapper.display());
+    let wrapper = self::maybe_select_objective_c(wrapper_str);
 
     let bindings = {
         let b = bindgen::builder();
-        let b = b.header(&wrapper);
+        let b = b.header(format!("{}", wrapper.display()));
         let b = b.clang_arg(format!("-I{}", sokol_dir.display()));
         // let b = renderer.set_bindgen_flag(b);
         let b = b.derive_default(true);
@@ -116,12 +113,28 @@ fn make_sokol(wrapper: &str, ffi_output: &Path) {
     bindings
         .write_to_file(ffi_output)
         .expect("Couldn't write bindings!");
+}
+
+/// Compiles the given `wrapper` file and create FFI to it
+fn compile(src_path_str: &str, will_set_debug_flags: bool) {
+    let root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
+    let sokol_dir = root.join("sokol");
+
+    // ----------------------------------------
+    // Get metadata
+
+    let mut build = Build::new();
+    let tool = build.try_get_compiler().unwrap();
+    let is_msvc = tool.is_like_msvc();
+
+    let renderer = Renderer::get(is_msvc);
 
     // ----------------------------------------
     // Set up compiler flags
 
-    build.include(format!("{}", root.join("sokol").display()));
-    build.file(&wrapper);
+    build.include(&sokol_dir);
+    let src = self::maybe_select_objective_c(src_path_str);
+    build.file(&src);
 
     renderer.set_cflag(&mut build);
     renderer.link();
@@ -139,11 +152,11 @@ fn make_sokol(wrapper: &str, ffi_output: &Path) {
             .flag_if_supported("-Wno-sign-compare")
             .flag_if_supported("-Wno-unknown-pragmas");
 
+        // also link some libraries here..
         println!("cargo:rustc-link-lib=static=gdi32");
         println!("cargo:rustc-link-lib=static=ole32");
     }
 
-    // TODO: enable overriding sokol debug flags
     if will_set_debug_flags {
         build.flag("-D_DEBUG").flag("-DSOKOL_DEBUG");
     }
@@ -155,7 +168,7 @@ fn make_sokol(wrapper: &str, ffi_output: &Path) {
     build.compile("sokol");
 
     // ----------------------------------------
-    // Platform dependent libraries
+    // Link platform-dependent libraries
 
     // MacOS: frameworks
     if cfg!(target_os = "macos") {

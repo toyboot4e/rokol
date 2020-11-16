@@ -1,22 +1,9 @@
 //! Build script of `rokol-ffi`
 //!
-//! # Speifying backend
-//!
-//! You can select Sokol renderer from `build.rs` in a parent directory:
-//!
-//! ```no_run
-//! println!("cargo:rustc-env=ROKOL_RENDERER=<renderer_of_your_preference>");
-//! ```
-//!
-//! Or a default renderer for each backend will be chosen.
-//!
-//! # Forcing debug flag for Sokol
-//!
-//! Set `ROKOL_FORCE_DEBUG` to any value to enable debug mode in release build:
-//!
-//! ```no_run
-//! println!("cargo:rustc-env=ROKOL_FORCE_DEBUG=TRUE");
-//! ```
+//! Emits `DEP_SOKOL_GFX` to `build.rs` of crates that lists `rokol_ffi` in their `Cargo.toml`.
+//! That can be used for conditional compilation. See `rokol/build.rs` for more information.
+
+// TODO: enable overriding render and build flag
 
 use std::{
     env,
@@ -36,6 +23,8 @@ fn main() {
     };
 
     let renderer = Renderer::select(is_msvc);
+
+    renderer.emit_cargo_metadata();
 
     self::gen_bindings(
         "wrappers/app.h",
@@ -88,6 +77,16 @@ impl Renderer {
             Self::D3D11 => "SOKOL_D3D11",
             Self::Metal => "SOKOL_METAL",
             Self::GlCore33 => "SOKOL_GLCORE33",
+        }
+    }
+
+    /// Provides with an environmental variable `DEP_SOKOL_GFX` to `build.rs` files in crates that
+    /// are dependent on `rokol_ffi`
+    pub fn emit_cargo_metadata(&self) {
+        match self {
+            Self::D3D11 => println!("cargo:gfx=\"d3d11\""),
+            Self::Metal => println!("cargo:gfx=\"metal\""),
+            Self::GlCore33 => println!("cargo:gfx=\"glcore33\""),
         }
     }
 }
@@ -143,7 +142,6 @@ fn compile(
     build.file(&src);
 
     build.flag(&format!("-D{}", renderer.sokol_flag_name()));
-    // renderer.link();
 
     // MacOS: need ARC
     if cfg!(target_os = "macos") {
@@ -170,7 +168,6 @@ fn compile(
     // ----------------------------------------
     // Compile
 
-    build.flag("-DSOKOL_IMPL");
     build.compile("sokol");
 
     // ----------------------------------------

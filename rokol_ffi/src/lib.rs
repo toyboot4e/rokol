@@ -27,12 +27,3 @@ pub mod glue {
         pub fn sapp_sgcontext() -> crate::gfx::sg_context_desc;
     }
 }
-
-#[cfg(test)]
-mod test {
-    /// Make sure we can link to Sokol
-    #[test]
-    fn link_test() {
-        let _desc = unsafe { crate::app::sokol_main(0, std::ptr::null_mut()) };
-    }
-}

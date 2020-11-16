@@ -10,12 +10,17 @@
 //!
 //! Or a default renderer will be chosen.
 
-use std::{env, path::PathBuf};
+use std::{
+    env,
+    path::{Path, PathBuf},
+};
 
 use cc::Build;
 
 fn main() {
-    self::make_sokol("wrappers/app.h", "sokol_app_ffi.rs");
+    let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
+    self::make_sokol("wrappers/app.h", &out_dir.join("sokol_app_ffi.rs"));
+    self::make_sokol("wrappers/gfx.h", &out_dir.join("sokol_gfx_ffi.rs"));
 }
 
 enum Renderer {
@@ -47,6 +52,7 @@ impl Renderer {
         }
     }
 
+    // It doesn't change the Sokol header
     // pub fn set_bindgen_flag(&self, b: bindgen::Builder) -> bindgen::Builder {
     //     match self {
     //         Self::D3D11 => b.clang_arg("-DSOKOL_D3D11"),
@@ -73,10 +79,9 @@ impl Renderer {
 }
 
 /// Compiles the given `wrapper` file and create FFI to it
-fn make_sokol(wrapper: &str, ffi_file: &str) {
+fn make_sokol(wrapper: &str, ffi_output: &Path) {
     let root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
     let sokol_dir = root.join("sokol");
-    let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
 
     // ----------------------------------------
     // Get metadata
@@ -91,7 +96,7 @@ fn make_sokol(wrapper: &str, ffi_file: &str) {
     // ----------------------------------------
     // Generate FFI
 
-    // We have to use `.n` extension in macOS even if the file contents are the same
+    // We have to use `.m` extension on macOS (even if the contents are the same)
     let wrapper = if cfg!(target_os = "macos") {
         PathBuf::from(wrapper).with_extension("m")
     } else {
@@ -109,24 +114,22 @@ fn make_sokol(wrapper: &str, ffi_file: &str) {
     };
 
     bindings
-        .write_to_file(out_dir.join(ffi_file))
+        .write_to_file(ffi_output)
         .expect("Couldn't write bindings!");
 
     // ----------------------------------------
     // Set up compiler flags
 
-    build.include(format!("{}/sokol", root.display()));
+    build.include(format!("{}", root.join("sokol").display()));
+    build.file(&wrapper);
+
+    renderer.set_cflag(&mut build);
+    renderer.link();
 
     // MacOS: need ARC
     if cfg!(target_os = "macos") {
         build.flag("-fobjc-arc");
     }
-
-    // TODO: order?
-    build.file(&wrapper);
-
-    renderer.set_cflag(&mut build);
-    renderer.link();
 
     // x86_64-pc-windows-gnu: additional compile/link flags
     if cfg!(target_os = "windows") && !is_msvc {

@@ -10,6 +10,16 @@ pub mod app {
     include!(concat!(env!("OUT_DIR"), "/sokol_app_ffi.rs"));
 }
 
+pub mod gfx {
+    //! `sokol_gfx.h`
+
+    // suppress all errors
+    #![allow(warnings)]
+
+    // Include generated bindings
+    include!(concat!(env!("OUT_DIR"), "/sokol_gfx_ffi.rs"));
+}
+
 #[cfg(test)]
 mod test {
     #[test]

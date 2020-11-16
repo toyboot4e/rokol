@@ -35,7 +35,7 @@ pub trait RApp {
     fn init(&mut self) {}
     fn frame(&mut self) {}
     fn cleanup(&mut self) {}
-    fn event(&mut self, event: &RAppEvent) {}
+    fn event(&mut self, _ev: &RAppEvent) {}
 
     fn fail(&mut self, msg: &str) {
         eprint!("{}", msg);

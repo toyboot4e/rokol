@@ -15,4 +15,8 @@ fn main() -> rokol::Result {
 
 struct AppData {}
 
-impl rokol::app::RApp for AppData {}
+impl rokol::app::RApp for AppData {
+    fn init(&mut self) {
+        println!("Hello, Rokol! And this is the `init` callback!");
+    }
+}

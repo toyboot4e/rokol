@@ -8,9 +8,9 @@ fn main() -> rokol::Result {
         ..Default::default()
     };
 
-    let app = AppData {};
+    let mut app = AppData {};
 
-    rokol.run(app)
+    rokol.run(&mut app)
 }
 
 struct AppData {}

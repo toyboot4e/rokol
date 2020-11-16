@@ -74,7 +74,7 @@ impl Default for Rokol {
 }
 
 impl Rokol {
-    pub fn run<T: app::RApp>(&self, app: T) -> Result {
+    pub fn run<T: app::RApp>(&self, app: &mut T) -> Result {
         let mut desc = ffi::app::sapp_desc::default();
 
         desc.width = self.w as i32;
@@ -99,6 +99,8 @@ impl Rokol {
         desc.max_dropped_file_path_length = self.max_dropped_file_path_len_in_bytes as i32;
 
         use self::app::RAppFfiCallback;
+        desc.user_data = app as *mut _ as *mut _;
+
         desc.init_userdata_cb = Some(<T as RAppFfiCallback>::init_userdata_cb);
         desc.frame_userdata_cb = Some(<T as RAppFfiCallback>::frame_userdata_cb);
         desc.cleanup_userdata_cb = Some(<T as RAppFfiCallback>::cleanup_userdata_cb);

@@ -1,0 +1,9 @@
+[package]
+name = "rokol"
+version = "0.1.0"
+authors = ["toyboot4e <toyboot4e@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+rokol_ffi = { path = "rokol_ffi" }
+bitflags = "1.2.1"

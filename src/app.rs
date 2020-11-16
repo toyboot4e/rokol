@@ -46,7 +46,11 @@ pub trait RApp {
     /// # Note
     ///
     /// The cleanup-callback isn't guaranteed to be called on the web and mobile platforms.
-    fn cleanup(&mut self) {}
+    fn cleanup(&mut self) {
+        unsafe {
+            rokol_ffi::gfx::sg_shutdown();
+        }
+    }
 
     /// Event handling
     ///

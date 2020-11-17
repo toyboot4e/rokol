@@ -1,0 +1,29 @@
+= Devlog
+:sokol: https://github.com/floooh/sokol[Sokol]
+:sokol-rs: https://github.com/code-disaster/sokol-rs[sokol-rs]
+:bindgen: https://github.com/rust-lang/rust-bindgen[bindgen]
+:miniquad: https://github.com/not-fl3/miniquad[miniquad]
+:macroquad: https://github.com/not-fl3/macroquad[macroquad]
+:fna3d: https://github.com/FNA-XNA/FNA3D[FNA3D]
+:rust-fna3d: https://github.com/toyboot4e/rust-fna3d[Rust-FNA3D]
+
+== Background
+
+I'm interested in C libraries. They can be used from almost any other programming language. That's cool!
+
+And I made a wrapper of {fna3d}: {rust-fna3d}. It was a lot of work, unfortunatelly, but it worked perfectly. So I'm temped to make more use of C libraries.
+
+== Rokol devlog
+
+This time, I'm trying {sokol}. Different from {fna3d}, it is a set of header-only libraries. The only one file does all the jobs? That's awesome!
+
+{sokol-rs} was a pioneer wrapper, and it worked out of the box, but it was a bit outdate. So I'm making another, naming it Rokol.
+
+NOTE: I would not recommend Rokol for others. There are native Rust frameworks: {miniquad} and {macroquad}. They're supre nice.
+
+=== Nov 15, 2020
+
+I started working with Rokol. I was already familar with `build.rs`, so it's been easier than I expected.
+
+I copied License file from {sokol-rs} because I started my `build.rs` copying theirs.
+

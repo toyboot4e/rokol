@@ -1,0 +1,16 @@
+= rokol/examples
+
+Run example with Cargo:
+
+[source,sh]
+----
+$ cargo run --example 2_window
+----
+
+Run example with Cargo, forcing renderer:
+
+[source,sh]
+----
+$ env ROKOL_RENDERER=GlCore33 cargo run --example 5_quad
+----
+

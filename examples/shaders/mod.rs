@@ -27,3 +27,7 @@ mod metal {
 
 #[cfg(rokol_gfx = "metal")]
 pub use self::metal::*;
+
+pub fn make_simple_shader() -> rokol::gfx::Shader {
+    unsafe { rokol::gfx::make_shader_static(SIMPLE_VS, SIMPLE_FS) }
+}

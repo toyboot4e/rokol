@@ -76,7 +76,7 @@ impl rokol::app::RApp for AppData {
         };
 
         let pip_desc = rg::PipelineDesc {
-            shader: unsafe { rg::make_shader_static(shaders::SIMPLE_VS, shaders::SIMPLE_FS) },
+            shader: shaders::make_simple_shader(),
             layout: rg::LayoutDesc {
                 attrs: {
                     let mut attrs = [rg::VertexAttrDesc::default(); 16];

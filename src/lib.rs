@@ -76,6 +76,15 @@ impl Default for Rokol {
 
 impl Rokol {
     pub fn run<T: app::RApp>(&self, app: &mut T) -> Result {
+        #[cfg(rokol_gfx = "glcore33")]
+        log::info!("Rokol renderer: glcore33");
+
+        #[cfg(rokol_gfx = "metal")]
+        log::info!("Rokol renderer: metal");
+
+        #[cfg(rokol_gfx = "d3d11")]
+        log::info!("Rokol renderer: D3D11");
+
         let mut desc = ffi::app::sapp_desc::default();
 
         desc.width = self.w as i32;

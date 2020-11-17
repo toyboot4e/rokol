@@ -27,7 +27,7 @@ I started working with Rokol. I was already familar with `build.rs`, so it's bee
 
 I copied License file from {sokol-rs} because I started my `build.rs` copying theirs.
 
-==== Why did I make another repository when therewere sokol-rs?
+==== Why did I make another repository when there were sokol-rs?
 
 Rokol has different styles from {sokol-rs}:
 

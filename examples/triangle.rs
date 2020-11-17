@@ -65,34 +65,36 @@ impl rokol::app::RApp for AppData {
         rg::setup(&mut desc); // now we can call sokol_gfx functions!
 
         self.bind.vertex_buffers[0] = {
-            let buf: &[Vertex] = &[
-                // vertex, color
+            let verts: &[Vertex] = &[
+                // (vertex, color)
                 ([0.0, 0.5, 0.5], [1.0, 0.0, 0.0, 1.0]).into(),
                 ([0.5, -0.5, 0.5], [0.0, 1.0, 0.0, 1.0]).into(),
                 ([-0.5, -0.5, 0.5], [0.0, 0.0, 1.0, 1.0]).into(),
             ];
 
-            let buf_desc =
-                rg::BufferDesc::new(buf, rg::ResourceUsage::Immutable, "triangle-vertices");
-            rg::make_buffer(&buf_desc)
+            let desc =
+                rg::BufferDesc::new_vtx(verts, rg::ResourceUsage::Immutable, "triangle-vertices");
+            rg::make_buffer(&desc)
         };
 
-        let pip_desc = rg::PipelineDesc {
-            shader: shaders::make_simple_shader(),
-            layout: rg::LayoutDesc {
-                attrs: {
-                    let mut attrs = [rg::VertexAttrDesc::default(); 16];
-                    attrs[0].format = rg::VertexFormat::Float3 as u32;
-                    attrs[1].format = rg::VertexFormat::Float4 as u32;
-                    attrs
+        self.pip = {
+            let pip_desc = rg::PipelineDesc {
+                shader: shaders::make_simple_shader(),
+                layout: rg::LayoutDesc {
+                    attrs: {
+                        let mut attrs = [rg::VertexAttrDesc::default(); 16];
+                        attrs[0].format = rg::VertexFormat::Float3 as u32;
+                        attrs[1].format = rg::VertexFormat::Float4 as u32;
+                        attrs
+                    },
+                    buffers: [rg::BufferLayoutDesc::default();
+                        rokol_ffi::gfx::SG_MAX_SHADERSTAGE_BUFFERS as usize],
                 },
-                buffers: [rg::BufferLayoutDesc::default();
-                    rokol_ffi::gfx::SG_MAX_SHADERSTAGE_BUFFERS as usize],
-            },
-            ..Default::default()
-        };
+                ..Default::default()
+            };
 
-        self.pip = rg::make_pipeline(&pip_desc);
+            rg::make_pipeline(&pip_desc)
+        };
     }
 
     fn frame(&mut self) {

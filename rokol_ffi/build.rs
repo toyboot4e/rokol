@@ -13,6 +13,9 @@ use std::{
 use cc::Build;
 
 fn main() {
+    // Select one of D3D3, Metal or GlCore33
+    println!("cargo:rerun-if-env-changed=ROKOL_RENDERER");
+
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
     let mut build = Build::new();
 
@@ -53,7 +56,7 @@ impl Renderer {
         if let Ok(rdr) = env::var("ROKOL_RENDERER") {
             return match rdr.as_str() {
                 "D3D11" => Self::D3D11,
-                "METAL" => Self::Metal,
+                "Metal" => Self::Metal,
                 "GlCore33" => Self::GlCore33,
                 _ => panic!("ROKOL_RENDERER is invalid: {}", rdr),
             };

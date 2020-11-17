@@ -41,8 +41,8 @@ mod files {
     pub static SIMPLE_VS: &str = c_str!("metal/simple_vs.metal");
     pub static SIMPLE_FS: &str = c_str!("metal/simple_fs.metal");
 
-    pub static QUAD_VS: &str = "<unimplemented shader>";
-    pub static QUAD_FS: &str = "<unimplemented shader>";
+    pub static QUAD_VS: &str = c_str!("metal/quad_vs.metal");
+    pub static QUAD_FS: &str = c_str!("metal/quad_fs.metal");
 }
 
 #[cfg(rokol_gfx = "d3d11")]

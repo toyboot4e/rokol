@@ -94,35 +94,6 @@ pub enum ResourceUsage {
     Stream = ffi::sg_usage_SG_USAGE_STREAM,
 }
 
-// #[repr(C)]
-// #[derive(Copy, Clone, Debug)]
-// pub enum SgPixelFormat {
-//     // _Default,
-//     None,
-//     RGBA8,
-//     RGB8,
-//     RGBA4,
-//     RGB5,
-//     RGB5A1,
-//     RGB10A2,
-//     RGBA32F,
-//     RGBA16F,
-//     R32F,
-//     R16F,
-//     L8,
-//     DXT1,
-//     DXT3,
-//     DXT5,
-//     Depth,
-//     DepthStencil,
-//     PVRTC2RGB,
-//     PVRTC4RGB,
-//     PVRTC2RGBA,
-//     PVRTC4RGBA,
-//     ETC2RGB8,
-//     ETC2SRGB8,
-// }
-
 /*
     sg_vertex_format
 
@@ -162,6 +133,56 @@ pub enum ShaderStage {
     Vs = ffi::sg_shader_stage_SG_SHADERSTAGE_VS,
     // _ForceU32 = ffi::sg_shader_stage__SG_SHADERSTAGE_FORCE_U32,
 }
+
+#[derive(Copy, Clone, Debug)]
+#[repr(u32)]
+pub enum BufferType {
+    _Default = ffi::sg_buffer_type__SG_BUFFERTYPE_DEFAULT,
+    Index = ffi::sg_buffer_type_SG_BUFFERTYPE_INDEXBUFFER,
+    Vertex = ffi::sg_buffer_type_SG_BUFFERTYPE_VERTEXBUFFER,
+    _ForceU32 = ffi::sg_buffer_type__SG_BUFFERTYPE_FORCE_U32,
+    _Num = ffi::sg_buffer_type__SG_BUFFERTYPE_NUM,
+}
+
+#[derive(Copy, Clone, Debug)]
+#[repr(u32)]
+pub enum IndexType {
+    _Default = ffi::sg_index_type__SG_INDEXTYPE_DEFAULT,
+    None = ffi::sg_index_type_SG_INDEXTYPE_NONE,
+    UInt16 = ffi::sg_index_type_SG_INDEXTYPE_UINT16,
+    UInt32 = ffi::sg_index_type_SG_INDEXTYPE_UINT32,
+    _ForceU32 = ffi::sg_index_type__SG_INDEXTYPE_FORCE_U32,
+    _Num = ffi::sg_index_type__SG_INDEXTYPE_NUM,
+}
+
+// #[repr(C)]
+// #[derive(Copy, Clone, Debug)]
+// pub enum SgPixelFormat {
+//     // _Default,
+//     None,
+//     RGBA8,
+//     RGB8,
+//     RGBA4,
+//     RGB5,
+//     RGB5A1,
+//     RGB10A2,
+//     RGBA32F,
+//     RGBA16F,
+//     R32F,
+//     R16F,
+//     L8,
+//     DXT1,
+//     DXT3,
+//     DXT5,
+//     Depth,
+//     DepthStencil,
+//     PVRTC2RGB,
+//     PVRTC4RGB,
+//     PVRTC2RGBA,
+//     PVRTC4RGBA,
+//     ETC2RGB8,
+//     ETC2SRGB8,
+// }
 
 // --------------------------------------------------------------------------------
 // Wrapped structs
@@ -218,12 +239,21 @@ pub struct BufferDesc {
 raw_access!(BufferDesc, ffi::sg_buffer_desc);
 
 impl BufferDesc {
-    pub fn new<T>(buf: &[T], usage: ResourceUsage, label: &str) -> Self {
+    pub fn new_idx<T>(buf: &[T], usage: ResourceUsage, label: &str) -> Self {
+        Self::new(buf, BufferType::Index, usage, label)
+    }
+
+    pub fn new_vtx<T>(buf: &[T], usage: ResourceUsage, label: &str) -> Self {
+        Self::new(buf, BufferType::Vertex, usage, label)
+    }
+
+    fn new<T>(buf: &[T], buffer_type: BufferType, usage: ResourceUsage, label: &str) -> Self {
         let size = (std::mem::size_of::<T>() * buf.len()) as i32;
         Self {
             raw: ffi::sg_buffer_desc {
                 size,
                 content: buf.as_ptr() as *mut _,
+                type_: buffer_type as u32,
                 usage: usage as u32,
                 label: if label == "" {
                     std::ptr::null_mut()

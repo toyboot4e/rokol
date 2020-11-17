@@ -1,4 +1,4 @@
-= Devlog
+= Rokol devlog
 :sokol: https://github.com/floooh/sokol[Sokol]
 :sokol-rs: https://github.com/code-disaster/sokol-rs[sokol-rs]
 :bindgen: https://github.com/rust-lang/rust-bindgen[bindgen]
@@ -13,7 +13,7 @@ I'm interested in C libraries. They can be used from almost any other programmin
 
 And I made a wrapper of {fna3d}: {rust-fna3d}. It was a lot of work, unfortunatelly, but it worked perfectly. So I'm temped to make more use of C libraries.
 
-== Rokol devlog
+== Notes
 
 This time, I'm trying {sokol}. Different from {fna3d}, it is a set of header-only libraries. The only one file does all the jobs? That's awesome!
 
@@ -27,13 +27,38 @@ I started working with Rokol. I was already familar with `build.rs`, so it's bee
 
 I copied License file from {sokol-rs} because I started my `build.rs` copying theirs.
 
+==== Why did I make another repository when therewere sokol-rs?
+
+Rokol has different styles from {sokol-rs}:
+
+* Rokol uses {bindgen} to create Rust FFI to Sokol.
+* Rokol changes function names.
+
+One would use Rokol as this:
+
+[source,rust]
+----
+use rokol::app as rapp;
+
+rapp::run( .. );
+----
+
+Instead of importing all the items in a module:
+
+[source,rust]
+----
+use sokol::app::*;
+
+sapp_run( .. );
+----
+
 === Nov 17, 2020
 
-Rokol compiles conditionally. User has there options to select renderer:
+Rokol compiles conditionally. User has three options to select their renderer:
 
 . Let Rokol select default renderer
 . Use feature flag of `force-glcore33`
-. Set `ROKOL_RENDERER` environment variable to force renderer. One of `GlCore33`, `Metal` or `D3D11` is allowed
+. Set `ROKOL_RENDERER` environment variable to force using some renderer. One of `GlCore33`, `Metal` or `D3D11` is allowed
 
 Rokol user would also want to compile conditionally depending on Rokol renderer. That's possible if they add `rokol_ffi` to their `Cargo.toml` and write some build script. See `rokol/build.rs` and `rokol/examples/conditional.rs` for more details.
 

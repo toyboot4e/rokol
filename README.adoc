@@ -9,7 +9,7 @@ Wrapper of {sokol}, the C libraries for games
 
 == About
 
-Rokol is primary for my 2D framework. Please don't expect that it to be a complete wrapper for you!
+Rokol is primary for my 2D framework. Please don't expect it to be a complete wrapper for you!
 
 === Status
 
@@ -17,38 +17,13 @@ Rokol only cares about desktop platforms.
 
 **Rokol is tested on macOS only**. You could find it doesn't compile out of the box. Please make open an issue then!
 
+== Notes
+
 === Relation to sokol-rs
 
 Rokol was based on {sokol-rs} when it was started. Many thanks to them! And the license file was derived from the repository.
 
-== Expected questions
+=== More notes
 
-=== Why did you make another repository when there's sokol-rs?
-
-Rokol has different styles from {sokol-rs}:
-
-* Rokol uses {bindgen} to create Rust FFI to Sokol.
-* Rokol changes function names.
-
-One would use Rokol as this:
-
-[source,rust]
-----
-use rokol::app as rapp;
-
-rapp::run( .. );
-----
-
-Instead of importing all the items in a module:
-
-[source,rust]
-----
-use sokol::app::*;
-
-sapp_run( .. );
-----
-
-=== Why do you use Rokol when there's macroquad?
-
-Because single-header libraries in C are attractive. The only one file does all the jobs? That's cool!
+My devlog is link:devlog.adoc[here]
 

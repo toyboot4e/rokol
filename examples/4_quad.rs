@@ -75,16 +75,14 @@ impl rokol::app::RApp for AppData {
                 ([-0.5, -0.5, 0.5], [1.0, 1.0, 0.0, 1.0]).into(),
             ];
 
-            let desc =
-                rg::BufferDesc::new_vtx(verts, rg::ResourceUsage::Immutable, "quad-vertices");
+            let desc = rg::vtx_desc(verts, rg::ResourceUsage::Immutable, "quad-vertices");
             rg::make_buffer(&desc)
         };
 
         // index for with 2 triangles
         self.bind.index_buffer = {
             let indices: &[u16] = &[0, 1, 2, 0, 2, 3];
-            let desc =
-                &rg::BufferDesc::new_idx(indices, rg::ResourceUsage::Immutable, "quad-indices");
+            let desc = &rg::idx_desc(indices, rg::ResourceUsage::Immutable, "quad-indices");
             rg::make_buffer(&desc)
         };
 

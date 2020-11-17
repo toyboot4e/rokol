@@ -230,43 +230,7 @@ pub type BlendState = ffi::sg_blend_state;
 pub type Buffer = ffi::sg_buffer;
 pub type BufferInfo = ffi::sg_buffer_info;
 pub type BufferLayoutDesc = ffi::sg_buffer_layout_desc;
-
-#[derive(Debug)]
-pub struct BufferDesc {
-    raw: ffi::sg_buffer_desc,
-}
-
-raw_access!(BufferDesc, ffi::sg_buffer_desc);
-
-impl BufferDesc {
-    pub fn new_idx<T>(buf: &[T], usage: ResourceUsage, label: &str) -> Self {
-        Self::new(buf, BufferType::Index, usage, label)
-    }
-
-    pub fn new_vtx<T>(buf: &[T], usage: ResourceUsage, label: &str) -> Self {
-        Self::new(buf, BufferType::Vertex, usage, label)
-    }
-
-    fn new<T>(buf: &[T], buffer_type: BufferType, usage: ResourceUsage, label: &str) -> Self {
-        let size = (std::mem::size_of::<T>() * buf.len()) as i32;
-        Self {
-            raw: ffi::sg_buffer_desc {
-                size,
-                content: buf.as_ptr() as *mut _,
-                type_: buffer_type as u32,
-                usage: usage as u32,
-                label: if label == "" {
-                    std::ptr::null_mut()
-                } else {
-                    let label =
-                        CString::new(label).expect("Unable to create CString in BufferDesc::new");
-                    label.as_ptr() as *mut _
-                },
-                ..Default::default()
-            },
-        }
-    }
-}
+pub type BufferDesc = ffi::sg_buffer_desc;
 
 pub type Pipeline = ffi::sg_pipeline;
 pub type PipelineInfo = ffi::sg_pipeline_info;
@@ -376,7 +340,7 @@ pub fn draw(base_elem: u32, n_elems: u32, n_instances: u32) {
 // Be careful to not use them until you call `rokol_gfx::setup` in `init`
 
 pub fn make_buffer(desc: &BufferDesc) -> Buffer {
-    unsafe { ffi::sg_make_buffer(desc.raw()) }
+    unsafe { ffi::sg_make_buffer(desc) }
 }
 
 pub fn make_pipeline(desc: &PipelineDesc) -> Pipeline {
@@ -386,6 +350,13 @@ pub fn make_pipeline(desc: &PipelineDesc) -> Pipeline {
 pub fn make_shader(desc: &ShaderDesc) -> Shader {
     unsafe { ffi::sg_make_shader(desc) }
 }
+
+pub fn alloc_image() -> Image {
+    unsafe { ffi::sg_alloc_image() }
+}
+
+// --------------------------------------------------------------------------------
+// Helpers
 
 /// [Non-Sokol] Helper for making shaders
 ///
@@ -406,4 +377,36 @@ pub unsafe fn make_shader_static(vs: &str, fs: &str) -> Shader {
     };
 
     self::make_shader(&desc)
+}
+
+/// [Non-Sokol]
+pub fn idx_desc<T>(buf: &[T], usage: ResourceUsage, label: &str) -> BufferDesc {
+    buf_desc(buf, BufferType::Index, usage, label)
+}
+
+/// [Non-Sokol]
+pub fn vtx_desc<T>(buf: &[T], usage: ResourceUsage, label: &str) -> BufferDesc {
+    buf_desc(buf, BufferType::Vertex, usage, label)
+}
+
+fn buf_desc<T>(
+    buf: &[T],
+    buffer_type: BufferType,
+    usage: ResourceUsage,
+    label: &str,
+) -> BufferDesc {
+    let size = (std::mem::size_of::<T>() * buf.len()) as i32;
+    ffi::sg_buffer_desc {
+        size,
+        content: buf.as_ptr() as *mut _,
+        type_: buffer_type as u32,
+        usage: usage as u32,
+        label: if label == "" {
+            std::ptr::null_mut()
+        } else {
+            let label = CString::new(label).expect("Unable to create CString in BufferDesc::new");
+            label.as_ptr() as *mut _
+        },
+        ..Default::default()
+    }
 }

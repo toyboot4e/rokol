@@ -78,7 +78,7 @@ impl rokol::app::RApp for AppData {
         let pip_desc = rg::PipelineDesc {
             shader: {
                 // TODO: select shader dependent on renderer
-                rg::make_shader_static(shaders::metal::SIMPLE_VS, shaders::metal::SIMPLE_FS)
+                rg::make_shader_static(shaders::SIMPLE_VS, shaders::SIMPLE_FS)
             },
             layout: rg::LayoutDesc {
                 attrs: {

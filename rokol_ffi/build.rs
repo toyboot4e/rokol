@@ -49,25 +49,30 @@ enum Renderer {
 
 impl Renderer {
     pub fn select(is_msvc: bool) -> Self {
+        // set renderer with environmental variable
         if let Ok(rdr) = env::var("ROKOL_RENDERER") {
-            match rdr.as_str() {
+            return match rdr.as_str() {
                 "D3D11" => Self::D3D11,
                 "METAL" => Self::Metal,
                 "GlCore33" => Self::GlCore33,
                 _ => panic!("ROKOL_RENDERER is invalid: {}", rdr),
-            }
+            };
+        }
+
+        // set renderer via feature
+        #[cfg(feature = "force-glcore33")]
+        return Self::GlCore33;
+
+        // Select default renderer
+        // - Windows: D3D11 with MSVC, GLCORE33 otherwise
+        // - MacOS: Metal
+        // - Linux: GLCORE33
+        if cfg!(target_os = "windows") && is_msvc {
+            Self::D3D11
+        } else if cfg!(target_os = "macos") {
+            Self::Metal
         } else {
-            // Select default renderer
-            // - Windows: D3D11 with MSVC, GLCORE33 otherwise
-            // - MacOS: Metal
-            // - Linux: GLCORE33
-            if cfg!(target_os = "windows") && is_msvc {
-                Self::D3D11
-            } else if cfg!(target_os = "macos") {
-                Self::Metal
-            } else {
-                Self::GlCore33
-            }
+            Self::GlCore33
         }
     }
 
@@ -183,7 +188,7 @@ fn compile(
                 println!("cargo:rustc-link-lib=framework=MetalKit");
             }
             Renderer::GlCore33 => {
-                todo!();
+                println!("cargo:rustc-link-lib=framework=OpenGL");
             }
             Renderer::D3D11 => panic!("Trying to use D3D11 on macOS"),
         }

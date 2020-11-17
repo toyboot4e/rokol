@@ -7,6 +7,9 @@ edition = "2018"
 # https://doc.rust-lang.org/cargo/reference/build-scripts.html#the-links-manifest-key
 links = "sokol"
 
+[features]
+force-glcore33 = []
+
 [dependencies]
 
 [build-dependencies]

@@ -17,7 +17,7 @@ And I made a wrapper of {fna3d}: {rust-fna3d}. It was a lot of work, unfortunate
 
 This time, I'm trying {sokol}. Different from {fna3d}, it is a set of header-only libraries. The only one file does all the jobs? That's awesome!
 
-{sokol-rs} was a pioneer wrapper, and it worked out of the box, but it was a bit outdate. So I'm making another, naming it Rokol.
+{sokol-rs} was a pioneer wrapper, and it worked out of the box, but it was a bit outdated. So I'm making another, naming it Rokol.
 
 NOTE: I would not recommend Rokol for others. There are native Rust frameworks: {miniquad} and {macroquad}. They're supre nice.
 
@@ -26,4 +26,16 @@ NOTE: I would not recommend Rokol for others. There are native Rust frameworks: 
 I started working with Rokol. I was already familar with `build.rs`, so it's been easier than I expected.
 
 I copied License file from {sokol-rs} because I started my `build.rs` copying theirs.
+
+=== Nov 17, 2020
+
+Rokol compiles conditionally. User has there options to select renderer:
+
+. Let Rokol select default renderer
+. Use feature flag of `force-glcore33`
+. Set `ROKOL_RENDERER` environment variable to force renderer. One of `GlCore33`, `Metal` or `D3D11` is allowed
+
+Rokol user would also want to compile conditionally depending on Rokol renderer. That's possible if they add `rokol_ffi` to their `Cargo.toml` and write some build script. See `rokol/build.rs` and `rokol/examples/conditional.rs` for more details.
+
+c.f. https://doc.rust-lang.org/cargo/reference/build-scripts.html[Build Scripts - The Cargo Book]
 

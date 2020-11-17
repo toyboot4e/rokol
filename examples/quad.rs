@@ -27,6 +27,8 @@ where
 }
 
 fn main() -> rokol::Result {
+    env_logger::init(); // give implementation to log crate
+
     let rokol = rokol::Rokol {
         w: 1280,
         h: 720,

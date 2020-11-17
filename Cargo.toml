@@ -8,3 +8,6 @@ edition = "2018"
 log = "0.4.11"
 bitflags = "1.2.1"
 rokol_ffi = { path = "rokol_ffi" }
+
+[dev-dependencies]
+env_logger = "0.8.1"

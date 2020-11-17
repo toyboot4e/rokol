@@ -1,4 +1,4 @@
-/// Degine `SOKOL_IMPL`
+//! File for generating Rust FFI
 
 #define SOKOL_NO_ENTRY
 #define SOKOL_NO_DEPRECATED

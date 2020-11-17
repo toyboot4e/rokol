@@ -8,6 +8,7 @@ pub use rokol_ffi as ffi;
 use std::ffi::CString;
 
 pub mod app;
+pub mod gfx;
 
 /// Any error upcasted to [`Box`]
 pub type Error = Box<dyn std::error::Error>;
@@ -75,6 +76,15 @@ impl Default for Rokol {
 
 impl Rokol {
     pub fn run<T: app::RApp>(&self, app: &mut T) -> Result {
+        #[cfg(rokol_gfx = "glcore33")]
+        log::info!("Rokol renderer: glcore33");
+
+        #[cfg(rokol_gfx = "metal")]
+        log::info!("Rokol renderer: metal");
+
+        #[cfg(rokol_gfx = "d3d11")]
+        log::info!("Rokol renderer: D3D11");
+
         let mut desc = ffi::app::sapp_desc::default();
 
         desc.width = self.w as i32;
@@ -115,4 +125,10 @@ impl Rokol {
 
         Ok(())
     }
+}
+
+pub fn create_app_desc() -> rokol_ffi::gfx::sg_desc {
+    let mut desc: rokol_ffi::gfx::sg_desc = Default::default();
+    desc.context = unsafe { rokol_ffi::glue::sapp_sgcontext() };
+    desc
 }

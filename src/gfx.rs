@@ -357,13 +357,10 @@ pub fn make_shader(desc: &ShaderDesc) -> Shader {
     unsafe { ffi::sg_make_shader(desc) }
 }
 
-/// [Non-Sokol] Helper
-pub fn make_shader_static(vs: &str, fs: &str) -> Shader {
-    let vs = CString::new(vs)
-        .unwrap_or_else(|_| panic!("Unable to create CString from vertex shader:\n{}", fs));
-    let fs = CString::new(fs)
-        .unwrap_or_else(|_| panic!("Unable to create CString from fragment shader:\n{}", fs));
-
+/// [Non-Sokol] Helper for making shaders
+///
+/// Caller must ensure the shader strings are null-terminated!
+pub unsafe fn make_shader_static(vs: &str, fs: &str) -> Shader {
     let mut desc = ShaderDesc::default();
     desc.vs = ShaderStageDesc {
         source: vs.as_ptr() as *mut _,

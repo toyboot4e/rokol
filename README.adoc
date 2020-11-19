@@ -18,11 +18,5 @@ Very early in progress..
 
 == Notes
 
-=== Relation to sokol-rs
-
-Rokol was based on {sokol-rs} when it was started. Many thanks to them! And the license file was derived from the repository.
-
-=== More notes
-
 My devlog is link:devlog.adoc[here]
 

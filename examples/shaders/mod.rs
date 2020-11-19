@@ -24,6 +24,10 @@ pub fn make_quad_shader() -> rokol::gfx::Shader {
     make(files::QUAD_VS, files::QUAD_FS)
 }
 
+pub fn make_texture_shader() -> rokol::gfx::Shader {
+    make(files::TEXTURE_VS, files::TEXTURE_FS)
+}
+
 // --------------------------------------------------------------------------------
 // Shader files
 
@@ -34,6 +38,9 @@ mod files {
 
     pub static QUAD_VS: &str = c_str!("glsl/quad_vs.glsl");
     pub static QUAD_FS: &str = c_str!("glsl/quad_fs.glsl");
+
+    pub static TEXTURE_VS: &str = c_str!("glsl/texture_vs.glsl");
+    pub static TEXTURE_FS: &str = c_str!("glsl/texture_fs.glsl");
 }
 
 #[cfg(rokol_gfx = "metal")]
@@ -43,6 +50,9 @@ mod files {
 
     pub static QUAD_VS: &str = c_str!("metal/quad_vs.metal");
     pub static QUAD_FS: &str = c_str!("metal/quad_fs.metal");
+
+    pub static TEXTURE_VS: &str = "<unimplemented shader>";
+    pub static TEXTURE_FS: &str = "<unimplemented shader>";
 }
 
 #[cfg(rokol_gfx = "d3d11")]
@@ -52,4 +62,7 @@ mod files {
 
     pub static QUAD_VS: &str = "<unimplemented shader>";
     pub static QUAD_FS: &str = "<unimplemented shader>";
+
+    pub static TEXTURE_VS: &str = "<unimplemented shader>";
+    pub static TEXTURE_FS: &str = "<unimplemented shader>";
 }

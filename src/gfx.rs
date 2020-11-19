@@ -53,54 +53,50 @@ pub enum PassActionKind {
     DontCare = ffi::sg_action_SG_ACTION_DONTCARE,
 }
 
-/// `sg_usage` in `sokol_gfx.h`
+/// Update strategy of buffers and images
 ///
-/// A resource usage hint describing the update strategy of
-/// buffers and images. This is used in the sg_buffer_desc.usage
-/// and sg_image_desc.usage members when creating buffers
-/// and images:
+/// # Kinds
 ///
-/// SG_USAGE_IMMUTABLE:     the resource will never be updated with
-///                         new data, instead the content of the
-///                         resource must be provided on creation
-/// SG_USAGE_DYNAMIC:       the resource will be updated infrequently
-///                         with new data (this could range from "once
-///                         after creation", to "quite often but not
-///                         every frame")
-/// SG_USAGE_STREAM:        the resource will be updated each frame
-///                         with new content
+/// * `Immutable`: Never be updated after creation
+/// * `Dynamic`: Updated infrequently ("once after creation" to "quite often but not every frame")
+/// * `Stream`: Updated each frame
 ///
 /// The rendering backends use this hint to prevent that the
 /// CPU needs to wait for the GPU when attempting to update
 /// a resource that might be currently accessed by the GPU.
 ///
-/// Resource content is updated with the functions sg_update_buffer() or
-/// sg_append_buffer() for buffer objects, and sg_update_image() for image
-/// objects. For the sg_update_*() functions, only one update is allowed per
-/// frame and resource object, while sg_append_buffer() can be called
+/// # Update frequency
+///
+/// Resource content is updated with the functions `sg_update_buffer()` or
+/// `sg_append_buffer()` for buffer objects, and `sg_update_image()` for image
+/// objects.
+///
+/// For the `sg_update_*()` functions, only one update is allowed per
+/// frame and resource object, while `sg_append_buffer()` can be called
 /// multiple times per frame on the same buffer. The application must update
 /// all data required for rendering (this means that the update data can be
 /// smaller than the resource size, if only a part of the overall resource
 /// size is used for rendering, you only need to make sure that the data that
 /// *is* used is valid).
-///
-/// The default usage is SG_USAGE_IMMUTABLE.
 #[derive(Copy, Clone, Debug)]
 #[repr(u32)]
 pub enum ResourceUsage {
-    _Default = ffi::sg_usage__SG_USAGE_DEFAULT,
     Immutable = ffi::sg_usage_SG_USAGE_IMMUTABLE,
     Dynamic = ffi::sg_usage_SG_USAGE_DYNAMIC,
     Stream = ffi::sg_usage_SG_USAGE_STREAM,
 }
 
-/*
-    sg_vertex_format
-
-    The data type of a vertex component. This is used to describe
-    the layout of vertex data when creating a pipeline object.
-*/
-
+/// Data type of a vertex component
+///
+/// Used to describe the layout of vertex data when creating a pipeline object.
+///
+/// # Portability of integer values
+///
+/// Only normalized integer formats (`*N`) is portable across all platforms.
+///
+/// The reason is that D3D11 cannot convert from non-normalized
+/// formats to floating point inputs (only to integer inputs),
+/// and WebGL2 / GLES2 don't support integer vertex shader inputs.
 #[derive(Copy, Clone, Debug)]
 #[repr(u32)]
 pub enum VertexFormat {
@@ -124,6 +120,7 @@ pub enum VertexFormat {
     _ForceU32 = ffi::sg_vertex_format__SG_VERTEXFORMAT_FORCE_U32,
 }
 
+/// Fs | Vs
 #[derive(Copy, Clone, Debug)]
 #[repr(u32)]
 pub enum ShaderStage {
@@ -134,6 +131,7 @@ pub enum ShaderStage {
     // _ForceU32 = ffi::sg_shader_stage__SG_SHADERSTAGE_FORCE_U32,
 }
 
+/// Index | Vertex
 #[derive(Copy, Clone, Debug)]
 #[repr(u32)]
 pub enum BufferType {
@@ -144,6 +142,7 @@ pub enum BufferType {
     _Num = ffi::sg_buffer_type__SG_BUFFERTYPE_NUM,
 }
 
+/// UInt16 | UInt32
 #[derive(Copy, Clone, Debug)]
 #[repr(u32)]
 pub enum IndexType {
@@ -155,34 +154,112 @@ pub enum IndexType {
     _Num = ffi::sg_index_type__SG_INDEXTYPE_NUM,
 }
 
-// #[repr(C)]
-// #[derive(Copy, Clone, Debug)]
-// pub enum SgPixelFormat {
-//     // _Default,
-//     None,
-//     RGBA8,
-//     RGB8,
-//     RGBA4,
-//     RGB5,
-//     RGB5A1,
-//     RGB10A2,
-//     RGBA32F,
-//     RGBA16F,
-//     R32F,
-//     R16F,
-//     L8,
-//     DXT1,
-//     DXT3,
-//     DXT5,
-//     Depth,
-//     DepthStencil,
-//     PVRTC2RGB,
-//     PVRTC4RGB,
-//     PVRTC2RGBA,
-//     PVRTC4RGBA,
-//     ETC2RGB8,
-//     ETC2SRGB8,
-// }
+/// 2D | 3D | Array | Cube
+///
+/// Basic type of an image object.
+///
+/// The image type is used in the `sg_image_desc.type` member when creating an image, and
+/// in `sg_shader_image_desc` when describing a shader's texture sampler binding.
+///
+/// # Platform
+///
+/// 3D- and array-textures are not supported on the GLES2/WebGL backend
+/// (use `sg_query_features().imagetype_3d` and `sg_query_features().imagetype_array` to check for
+/// support).
+#[derive(Copy, Clone, Debug)]
+#[repr(u32)]
+pub enum ImageType {
+    _Default = ffi::sg_image_type__SG_IMAGETYPE_DEFAULT,
+    Dim2 = ffi::sg_image_type_SG_IMAGETYPE_2D,
+    Dim3 = ffi::sg_image_type_SG_IMAGETYPE_3D,
+    Array = ffi::sg_image_type_SG_IMAGETYPE_ARRAY,
+    Cube = ffi::sg_image_type_SG_IMAGETYPE_CUBE,
+    _ForceU32 = ffi::sg_image_type__SG_IMAGETYPE_FORCE_U32,
+    _Num = ffi::sg_image_type__SG_IMAGETYPE_NUM,
+}
+
+/// Pixel format
+///
+/// `sokol_gfx.h` basically uses the same pixel formats as WebGPU, since these
+/// are supported on most newer GPUs. GLES2 and WebGL has a much smaller
+/// subset of available pixel formats. Call `sg_query_pixelformat()` to check
+/// at runtime if a pixel format supports the desired features.
+///
+/// # Naming convension
+///
+/// A pixelformat name consist of three parts:
+///
+///     - components (R, RG, RGB or RGBA)
+///     - bit width per component (8, 16 or 32)
+///     - component data type:
+///         - unsigned normalized (no postfix)
+///         - signed normalized (SN postfix)
+///         - unsigned integer (UI postfix)
+///         - signed integer (SI postfix)
+///         - float (F postfix)
+///
+/// # Supported formats
+///
+/// Not all pixel formats can be used for everything, call sg_query_pixelformat()
+/// to inspect the capabilities of a given pixelformat. The function returns
+/// an `sg_pixelformat_info` struct with the following bool members:
+///
+///     - sample: the pixelformat can be sampled as texture at least with
+///               nearest filtering
+///     - filter: the pixelformat can be samples as texture with linear
+///               filtering
+///     - render: the pixelformat can be used for render targets
+///     - blend:  blending is supported when using the pixelformat for
+///               render targets
+///     - msaa:   multisample-antialiasing is supported when using the
+///               pixelformat for render targets
+///     - depth:  the pixelformat can be used for depth-stencil attachments
+///
+/// When targeting GLES2/WebGL, the only safe formats to use
+/// as texture are SG_PIXELFORMAT_R8 and SG_PIXELFORMAT_RGBA8. For rendering
+/// in GLES2/WebGL, only SG_PIXELFORMAT_RGBA8 is safe. All other formats
+/// must be checked via sg_query_pixelformats().
+///
+/// # Default pixel format
+///
+/// The default pixel format for texture images is `SG_PIXELFORMAT_RGBA8`.
+///
+/// The default pixel format for render target images is platform-dependent:
+///     - for Metal and D3D11 it is `SG_PIXELFORMAT_BGRA8`
+///     - for GL backends it is `SG_PIXELFORMAT_RGBA8`
+///
+/// This is mainly because of the default framebuffer which is setup outside
+/// of `sokol_gfx.h`. On some backends, using BGRA for the default frame buffer
+/// allows more efficient frame flips. For your own offscreen-render-targets,
+/// use whatever renderable pixel format is convenient for you.
+#[repr(C)]
+#[derive(Copy, Clone, Debug)]
+pub enum PixelFormat {
+    _Default,
+    None,
+    RGBA8,
+    RGB8,
+    RGBA4,
+    RGB5,
+    RGB5A1,
+    RGB10A2,
+    RGBA32F,
+    RGBA16F,
+    R32F,
+    R16F,
+    L8,
+    DXT1,
+    DXT3,
+    DXT5,
+    Depth,
+    DepthStencil,
+    PVRTC2RGB,
+    PVRTC4RGB,
+    PVRTC2RGBA,
+    PVRTC4RGBA,
+    ETC2RGB8,
+    ETC2SRGB8,
+}
 
 // --------------------------------------------------------------------------------
 // Wrapped structs
@@ -353,6 +430,10 @@ pub fn make_shader(desc: &ShaderDesc) -> Shader {
 
 pub fn alloc_image() -> Image {
     unsafe { ffi::sg_alloc_image() }
+}
+
+pub fn make_image(desc: &ImageDesc) -> Image {
+    unsafe { ffi::sg_make_image(desc) }
 }
 
 // --------------------------------------------------------------------------------

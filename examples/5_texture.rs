@@ -11,19 +11,23 @@ use rokol::{app as ra, gfx as rg};
 pub struct Vertex {
     /// X, Y, Z
     pos: [f32; 3],
+    /// R, G, B, A
+    color: [u8; 4],
     /// u, v (texture coordinates)
-    uv: [u16; 2],
+    uv: [f32; 2],
 }
 
-impl<T, U> From<(T, U)> for Vertex
+impl<Pos, Color, Uv> From<(Pos, Color, Uv)> for Vertex
 where
-    T: Into<[f32; 3]>,
-    U: Into<[u16; 2]>,
+    Pos: Into<[f32; 3]>,
+    Color: Into<[u8; 4]>,
+    Uv: Into<[f32; 2]>,
 {
-    fn from(data: (T, U)) -> Self {
+    fn from(data: (Pos, Color, Uv)) -> Self {
         Self {
             pos: data.0.into(),
-            uv: data.1.into(),
+            color: data.1.into(),
+            uv: data.2.into(),
         }
     }
 }
@@ -66,14 +70,14 @@ impl rokol::app::RApp for AppData {
         let mut desc = rokol::create_app_desc();
         rg::setup(&mut desc); // now we can call sokol_gfx functions!
 
-        self.bind.fs_images[0] = rg::alloc_image();
+        // self.bind.fs_images[0] = rg::alloc_image();
 
         self.bind.vertex_buffers[0] = {
             let verts: &[Vertex] = &[
-                ([-1.0, -1.0, -1.0], [0, 0]).into(),
-                ([1.0, -1.0, -1.0], [32767, 0]).into(),
-                ([1.0, 1.0, -1.0], [32767, 32767]).into(),
-                ([-1.0, 1.0, -1.0], [0, 32767]).into(),
+                ([-1.0, -1.0, -1.0], [0, 255, 255, 255], [0.0, 0.0]).into(),
+                ([1.0, -1.0, -1.0], [255, 0, 255, 255], [1.0, 0.0]).into(),
+                ([1.0, 1.0, -1.0], [255, 255, 0, 255], [1.0, 1.0]).into(),
+                ([-1.0, 1.0, -1.0], [128, 128, 128, 255], [0.0, 1.0]).into(),
             ];
 
             let desc = rg::vtx_desc(verts, rg::ResourceUsage::Immutable, "quad-vertices");
@@ -83,19 +87,20 @@ impl rokol::app::RApp for AppData {
         // index for with 2 triangles
         self.bind.index_buffer = {
             let indices: &[u16] = &[0, 1, 2, 0, 2, 3];
-            let desc = &rg::idx_desc(indices, rg::ResourceUsage::Immutable, "quad-indices");
+            let desc = &rg::idx_desc(indices, rg::ResourceUsage::Immutable, "texture-indices");
             rg::make_buffer(&desc)
         };
 
         self.pip = {
             let pip_desc = rg::PipelineDesc {
-                shader: shaders::make_quad_shader(),
+                shader: shaders::make_texture_shader(),
                 index_type: rg::IndexType::UInt16 as u32,
                 layout: rg::LayoutDesc {
                     attrs: {
                         let mut attrs = [rg::VertexAttrDesc::default(); 16];
                         attrs[0].format = rg::VertexFormat::Float3 as u32;
-                        attrs[1].format = rg::VertexFormat::Float4 as u32;
+                        attrs[1].format = rg::VertexFormat::UByte4N as u32;
+                        attrs[2].format = rg::VertexFormat::Float2 as u32;
                         attrs
                     },
                     buffers: [rg::BufferLayoutDesc::default();

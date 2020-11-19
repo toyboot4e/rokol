@@ -7,7 +7,7 @@ Run example with Cargo:
 $ cargo run --example 2_window
 ----
 
-Run example with Cargo, forcing renderer:
+Run example with Cargo, forcing OepnGL renderer:
 
 [source,sh]
 ----

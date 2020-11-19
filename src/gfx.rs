@@ -131,6 +131,28 @@ pub enum ShaderStage {
     // _ForceU32 = ffi::sg_shader_stage__SG_SHADERSTAGE_FORCE_U32,
 }
 
+#[derive(Copy, Clone, Debug)]
+#[repr(u32)]
+pub enum UniformType {
+    Float = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT,
+    Float2 = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT2,
+    Float3 = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT3,
+    Float4 = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT4,
+    Invalid = ffi::sg_uniform_type_SG_UNIFORMTYPE_INVALID,
+    Mat4 = ffi::sg_uniform_type_SG_UNIFORMTYPE_MAT4,
+    _ForceU32 = ffi::sg_uniform_type__SG_UNIFORMTYPE_FORCE_U32,
+    _Num = ffi::sg_uniform_type__SG_UNIFORMTYPE_NUM,
+}
+
+#[derive(Copy, Clone, Debug)]
+#[repr(u32)]
+pub enum SamplerType {
+    _Default = ffi::sg_sampler_type__SG_SAMPLERTYPE_DEFAULT,
+    Float = ffi::sg_sampler_type_SG_SAMPLERTYPE_FLOAT,
+    SInt = ffi::sg_sampler_type_SG_SAMPLERTYPE_SINT,
+    UInt = ffi::sg_sampler_type_SG_SAMPLERTYPE_UINT,
+}
+
 /// Index | Vertex
 #[derive(Copy, Clone, Debug)]
 #[repr(u32)]
@@ -170,7 +192,9 @@ pub enum IndexType {
 #[repr(u32)]
 pub enum ImageType {
     _Default = ffi::sg_image_type__SG_IMAGETYPE_DEFAULT,
+    /// 2D
     Dim2 = ffi::sg_image_type_SG_IMAGETYPE_2D,
+    /// 3D
     Dim3 = ffi::sg_image_type_SG_IMAGETYPE_3D,
     Array = ffi::sg_image_type_SG_IMAGETYPE_ARRAY,
     Cube = ffi::sg_image_type_SG_IMAGETYPE_CUBE,
@@ -178,7 +202,47 @@ pub enum ImageType {
     _Num = ffi::sg_image_type__SG_IMAGETYPE_NUM,
 }
 
+/// The texture coordinates wrapping mode when sampling a texture image
+///
+/// This is used in `sg_image_desc` when creating an image..
+///
+/// # Platform
+///
+/// `SG_WRAP_CLAMP_TO_BORDER` is not supported on all backends
+/// and platforms. To check for support, call sg_query_features()
+/// and check the "clamp_to_border" boolean in the returned
+/// sg_features struct.
+///
+///
+/// Platforms which don't support `SG_WRAP_CLAMP_TO_BORDER` will silently fall back
+/// to `SG_WRAP_CLAMP_TO_EDGE` without a validation error.
+///
+/// Platforms which support clamp-to-border are:
+///
+///     - all desktop GL platforms
+///     - Metal on macOS
+///     - D3D11
+///
+/// Platforms which do not support clamp-to-border:
+///
+///     - GLES2/3 and WebGL/WebGL2
+///     - Metal on iOS
+#[derive(Copy, Clone, Debug)]
+#[repr(u32)]
+pub enum Wrap {
+    _Default = ffi::sg_wrap__SG_WRAP_DEFAULT,
+    /// [Platform]
+    ClampToBorder = ffi::sg_wrap_SG_WRAP_CLAMP_TO_BORDER,
+    ClampToEdge = ffi::sg_wrap_SG_WRAP_CLAMP_TO_EDGE,
+    MirroredRepeat = ffi::sg_wrap_SG_WRAP_MIRRORED_REPEAT,
+    Repeat = ffi::sg_wrap_SG_WRAP_REPEAT,
+    _ForceU32 = ffi::sg_wrap__SG_WRAP_FORCE_U32,
+    _Wrap = ffi::sg_wrap__SG_WRAP_NUM,
+}
+
 /// Pixel format
+///
+/// # Features
 ///
 /// `sokol_gfx.h` basically uses the same pixel formats as WebGPU, since these
 /// are supported on most newer GPUs. GLES2 and WebGL has a much smaller
@@ -200,7 +264,7 @@ pub enum ImageType {
 ///
 /// # Supported formats
 ///
-/// Not all pixel formats can be used for everything, call sg_query_pixelformat()
+/// Not all pixel formats can be used for everything, call `sg_query_pixelformat()`
 /// to inspect the capabilities of a given pixelformat. The function returns
 /// an `sg_pixelformat_info` struct with the following bool members:
 ///
@@ -216,8 +280,8 @@ pub enum ImageType {
 ///     - depth:  the pixelformat can be used for depth-stencil attachments
 ///
 /// When targeting GLES2/WebGL, the only safe formats to use
-/// as texture are SG_PIXELFORMAT_R8 and SG_PIXELFORMAT_RGBA8. For rendering
-/// in GLES2/WebGL, only SG_PIXELFORMAT_RGBA8 is safe. All other formats
+/// as texture are `SG_PIXELFORMAT_R8` and `SG_PIXELFORMAT_RGBA8`. For rendering
+/// in GLES2/WebGL, only `SG_PIXELFORMAT_RGBA8` is safe. All other formats
 /// must be checked via sg_query_pixelformats().
 ///
 /// # Default pixel format
@@ -237,28 +301,28 @@ pub enum ImageType {
 pub enum PixelFormat {
     _Default,
     None,
-    RGBA8,
-    RGB8,
-    RGBA4,
-    RGB5,
-    RGB5A1,
-    RGB10A2,
-    RGBA32F,
-    RGBA16F,
+    Rgba8,
+    Rgb8,
+    Rgba4,
+    Rgb5,
+    Rgb5a1,
+    Rgb10a2,
+    Rgba32f,
+    Rgba16f,
     R32F,
     R16F,
     L8,
-    DXT1,
-    DXT3,
-    DXT5,
+    Dxt1,
+    Dxt3,
+    Dxt5,
     Depth,
     DepthStencil,
-    PVRTC2RGB,
-    PVRTC4RGB,
-    PVRTC2RGBA,
-    PVRTC4RGBA,
-    ETC2RGB8,
-    ETC2SRGB8,
+    Pvrtc2Rgb,
+    Pvrtc4Rgb,
+    Pvrtc2Rgba,
+    Pvrtc4Rgba,
+    Etc2Rgb8,
+    Etc2SRgb8,
 }
 
 // --------------------------------------------------------------------------------
@@ -357,7 +421,7 @@ pub type ShaderImageDesc = ffi::sg_shader_image_desc;
 pub type ShaderInfo = ffi::sg_shader_info;
 pub type ShaderStageDesc = ffi::sg_shader_stage_desc;
 
-pub type ShaderUniformBlock = ffi::sg_shader_uniform_block_desc;
+pub type ShaderUniformBlockDesc = ffi::sg_shader_uniform_block_desc;
 pub type ShaderUniformDesc = ffi::sg_shader_uniform_desc;
 
 pub type SlotInfo = ffi::sg_slot_info;
@@ -442,7 +506,7 @@ pub fn make_image(desc: &ImageDesc) -> Image {
 /// [Non-Sokol] Helper for making shaders
 ///
 /// Caller must ensure the shader strings are null-terminated!
-pub unsafe fn make_shader_static(vs: &str, fs: &str) -> Shader {
+pub unsafe fn shader_desc(vs: &str, fs: &str) -> ShaderDesc {
     let mut desc = ShaderDesc::default();
     desc.vs = ShaderStageDesc {
         source: vs.as_ptr() as *mut _,
@@ -456,8 +520,7 @@ pub unsafe fn make_shader_static(vs: &str, fs: &str) -> Shader {
         images: [Default::default(); ffi::SG_MAX_SHADERSTAGE_IMAGES as usize],
         ..Default::default()
     };
-
-    self::make_shader(&desc)
+    desc
 }
 
 /// [Non-Sokol]

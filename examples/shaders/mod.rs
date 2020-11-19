@@ -6,14 +6,17 @@
 //! env ROKOL_RENDERER=GlCore33 cargo run --example quad
 //! ```
 
+use {rokol::gfx as rg, std::mem::size_of};
+
 macro_rules! c_str {
     ($path:expr) => {
         concat!(include_str!($path), "\0");
     };
 }
 
-fn make(fs: &str, vs: &str) -> rokol::gfx::Shader {
-    unsafe { rokol::gfx::make_shader_static(fs, vs) }
+fn make(vs: &str, fs: &str) -> rokol::gfx::Shader {
+    let desc = unsafe { rokol::gfx::shader_desc(vs, fs) };
+    rg::make_shader(&desc)
 }
 
 pub fn make_triangle_shader() -> rokol::gfx::Shader {
@@ -25,7 +28,26 @@ pub fn make_quad_shader() -> rokol::gfx::Shader {
 }
 
 pub fn make_texture_shader() -> rokol::gfx::Shader {
-    make(files::TEXTURE_VS, files::TEXTURE_FS)
+    let mut desc = unsafe { rokol::gfx::shader_desc(files::TEXTURE_VS, files::TEXTURE_FS) };
+
+    desc.vs.uniform_blocks[0] = {
+        let mut block = rg::ShaderUniformBlockDesc {
+            ..Default::default()
+        };
+        block.uniforms[0] = rg::ShaderUniformDesc {
+            type_: rg::UniformType::Mat4 as u32,
+            ..Default::default()
+        };
+        block.size += 16 * size_of::<f32>() as i32;
+        block
+    };
+
+    desc.fs.images[0] = rg::ShaderImageDesc {
+        type_: rg::ImageType::Dim2 as u32,
+        ..Default::default()
+    };
+
+    rg::make_shader(&desc)
 }
 
 // --------------------------------------------------------------------------------

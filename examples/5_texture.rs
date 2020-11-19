@@ -4,7 +4,26 @@
 
 mod shaders;
 
-use rokol::{app as ra, gfx as rg};
+use {
+    image::{io::Reader as ImageReader, GenericImageView},
+    rokol::{app as ra, gfx as rg},
+    std::path::{Path, PathBuf},
+};
+
+fn main() -> rokol::Result {
+    env_logger::init(); // give implementation to log crate
+
+    let rokol = rokol::Rokol {
+        w: 1280,
+        h: 720,
+        title: "Rokol - Window".to_string(),
+        ..Default::default()
+    };
+
+    let mut app = self::AppData::new();
+
+    rokol.run(&mut app)
+}
 
 #[derive(Debug, Clone)]
 #[repr(C)]
@@ -32,19 +51,26 @@ where
     }
 }
 
-fn main() -> rokol::Result {
-    env_logger::init(); // give implementation to log crate
+fn load_img(path: &Path) -> rg::Image {
+    let img = ImageReader::open(path).unwrap().decode().unwrap();
 
-    let rokol = rokol::Rokol {
-        w: 1280,
-        h: 720,
-        title: "Rokol - Window".to_string(),
+    let (w, h) = img.dimensions();
+    let pixels = img.as_bytes();
+
+    let mut desc = rg::ImageDesc {
+        type_: rg::ImageType::Dim2 as u32,
+        width: w as i32,
+        height: h as i32,
+        usage: rg::ResourceUsage::Immutable as u32,
         ..Default::default()
     };
 
-    let mut app = AppData::new();
+    desc.content.subimage[0][0] = rg::SubimageContent {
+        ptr: pixels.as_ptr() as *const _,
+        size: pixels.len() as i32,
+    };
 
-    rokol.run(&mut app)
+    rg::make_image(&desc)
 }
 
 #[derive(Debug, Default)]
@@ -70,14 +96,18 @@ impl rokol::app::RApp for AppData {
         let mut desc = rokol::create_app_desc();
         rg::setup(&mut desc); // now we can call sokol_gfx functions!
 
-        // self.bind.fs_images[0] = rg::alloc_image();
+        self.bind.fs_images[0] = {
+            let root = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
+            let path = root.join("examples/images/RPG Nature Tileset.png");
+            self::load_img(&path)
+        };
 
         self.bind.vertex_buffers[0] = {
             let verts: &[Vertex] = &[
-                ([-1.0, -1.0, -1.0], [0, 255, 255, 255], [0.0, 0.0]).into(),
-                ([1.0, -1.0, -1.0], [255, 0, 255, 255], [1.0, 0.0]).into(),
-                ([1.0, 1.0, -1.0], [255, 255, 0, 255], [1.0, 1.0]).into(),
-                ([-1.0, 1.0, -1.0], [128, 128, 128, 255], [0.0, 1.0]).into(),
+                ([-0.5, -0.5, 0.0], [255, 255, 255, 255], [0.0, 0.0]).into(),
+                ([0.5, -0.5, 0.0], [255, 255, 255, 255], [1.0, 0.0]).into(),
+                ([0.5, 0.5, 0.0], [255, 255, 255, 255], [1.0, 1.0]).into(),
+                ([-0.5, 0.5, 0.0], [255, 255, 255, 255], [0.0, 1.0]).into(),
             ];
 
             let desc = rg::vtx_desc(verts, rg::ResourceUsage::Immutable, "quad-vertices");
@@ -117,6 +147,12 @@ impl rokol::app::RApp for AppData {
         rg::begin_default_pass(&self.pa, ra::width(), ra::height());
         rg::apply_pipeline(&self.pip);
         rg::apply_bindings(&self.bind);
+        // rg::apply_uniforms(
+        //     SG_SHADERSTAGE_VS,
+        //     SLOT_vs_params,
+        //     &vs_params,
+        //     sizeof(vs_params),
+        // );
         rg::draw(0, 6, 1);
         rg::end_pass();
         rg::commit();

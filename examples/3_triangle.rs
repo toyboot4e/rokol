@@ -4,6 +4,21 @@ mod shaders;
 
 use rokol::{app as ra, gfx as rg};
 
+fn main() -> rokol::Result {
+    env_logger::init(); // give implementation to log crate
+
+    let rokol = rokol::Rokol {
+        w: 1280,
+        h: 720,
+        title: "Rokol - Window".to_string(),
+        ..Default::default()
+    };
+
+    let mut app = self::AppData::new();
+
+    rokol.run(&mut app)
+}
+
 #[derive(Debug, Clone)]
 #[repr(C)]
 pub struct Vertex {
@@ -24,21 +39,6 @@ where
             color: data.1.into(),
         }
     }
-}
-
-fn main() -> rokol::Result {
-    env_logger::init(); // give implementation to log crate
-
-    let rokol = rokol::Rokol {
-        w: 1280,
-        h: 720,
-        title: "Rokol - Window".to_string(),
-        ..Default::default()
-    };
-
-    let mut app = AppData::new();
-
-    rokol.run(&mut app)
 }
 
 #[derive(Debug, Default)]

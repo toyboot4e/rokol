@@ -7,6 +7,8 @@
 
 Wrapper of {sokol}, the C libraries for games
 
+Very early in progress..
+
 == About
 
 Rokol is primary for my 2D framework. Please don't expect it to be a complete wrapper for you!

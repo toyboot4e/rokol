@@ -13,7 +13,7 @@ use std::{
 use cc::Build;
 
 fn main() {
-    // Select one of D3D3, Metal or GlCore33
+    // Select one of D3D11, Metal or GlCore33
     println!("cargo:rerun-if-env-changed=ROKOL_RENDERER");
 
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());

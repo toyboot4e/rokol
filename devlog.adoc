@@ -25,7 +25,9 @@ NOTE: I would not recommend Rokol for others. There are native Rust frameworks: 
 
 I started working with Rokol. I was already familar with `build.rs`, so it's been easier than I expected.
 
-==== Why did I make another repository when there were sokol-rs?
+The build script is based on one in {rokol-rs}. Many thanks to them!
+
+==== Why did I start making another repository when there were sokol-rs?
 
 Rokol has different styles from {sokol-rs}:
 

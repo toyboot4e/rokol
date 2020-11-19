@@ -1,6 +1,8 @@
 = rokol/examples
 
-Run example with Cargo:
+Run `cargo run --example` to know what examples are available.
+
+Run example:
 
 [source,sh]
 ----

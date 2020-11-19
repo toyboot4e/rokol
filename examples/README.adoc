@@ -14,6 +14,8 @@ Run example with Cargo, forcing OepnGL renderer:
 $ env ROKOL_RENDERER=GlCore33 cargo run --example 5_quad
 ----
 
+NOTE: Chaning `ROKOL_RENDERER` results in recompilation. We should rather `export ROKOL_RENDERER=GlCore33` (on bash) if we keep using non-default renderer for a while.
+
 == Supported shaders
 
 |===
@@ -23,7 +25,7 @@ $ env ROKOL_RENDERER=GlCore33 cargo run --example 5_quad
 | 2_clear    | yes             | yes   |
 | 3_triangle | yes             | yes   |
 | 4_quad     | yes             | yes   |
-| 5_texture  | yes             | yes   |
+| 5_texture  | yes             |       |
 |===
 
 == Credits

@@ -1,4 +1,7 @@
-//! Rust FFI to Sokol modules
+//! Rust FFI to [Sokol], only for [Rokol]
+//!
+//! [Sokol]: https://github.com/floooh/sokol
+//! [Rokol]: https://github.com/toyboot4e/rokol
 
 pub mod app {
     //! `sokol_app.h`

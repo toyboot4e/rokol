@@ -1,9 +1,6 @@
 //! Build script of `rokol-ffi`
 //!
-//! Emits `DEP_SOKOL_GFX` to `build.rs` of crates that lists `rokol_ffi` in their `Cargo.toml`.
-//! That can be used for conditional compilation. See `rokol/build.rs` for more information.
-
-// TODO: enable overriding render and build flag
+//! See `README.md` for more information.
 
 use std::{
     env,

@@ -12,7 +12,7 @@ categories = ["game-engines"]
 [dependencies]
 log = "0.4.11"
 bitflags = "1.2.1"
-rokol_ffi = { path = "rokol_ffi" }
+rokol_ffi = { path = "rokol_ffi", version = "0.1.0" }
 
 [dev-dependencies]
 env_logger = "0.8.1"

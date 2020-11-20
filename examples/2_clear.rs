@@ -32,7 +32,7 @@ impl AppData {
 
 impl rokol::app::RApp for AppData {
     fn init(&mut self) {
-        let mut desc = rokol::create_app_desc();
+        let mut desc = rokol::app_desc();
         rg::setup(&mut desc);
     }
 

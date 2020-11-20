@@ -28,6 +28,7 @@ NOTE: Chaning `ROKOL_RENDERER` results in recompilation. We should rather `expor
 | 3_triangle | yes             | yes   |
 | 4_quad     | yes             | yes   |
 | 5_texture  | yes             |       |
+| 6_texcube  | (same as 5)     |       |
 |===
 
 == Credits

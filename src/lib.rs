@@ -1,4 +1,12 @@
-//! Rokol, wrapper of Sokol libraries
+//! Wrapper of [Sokol] libraries
+//!
+//! [Sokol]: https://github.com/floooh/sokol
+//!
+//! Tip: Sokol [considers] zero-initizialized structurs to be in ‘default state’.
+//!
+//! [considers]: https://floooh.github.io/2017/08/06/sokol-api-update.html
+//!
+//! Very early in progress... please don't try to use it!
 
 pub use rokol_ffi as ffi;
 use std::ffi::CString;
@@ -9,7 +17,7 @@ pub mod gfx;
 /// Any error upcasted to [`Box`]
 pub type Error = Box<dyn std::error::Error>;
 
-/// Result type with any error upcasted to [`Box`]
+/// Any error is upcasted to [`Box`]
 pub type Result = std::result::Result<(), Error>;
 
 /// Configuration to run a Rokol application
@@ -26,25 +34,19 @@ pub struct Rokol {
 
     pub msaa_sample_count: u32,
 
-    /// Preferred swap interval (ignored on some platforms)
+    /// [Platform] Preferred swap interval
     pub swap_interval: u32,
-    /// Whether the rendering canvas is full-resolution on HighDPI displays
     pub use_high_dpi: bool,
-    /// Whether the window should be created in fullscreen mode
     pub is_full_screen: bool,
-    /// Whether the framebuffer should have an alpha channel (ignored on some platforms)
+    /// [Platform]
     pub enable_alpha: bool,
-    /// If true, user is expected to manage cursor image in `SAPP_EVENTTYPE_UPDATE_CURSOR`
     pub use_user_cursor_image: bool,
 
-    /// Enable clipboard access
     pub enable_clipboard: bool,
     pub max_clipboard_size_in_bytes: u32,
 
-    /// Enable file dropping (drag'n'drop)
     pub enable_drag_and_drop: bool,
     pub n_max_dropped_files: u32,
-    /// Max length in bytes of a dropped UTF-8 file path
     pub max_dropped_file_path_len_in_bytes: u32,
     // missing fields from Sokol: html5, ios, gl
 }
@@ -123,7 +125,10 @@ impl Rokol {
     }
 }
 
-pub fn create_app_desc() -> rokol_ffi::gfx::sg_desc {
+/// `sokol_glue.h`
+///
+/// Creates application description considering `sokol_gfx.h`. Used in [`app::RApp::init`].
+pub fn app_desc() -> rokol_ffi::gfx::sg_desc {
     let mut desc: rokol_ffi::gfx::sg_desc = Default::default();
     desc.context = unsafe { rokol_ffi::glue::sapp_sgcontext() };
     desc

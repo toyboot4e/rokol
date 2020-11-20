@@ -61,7 +61,7 @@ impl AppData {
 
 impl rokol::app::RApp for AppData {
     fn init(&mut self) {
-        let mut desc = rokol::create_app_desc();
+        let mut desc = rokol::app_desc();
         rg::setup(&mut desc); // now we can call sokol_gfx functions!
 
         self.bind.vertex_buffers[0] = {

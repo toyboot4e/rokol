@@ -1,4 +1,4 @@
-//! `rokol::app`
+//! Application
 
 use {
     bitflags::bitflags,
@@ -26,13 +26,10 @@ use {
 /// `rokol::app` callbacks
 ///
 /// All provided function callbacks will be called from the same thread,
-/// but this may be different from the thread where sokol_main() was called.
-///
-/// # Under the hood
-///
-/// [`SApp`] functions are called from [`RAppFfiCallback`] functions, which is set to [`RAppDesc`].
+/// but this may be different from the thread where `sokol_main()` was called.
 pub trait RApp {
-    /// Called once after the rendering surface
+    /// Called once after the rendering surface, 3D API and swap chain have been initialized by
+    /// `sokol_app`
     fn init(&mut self) {}
 
     /// Called on the same thread as the init callback, but might be on a different thread than the
@@ -43,8 +40,6 @@ pub trait RApp {
     ///
     /// Suitable place to implement "really quit?" diaglog.
     ///
-    /// # Note
-    ///
     /// The cleanup-callback isn't guaranteed to be called on the web and mobile platforms.
     fn cleanup(&mut self) {
         unsafe {
@@ -53,8 +48,6 @@ pub trait RApp {
     }
 
     /// Event handling
-    ///
-    /// # Note
     ///
     /// Do *not* call any 3D API rendering functions in the event
     /// callback function, since the 3D API context may not be active when the
@@ -67,18 +60,18 @@ pub trait RApp {
         eprint!("{}", msg);
     }
 
-    /// Function called by `sokol_audio` in callback mode.
-    ///
-    /// The default implementation clears the buffer to zero. Applications
-    /// using this mode are expected to mix audio data into the buffer.
-    ///
-    /// This is called from a separate thread on all desktop platforms.
-    fn audio_stream(&mut self, buffer: &mut [f32], num_frames: i32, num_channels: i32) {
-        let len = (num_frames * num_channels) as usize;
-        for i in 0..len {
-            buffer[i] = 0.0;
-        }
-    }
+    // /// Function called by `sokol_audio` in callback mode.
+    // ///
+    // /// The default implementation clears the buffer to zero. Applications
+    // /// using this mode are expected to mix audio data into the buffer.
+    // ///
+    // /// This is called from a separate thread on all desktop platforms.
+    // fn audio_stream(&mut self, buffer: &mut [f32], num_frames: i32, num_channels: i32) {
+    //     let len = (num_frames * num_channels) as usize;
+    //     for i in 0..len {
+    //         buffer[i] = 0.0;
+    //     }
+    // }
 
     // --------------------------------------------------------------------------------
     // C callback functions set to [`RAppDesc`]
@@ -98,13 +91,13 @@ pub trait RAppFfiCallback {
     extern "C" fn event_userdata_cb(event: *const ffi::sapp_event, user_data: *mut c_void);
     #[no_mangle]
     extern "C" fn fail_userdata_cb(message: *const c_char, user_data: *mut c_void);
-    #[no_mangle]
-    extern "C" fn stream_userdata_cb(
-        buffer: *mut f32,
-        num_frames: c_int,
-        num_channels: c_int,
-        user_data: *mut c_void,
-    );
+    // #[no_mangle]
+    // extern "C" fn stream_userdata_cb(
+    //     buffer: *mut f32,
+    //     num_frames: c_int,
+    //     num_channels: c_int,
+    //     user_data: *mut c_void,
+    // );
 }
 
 // Why `#[no_mangle]` for C callback functions? I'm not sure, but the nomicon has some note:
@@ -155,21 +148,21 @@ impl<T: RApp> RAppFfiCallback for T {
         me.fail(msg);
     }
 
-    #[no_mangle]
-    extern "C" fn stream_userdata_cb(
-        buffer: *mut f32,
-        num_frames: c_int,
-        num_channels: c_int,
-        user_data: *mut c_void,
-    ) {
-        let arr = unsafe {
-            let n_bytes = num_frames * num_channels;
-            std::slice::from_raw_parts_mut(buffer, n_bytes as usize)
-        };
-
-        let me: &mut Self = unsafe { &mut *(user_data as *mut Self) };
-        me.audio_stream(arr, num_frames, num_channels);
-    }
+    // #[no_mangle]
+    // extern "C" fn stream_userdata_cb(
+    //     buffer: *mut f32,
+    //     num_frames: c_int,
+    //     num_channels: c_int,
+    //     user_data: *mut c_void,
+    // ) {
+    //     let arr = unsafe {
+    //         let n_bytes = num_frames * num_channels;
+    //         std::slice::from_raw_parts_mut(buffer, n_bytes as usize)
+    //     };
+    //
+    //     let me: &mut Self = unsafe { &mut *(user_data as *mut Self) };
+    //     me.audio_stream(arr, num_frames, num_channels);
+    // }
 }
 
 // --------------------------------------------------------------------------------
@@ -379,7 +372,7 @@ pub fn height() -> u32 {
     unsafe { ffi::sapp_height() as u32 }
 }
 
-/// Width and height of the current frame buffer in pixels
+/// [Non-Sokol] Width and height of the current frame buffer in pixels
 ///
 /// This function is Rokol-only and Sokol doesn't have a corresponding function.
 pub fn size() -> [u32; 2] {

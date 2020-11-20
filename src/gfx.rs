@@ -1,4 +1,4 @@
-//! `rokol::gfx`, graphics
+//! Graphics
 
 use {rokol_ffi::gfx as ffi, std::ffi::CString};
 
@@ -81,9 +81,12 @@ pub enum PassActionKind {
 #[derive(Copy, Clone, Debug)]
 #[repr(u32)]
 pub enum ResourceUsage {
+    _Default = ffi::sg_usage__SG_USAGE_DEFAULT,
     Immutable = ffi::sg_usage_SG_USAGE_IMMUTABLE,
     Dynamic = ffi::sg_usage_SG_USAGE_DYNAMIC,
     Stream = ffi::sg_usage_SG_USAGE_STREAM,
+    _ForceU32 = ffi::sg_usage__SG_USAGE_FORCE_U32,
+    _Num = ffi::sg_usage__SG_USAGE_NUM,
 }
 
 /// Data type of a vertex component
@@ -366,26 +369,37 @@ pub type Bindings = ffi::sg_bindings;
 pub type BlendState = ffi::sg_blend_state;
 
 // --------------------------------------------------------------------------------
-// Resource objects
+// Baked resource types compiled into immutable ones
 
+/// [Resource] Handle (ID) of vertex | index buffer
 pub type Buffer = ffi::sg_buffer;
 pub type BufferInfo = ffi::sg_buffer_info;
 pub type BufferLayoutDesc = ffi::sg_buffer_layout_desc;
 pub type BufferDesc = ffi::sg_buffer_desc;
 
+/// [Resource] Handle (ID) of pipeline object
 pub type Pipeline = ffi::sg_pipeline;
 pub type PipelineInfo = ffi::sg_pipeline_info;
 pub type PipelineDesc = ffi::sg_pipeline_desc;
 
-// pub struct PipelineDesc {
-//     raw: ffi::sg_pipeline_desc,
-// }
-//
-// raw_access!(PipelineDesc, ffi::sg_pipeline_desc);
-//
-// impl PipelineDesc {
-//     pub fn new
-// }
+/// [Resource] Hadnle (ID) of image
+pub type Image = ffi::sg_image;
+pub type ImageContent = ffi::sg_image_content;
+pub type ImageDesc = ffi::sg_image_desc;
+pub type ImageInfo = ffi::sg_image_info;
+
+/// [Resource] Handle (ID) of shader
+pub type Shader = ffi::sg_shader;
+pub type ShaderAttrDesc = ffi::sg_shader_attr_desc;
+pub type ShaderDesc = ffi::sg_shader_desc;
+pub type ShaderImageDesc = ffi::sg_shader_image_desc;
+pub type ShaderInfo = ffi::sg_shader_info;
+pub type ShaderStageDesc = ffi::sg_shader_stage_desc;
+
+/// [Resource] Handle(ID) of pass
+pub type Pass = ffi::sg_pass;
+pub type PassDesc = ffi::sg_pass_desc;
+pub type PassInfo = ffi::sg_pass_info;
 
 // --------------------------------------------------------------------------------
 
@@ -400,26 +414,10 @@ pub type RasterizerState = ffi::sg_rasterizer_state;
 pub type Desc = ffi::sg_desc;
 pub type Features = ffi::sg_features;
 
-pub type Image = ffi::sg_image;
-pub type ImageContent = ffi::sg_image_content;
-pub type ImageDesc = ffi::sg_image_desc;
-pub type ImageInfo = ffi::sg_image_info;
-
 pub type LayoutDesc = ffi::sg_layout_desc;
 pub type Limits = ffi::sg_limits;
 
-pub type Pass = ffi::sg_pass;
-pub type PassDesc = ffi::sg_pass_desc;
-pub type PassInfo = ffi::sg_pass_info;
-
 pub type PixelFormatInfo = ffi::sg_pixelformat_info;
-
-pub type Shader = ffi::sg_shader;
-pub type ShaderAttrDesc = ffi::sg_shader_attr_desc;
-pub type ShaderDesc = ffi::sg_shader_desc;
-pub type ShaderImageDesc = ffi::sg_shader_image_desc;
-pub type ShaderInfo = ffi::sg_shader_info;
-pub type ShaderStageDesc = ffi::sg_shader_stage_desc;
 
 pub type ShaderUniformBlockDesc = ffi::sg_shader_uniform_block_desc;
 pub type ShaderUniformDesc = ffi::sg_shader_uniform_desc;
@@ -457,7 +455,7 @@ pub fn commit() {
     }
 }
 
-pub fn apply_pipeline(&pip: &Pipeline) {
+pub fn apply_pipeline(pip: Pipeline) {
     unsafe {
         ffi::sg_apply_pipeline(pip);
     }

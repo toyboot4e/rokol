@@ -3,6 +3,12 @@ name = "rokol_ffi"
 version = "0.1.0"
 authors = ["toyboot4e <toyboot4e@gmail.com>"]
 edition = "2018"
+description = "Rust FFI to Sokol"
+repository = "https://github.com/toyboot4e/rokol"
+keywords = ["gamedev"]
+edition = "2018"
+license = "MIT"
+categories = ["game-engines"]
 
 # https://doc.rust-lang.org/cargo/reference/build-scripts.html#the-links-manifest-key
 links = "sokol"

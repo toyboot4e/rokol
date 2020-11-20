@@ -25,9 +25,9 @@ NOTE: I would not recommend Rokol for others. There are native Rust frameworks: 
 
 I started working with Rokol. I was already familar with `build.rs`, so it's been easier than I expected.
 
-The build script is based on one in {rokol-rs}. Many thanks to them!
+The build script is based on one in {sokol-rs}. Many thanks to them!
 
-==== Why did I start making another repository when there were sokol-rs?
+==== Why did I start making another repository when there was sokol-rs?
 
 Rokol has different styles from {sokol-rs}:
 
@@ -63,4 +63,32 @@ Rokol compiles conditionally. User has three options to select their renderer:
 Rokol user would also want to compile conditionally depending on Rokol renderer. That's possible if they add `rokol_ffi` to their `Cargo.toml` and write some build script. See `rokol/build.rs` and `rokol/examples/conditional.rs` for more details.
 
 c.f. https://doc.rust-lang.org/cargo/reference/build-scripts.html[Build Scripts - The Cargo Book]
+
+=== Nov 20, 2020
+
+References
+
+==== Sokol projects
+
+* https://github.com/floooh/sokol[sokol]
++
+Simple https://github.com/nothings/stb/blob/master/docs/stb_howto.txt[STB-style] cross-platform libraries for C and C++, written in C.
+
+* https://github.com/floooh/sokol-samples[sokol-samples]
++
+Sample code for https://github.com/floooh/sokol
+
+* https://github.com/floooh/sokol-tools[sokol-tools]
++
+https://github.com/floooh/sokol-tools/blob/master/docs/sokol-shdc.md[sokol_shdc]: shader-cross-compiler and code-generator for sokol_gfx.h
+
+* https://github.com/floooh/sokol-tools-bin[sokol-tools-bin]
++
+Binaries and fips integration for https://github.com/floooh/sokol-tools
+
+==== Sokol articles
+
+* https://floooh.github.io/2017/07/29/sokol-gfx-tour.html[A Tour of sokol_gfx.h] (July 29, 2017)
+* https://floooh.github.io/2019/01/12/sokol-apply-pipeline.html[A small sokol_gfx.h API update] (Jan 12, 2019)
+* https://floooh.github.io/2020/04/26/sokol-spring-2020-update.html[Sokol headers: spring 2020 update] (April 26, 2020)
 

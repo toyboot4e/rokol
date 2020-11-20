@@ -6,7 +6,6 @@ edition = "2018"
 description = "Wrapper of Sokol"
 repository = "https://github.com/toyboot4e/rokol"
 keywords = ["gamedev"]
-edition = "2018"
 license = "MIT"
 categories = ["game-engines"]
 

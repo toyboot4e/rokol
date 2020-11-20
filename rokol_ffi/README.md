@@ -26,7 +26,7 @@ To specify the renderer, use feature flag or set `ROKOL_RENDERER`. Changing `ROK
 
 ## Conditional compilation in down stream crates
 
-Emits `DEP_SOKOL_GFX` to `build.rs` of crates that lists `rokol_ffi` in their `Cargo.toml`. T if you're interestedhat can be used for conditional compilation.
+`rokol_ffi/build.rs` emits `DEP_SOKOL_GFX` to `build.rs` of crates that lists `rokol_ffi` in their `Cargo.toml`.
 
 c.f. [Build Scripts - The Cargo Book #The links Manifest Key](https://doc.rust-lang.org/cargo/reference/build-scripts.html#the-links-manifest-key)
 

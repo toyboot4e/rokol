@@ -3,6 +3,7 @@ name = "rokol"
 version = "0.1.0"
 authors = ["toyboot4e <toyboot4e@gmail.com>"]
 edition = "2018"
+exclude = ["examples"]
 description = "Wrapper of Sokol"
 repository = "https://github.com/toyboot4e/rokol"
 keywords = ["gamedev"]

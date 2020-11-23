@@ -12,21 +12,20 @@ macro_rules! c_str {
     };
 }
 
-fn make(vs: &str, fs: &str) -> rokol::gfx::Shader {
-    let desc = unsafe { rokol::gfx::shader_desc(vs, fs) };
-    rg::make_shader(&desc)
+fn desc(vs: &str, fs: &str) -> rokol::gfx::ShaderDesc {
+    unsafe { rokol::gfx::shader_desc(vs, fs) }
 }
 
 pub fn triangle_shader() -> rokol::gfx::Shader {
-    make(files::TRIANGLE_VS, files::TRIANGLE_FS)
+    rg::make_shader(&desc(files::TRIANGLE_VS, files::TRIANGLE_FS))
 }
 
 pub fn quad_shader() -> rokol::gfx::Shader {
-    make(files::QUAD_VS, files::QUAD_FS)
+    rg::make_shader(&desc(files::QUAD_VS, files::QUAD_FS))
 }
 
 pub fn texture_shader() -> rokol::gfx::Shader {
-    let mut desc = unsafe { rokol::gfx::shader_desc(files::TEXTURE_VS, files::TEXTURE_FS) };
+    let mut desc = desc(files::TEXTURE_VS, files::TEXTURE_FS);
 
     desc.fs.images[0] = rg::ShaderImageDesc {
         type_: rg::ImageType::Dim2 as u32,
@@ -37,7 +36,7 @@ pub fn texture_shader() -> rokol::gfx::Shader {
 }
 
 pub fn texcube_shader() -> rokol::gfx::Shader {
-    let mut desc = unsafe { rokol::gfx::shader_desc(files::TEXTURE_VS, files::TEXTURE_FS) };
+    let mut desc = desc(files::TEXTURE_VS, files::TEXTURE_FS);
 
     desc.vs.uniform_blocks[0] = {
         let mut block = rg::ShaderUniformBlockDesc {

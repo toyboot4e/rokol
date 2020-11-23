@@ -78,7 +78,7 @@ impl rokol::app::RApp for AppData {
 
         self.pip = {
             let pip_desc = rg::PipelineDesc {
-                shader: shaders::make_triangle_shader(),
+                shader: shaders::triangle_shader(),
                 layout: rg::LayoutDesc {
                     attrs: {
                         let mut attrs = [rg::VertexAttrDesc::default(); 16];
@@ -98,7 +98,7 @@ impl rokol::app::RApp for AppData {
 
     fn frame(&mut self) {
         rg::begin_default_pass(&self.pa, ra::width(), ra::height());
-        rg::apply_pipeline(&self.pip);
+        rg::apply_pipeline(self.pip);
         rg::apply_bindings(&self.bind);
         rg::draw(0, 3, 1);
         rg::end_pass();

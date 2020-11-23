@@ -1,6 +1,6 @@
 //! Graphics
 
-use {rokol_ffi::gfx as ffi, std::ffi::CString};
+use {rokol_ffi::gfx as ffi, std::ffi::CString, std::mem::size_of};
 
 pub fn setup(desc: &mut Desc) {
     unsafe {
@@ -464,6 +464,17 @@ pub fn apply_pipeline(pip: Pipeline) {
 pub fn apply_bindings(bind: &Bindings) {
     unsafe {
         ffi::sg_apply_bindings(bind);
+    }
+}
+
+pub fn apply_uniforms<T>(stage: ShaderStage, ub_index: u32, data: &[T]) {
+    unsafe {
+        ffi::sg_apply_uniforms(
+            stage as u32,
+            ub_index as i32,
+            data.as_ptr() as *mut _,
+            (size_of::<T>() * data.len()) as i32,
+        );
     }
 }
 

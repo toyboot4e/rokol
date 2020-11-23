@@ -86,7 +86,7 @@ impl rokol::app::RApp for AppData {
 
         self.pip = {
             let pip_desc = rg::PipelineDesc {
-                shader: shaders::make_quad_shader(),
+                shader: shaders::quad_shader(),
                 index_type: rg::IndexType::UInt16 as u32,
                 layout: rg::LayoutDesc {
                     attrs: {
@@ -107,7 +107,7 @@ impl rokol::app::RApp for AppData {
 
     fn frame(&mut self) {
         rg::begin_default_pass(&self.pa, ra::width(), ra::height());
-        rg::apply_pipeline(&self.pip);
+        rg::apply_pipeline(self.pip);
         rg::apply_bindings(&self.bind);
         rg::draw(0, 6, 1);
         rg::end_pass();

@@ -78,6 +78,10 @@ Simple https://github.com/nothings/stb/blob/master/docs/stb_howto.txt[STB-style]
 +
 Sample code for https://github.com/floooh/sokol
 
+* https://github.com/geertarien/learnopengl-examples[learnopengl-examples]
++
+Examples from learnopengl.com, implemented using Sokol libraries.
+
 * https://github.com/floooh/sokol-tools[sokol-tools]
 +
 https://github.com/floooh/sokol-tools/blob/master/docs/sokol-shdc.md[sokol_shdc]: shader-cross-compiler and code-generator for sokol_gfx.h

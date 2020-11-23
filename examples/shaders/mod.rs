@@ -2,9 +2,7 @@
 //!
 //! Shader files are conditionally embedded to the source code.
 //!
-//! ```sh no_run
-//! env ROKOL_RENDERER=GlCore33 cargo run --example quad
-//! ```
+//! Set `ROKOL_RENDERER` to force some renderer.
 
 use {rokol::gfx as rg, std::mem::size_of};
 
@@ -19,15 +17,26 @@ fn make(vs: &str, fs: &str) -> rokol::gfx::Shader {
     rg::make_shader(&desc)
 }
 
-pub fn make_triangle_shader() -> rokol::gfx::Shader {
+pub fn triangle_shader() -> rokol::gfx::Shader {
     make(files::TRIANGLE_VS, files::TRIANGLE_FS)
 }
 
-pub fn make_quad_shader() -> rokol::gfx::Shader {
+pub fn quad_shader() -> rokol::gfx::Shader {
     make(files::QUAD_VS, files::QUAD_FS)
 }
 
-pub fn make_texture_shader() -> rokol::gfx::Shader {
+pub fn texture_shader() -> rokol::gfx::Shader {
+    let mut desc = unsafe { rokol::gfx::shader_desc(files::TEXTURE_VS, files::TEXTURE_FS) };
+
+    desc.fs.images[0] = rg::ShaderImageDesc {
+        type_: rg::ImageType::Dim2 as u32,
+        ..Default::default()
+    };
+
+    rg::make_shader(&desc)
+}
+
+pub fn texcube_shader() -> rokol::gfx::Shader {
     let mut desc = unsafe { rokol::gfx::shader_desc(files::TEXTURE_VS, files::TEXTURE_FS) };
 
     desc.vs.uniform_blocks[0] = {
@@ -63,6 +72,9 @@ mod files {
 
     pub static TEXTURE_VS: &str = c_str!("glsl/texture_vs.glsl");
     pub static TEXTURE_FS: &str = c_str!("glsl/texture_fs.glsl");
+
+    pub static TEXCUVE_VS: &str = c_str!("glsl/texcube_vs.glsl");
+    pub static TEXCUVE_FS: &str = c_str!("glsl/texcube_fs.glsl");
 }
 
 #[cfg(rokol_gfx = "metal")]
@@ -75,6 +87,9 @@ mod files {
 
     pub static TEXTURE_VS: &str = "<unimplemented shader>";
     pub static TEXTURE_FS: &str = "<unimplemented shader>";
+
+    pub static TEXCUBE_VS: &str = "<unimplemented shader>";
+    pub static TEXCUBE_FS: &str = "<unimplemented shader>";
 }
 
 #[cfg(rokol_gfx = "d3d11")]
@@ -87,4 +102,7 @@ mod files {
 
     pub static TEXTURE_VS: &str = "<unimplemented shader>";
     pub static TEXTURE_FS: &str = "<unimplemented shader>";
+
+    pub static TEXCUBE_VS: &str = "<unimplemented shader>";
+    pub static TEXCUBE_FS: &str = "<unimplemented shader>";
 }

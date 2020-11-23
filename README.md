@@ -9,7 +9,7 @@ Very early in progress..
 ### Status
 
 * Rokol only cares about desktop platforms.
-* *Rokol is tested on macOS only*. You could find it doesn't compile out of the box. Please open an issue then!
+* **Rokol is tested on macOS only**. You could find it doesn't compile out of the box. Please open an issue then!
 
 ## Notes
 

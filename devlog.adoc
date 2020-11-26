@@ -32,6 +32,7 @@ The build script is based on one in {sokol-rs}. Many thanks to them!
 Rokol has different styles from {sokol-rs}:
 
 * Rokol uses {bindgen} to create Rust FFI to Sokol.
+* Rokol adds helper functions to Sokol.
 * Rokol changes function names.
 
 One would use Rokol as this:
@@ -53,6 +54,10 @@ sapp_run( .. );
 ----
 
 === Nov 17, 2020
+
+Rokol only considers desktop platforms; WebGPU is not available.
+
+Rokol is only tested on macOS (for now).
 
 Rokol compiles conditionally. User has three options to select their renderer:
 
@@ -90,7 +95,11 @@ https://github.com/floooh/sokol-tools/blob/master/docs/sokol-shdc.md[sokol_shdc]
 +
 Binaries and fips integration for https://github.com/floooh/sokol-tools
 
+I'm not using the cross compiler (for now)
+
 ==== Sokol articles
+
+From https://floooh.github.io/[The Brain Dump]:
 
 * https://floooh.github.io/2017/07/29/sokol-gfx-tour.html[A Tour of sokol_gfx.h] (July 29, 2017)
 * https://floooh.github.io/2019/01/12/sokol-apply-pipeline.html[A small sokol_gfx.h API update] (Jan 12, 2019)

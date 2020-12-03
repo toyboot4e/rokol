@@ -66,17 +66,17 @@ pub fn texcube_shader() -> rokol::gfx::Shader {
 
 #[cfg(rokol_gfx = "glcore33")]
 mod files {
-    pub static TRIANGLE_VS: &str = c_str!("glsl/triangle_vs.glsl");
-    pub static TRIANGLE_FS: &str = c_str!("glsl/triangle_fs.glsl");
+    pub static TRIANGLE_VS: &str = c_str!("glsl/triangle.vert");
+    pub static TRIANGLE_FS: &str = c_str!("glsl/triangle.frag");
 
-    pub static QUAD_VS: &str = c_str!("glsl/quad_vs.glsl");
-    pub static QUAD_FS: &str = c_str!("glsl/quad_fs.glsl");
+    pub static QUAD_VS: &str = c_str!("glsl/quad.vert");
+    pub static QUAD_FS: &str = c_str!("glsl/quad.frag");
 
-    pub static TEXTURE_VS: &str = c_str!("glsl/texture_vs.glsl");
-    pub static TEXTURE_FS: &str = c_str!("glsl/texture_fs.glsl");
+    pub static TEXTURE_VS: &str = c_str!("glsl/texture.vert");
+    pub static TEXTURE_FS: &str = c_str!("glsl/texture.frag");
 
-    pub static TEXCUVE_VS: &str = c_str!("glsl/texcube_vs.glsl");
-    pub static TEXCUVE_FS: &str = c_str!("glsl/texcube_fs.glsl");
+    pub static TEXCUVE_VS: &str = c_str!("glsl/texcube.vert");
+    pub static TEXCUVE_FS: &str = c_str!("glsl/texcube.frag");
 }
 
 #[cfg(rokol_gfx = "metal")]

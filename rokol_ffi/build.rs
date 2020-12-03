@@ -13,7 +13,8 @@ fn main() {
     // Select one of D3D11, Metal or GlCore33
     println!("cargo:rerun-if-env-changed=ROKOL_RENDERER");
 
-    let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
+    // generate bindings to `src/ffi`
+    let out_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap()).join("src/ffi");
     let mut build = Build::new();
 
     let debug = env::var("ROKOL_FORCE_DEBUG").ok().is_some() || env::var("DEBUG").ok().is_some();
@@ -26,18 +27,10 @@ fn main() {
 
     renderer.emit_cargo_metadata();
 
-    self::gen_bindings(
-        "wrappers/app.h",
-        &out_dir.join("sokol_app_ffi.rs"),
-        &renderer,
-    );
-    self::gen_bindings(
-        "wrappers/gfx.h",
-        &out_dir.join("sokol_gfx_ffi.rs"),
-        &renderer,
-    );
+    self::gen_bindings("wrappers/app.h", &out_dir.join("sokol_app.rs"), &renderer);
+    self::gen_bindings("wrappers/gfx.h", &out_dir.join("sokol_gfx.rs"), &renderer);
 
-    self::compile(&mut build, is_msvc, &renderer, "src/sokol.c", debug);
+    self::compile(&mut build, is_msvc, &renderer, "wrappers/sokol.c", debug);
 }
 
 /// Helper for selecting Sokol renderer

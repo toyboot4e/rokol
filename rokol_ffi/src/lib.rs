@@ -10,7 +10,7 @@ pub mod app {
     #![allow(warnings)]
 
     // Include generated bindings
-    include!(concat!(env!("OUT_DIR"), "/sokol_app_ffi.rs"));
+    include!("ffi/sokol_app.rs");
 }
 
 pub mod gfx {
@@ -20,7 +20,7 @@ pub mod gfx {
     #![allow(warnings)]
 
     // Include generated bindings
-    include!(concat!(env!("OUT_DIR"), "/sokol_gfx_ffi.rs"));
+    include!("ffi/sokol_gfx.rs");
 }
 
 pub mod glue {

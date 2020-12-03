@@ -10,8 +10,10 @@ use std::{
 use cc::Build;
 
 fn main() {
-    // one of D3D11, Metal or GlCore33 can be selected
+    // One of D3D11, Metal or GlCore33 can be selected
+    // NOTE: it does not make cache. Prefer setting a feature flag from command line argument
     println!("cargo:rerun-if-env-changed=ROKOL_RENDERER");
+
     // update the bindings when we update `sokol`
     println!("cargo:rerun-if-changed=sokol");
 

@@ -3815,6 +3815,21 @@ pub struct sg_trace_hooks {
     pub alloc_pass: ::std::option::Option<
         unsafe extern "C" fn(result: sg_pass, user_data: *mut ::std::os::raw::c_void),
     >,
+    pub dealloc_buffer: ::std::option::Option<
+        unsafe extern "C" fn(buf_id: sg_buffer, user_data: *mut ::std::os::raw::c_void),
+    >,
+    pub dealloc_image: ::std::option::Option<
+        unsafe extern "C" fn(img_id: sg_image, user_data: *mut ::std::os::raw::c_void),
+    >,
+    pub dealloc_shader: ::std::option::Option<
+        unsafe extern "C" fn(shd_id: sg_shader, user_data: *mut ::std::os::raw::c_void),
+    >,
+    pub dealloc_pipeline: ::std::option::Option<
+        unsafe extern "C" fn(pip_id: sg_pipeline, user_data: *mut ::std::os::raw::c_void),
+    >,
+    pub dealloc_pass: ::std::option::Option<
+        unsafe extern "C" fn(pass_id: sg_pass, user_data: *mut ::std::os::raw::c_void),
+    >,
     pub init_buffer: ::std::option::Option<
         unsafe extern "C" fn(
             buf_id: sg_buffer,
@@ -3849,6 +3864,21 @@ pub struct sg_trace_hooks {
             desc: *const sg_pass_desc,
             user_data: *mut ::std::os::raw::c_void,
         ),
+    >,
+    pub uninit_buffer: ::std::option::Option<
+        unsafe extern "C" fn(buf_id: sg_buffer, user_data: *mut ::std::os::raw::c_void),
+    >,
+    pub uninit_image: ::std::option::Option<
+        unsafe extern "C" fn(img_id: sg_image, user_data: *mut ::std::os::raw::c_void),
+    >,
+    pub uninit_shader: ::std::option::Option<
+        unsafe extern "C" fn(shd_id: sg_shader, user_data: *mut ::std::os::raw::c_void),
+    >,
+    pub uninit_pipeline: ::std::option::Option<
+        unsafe extern "C" fn(pip_id: sg_pipeline, user_data: *mut ::std::os::raw::c_void),
+    >,
+    pub uninit_pass: ::std::option::Option<
+        unsafe extern "C" fn(pass_id: sg_pass, user_data: *mut ::std::os::raw::c_void),
     >,
     pub fail_buffer: ::std::option::Option<
         unsafe extern "C" fn(buf_id: sg_buffer, user_data: *mut ::std::os::raw::c_void),
@@ -3896,7 +3926,7 @@ pub struct sg_trace_hooks {
 fn bindgen_test_layout_sg_trace_hooks() {
     assert_eq!(
         ::std::mem::size_of::<sg_trace_hooks>(),
-        408usize,
+        488usize,
         concat!("Size of: ", stringify!(sg_trace_hooks))
     );
     assert_eq!(
@@ -4211,8 +4241,58 @@ fn bindgen_test_layout_sg_trace_hooks() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).init_buffer as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).dealloc_buffer as *const _ as usize },
         240usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_trace_hooks),
+            "::",
+            stringify!(dealloc_buffer)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).dealloc_image as *const _ as usize },
+        248usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_trace_hooks),
+            "::",
+            stringify!(dealloc_image)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).dealloc_shader as *const _ as usize },
+        256usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_trace_hooks),
+            "::",
+            stringify!(dealloc_shader)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).dealloc_pipeline as *const _ as usize },
+        264usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_trace_hooks),
+            "::",
+            stringify!(dealloc_pipeline)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).dealloc_pass as *const _ as usize },
+        272usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_trace_hooks),
+            "::",
+            stringify!(dealloc_pass)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).init_buffer as *const _ as usize },
+        280usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -4222,7 +4302,7 @@ fn bindgen_test_layout_sg_trace_hooks() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).init_image as *const _ as usize },
-        248usize,
+        288usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -4232,7 +4312,7 @@ fn bindgen_test_layout_sg_trace_hooks() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).init_shader as *const _ as usize },
-        256usize,
+        296usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -4242,7 +4322,7 @@ fn bindgen_test_layout_sg_trace_hooks() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).init_pipeline as *const _ as usize },
-        264usize,
+        304usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -4252,7 +4332,7 @@ fn bindgen_test_layout_sg_trace_hooks() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).init_pass as *const _ as usize },
-        272usize,
+        312usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -4261,8 +4341,58 @@ fn bindgen_test_layout_sg_trace_hooks() {
         )
     );
     assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).uninit_buffer as *const _ as usize },
+        320usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_trace_hooks),
+            "::",
+            stringify!(uninit_buffer)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).uninit_image as *const _ as usize },
+        328usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_trace_hooks),
+            "::",
+            stringify!(uninit_image)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).uninit_shader as *const _ as usize },
+        336usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_trace_hooks),
+            "::",
+            stringify!(uninit_shader)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).uninit_pipeline as *const _ as usize },
+        344usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_trace_hooks),
+            "::",
+            stringify!(uninit_pipeline)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).uninit_pass as *const _ as usize },
+        352usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_trace_hooks),
+            "::",
+            stringify!(uninit_pass)
+        )
+    );
+    assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).fail_buffer as *const _ as usize },
-        280usize,
+        360usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -4272,7 +4402,7 @@ fn bindgen_test_layout_sg_trace_hooks() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).fail_image as *const _ as usize },
-        288usize,
+        368usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -4282,7 +4412,7 @@ fn bindgen_test_layout_sg_trace_hooks() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).fail_shader as *const _ as usize },
-        296usize,
+        376usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -4292,7 +4422,7 @@ fn bindgen_test_layout_sg_trace_hooks() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).fail_pipeline as *const _ as usize },
-        304usize,
+        384usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -4302,7 +4432,7 @@ fn bindgen_test_layout_sg_trace_hooks() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).fail_pass as *const _ as usize },
-        312usize,
+        392usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -4312,7 +4442,7 @@ fn bindgen_test_layout_sg_trace_hooks() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).push_debug_group as *const _ as usize },
-        320usize,
+        400usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -4322,7 +4452,7 @@ fn bindgen_test_layout_sg_trace_hooks() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).pop_debug_group as *const _ as usize },
-        328usize,
+        408usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -4335,7 +4465,7 @@ fn bindgen_test_layout_sg_trace_hooks() {
             &(*(::std::ptr::null::<sg_trace_hooks>())).err_buffer_pool_exhausted as *const _
                 as usize
         },
-        336usize,
+        416usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -4347,7 +4477,7 @@ fn bindgen_test_layout_sg_trace_hooks() {
         unsafe {
             &(*(::std::ptr::null::<sg_trace_hooks>())).err_image_pool_exhausted as *const _ as usize
         },
-        344usize,
+        424usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -4360,7 +4490,7 @@ fn bindgen_test_layout_sg_trace_hooks() {
             &(*(::std::ptr::null::<sg_trace_hooks>())).err_shader_pool_exhausted as *const _
                 as usize
         },
-        352usize,
+        432usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -4373,7 +4503,7 @@ fn bindgen_test_layout_sg_trace_hooks() {
             &(*(::std::ptr::null::<sg_trace_hooks>())).err_pipeline_pool_exhausted as *const _
                 as usize
         },
-        360usize,
+        440usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -4385,7 +4515,7 @@ fn bindgen_test_layout_sg_trace_hooks() {
         unsafe {
             &(*(::std::ptr::null::<sg_trace_hooks>())).err_pass_pool_exhausted as *const _ as usize
         },
-        368usize,
+        448usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -4397,7 +4527,7 @@ fn bindgen_test_layout_sg_trace_hooks() {
         unsafe {
             &(*(::std::ptr::null::<sg_trace_hooks>())).err_context_mismatch as *const _ as usize
         },
-        376usize,
+        456usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -4407,7 +4537,7 @@ fn bindgen_test_layout_sg_trace_hooks() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).err_pass_invalid as *const _ as usize },
-        384usize,
+        464usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -4417,7 +4547,7 @@ fn bindgen_test_layout_sg_trace_hooks() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_trace_hooks>())).err_draw_invalid as *const _ as usize },
-        392usize,
+        472usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -4429,7 +4559,7 @@ fn bindgen_test_layout_sg_trace_hooks() {
         unsafe {
             &(*(::std::ptr::null::<sg_trace_hooks>())).err_bindings_invalid as *const _ as usize
         },
-        400usize,
+        480usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_trace_hooks),
@@ -5628,6 +5758,21 @@ extern "C" {
     pub fn sg_alloc_pass() -> sg_pass;
 }
 extern "C" {
+    pub fn sg_dealloc_buffer(buf_id: sg_buffer);
+}
+extern "C" {
+    pub fn sg_dealloc_image(img_id: sg_image);
+}
+extern "C" {
+    pub fn sg_dealloc_shader(shd_id: sg_shader);
+}
+extern "C" {
+    pub fn sg_dealloc_pipeline(pip_id: sg_pipeline);
+}
+extern "C" {
+    pub fn sg_dealloc_pass(pass_id: sg_pass);
+}
+extern "C" {
     pub fn sg_init_buffer(buf_id: sg_buffer, desc: *const sg_buffer_desc);
 }
 extern "C" {
@@ -5641,6 +5786,21 @@ extern "C" {
 }
 extern "C" {
     pub fn sg_init_pass(pass_id: sg_pass, desc: *const sg_pass_desc);
+}
+extern "C" {
+    pub fn sg_uninit_buffer(buf_id: sg_buffer) -> bool;
+}
+extern "C" {
+    pub fn sg_uninit_image(img_id: sg_image) -> bool;
+}
+extern "C" {
+    pub fn sg_uninit_shader(shd_id: sg_shader) -> bool;
+}
+extern "C" {
+    pub fn sg_uninit_pipeline(pip_id: sg_pipeline) -> bool;
+}
+extern "C" {
+    pub fn sg_uninit_pass(pass_id: sg_pass) -> bool;
 }
 extern "C" {
     pub fn sg_fail_buffer(buf_id: sg_buffer);

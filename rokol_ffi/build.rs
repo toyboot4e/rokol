@@ -10,8 +10,10 @@ use std::{
 use cc::Build;
 
 fn main() {
-    // Select one of D3D11, Metal or GlCore33
+    // one of D3D11, Metal or GlCore33 can be selected
     println!("cargo:rerun-if-env-changed=ROKOL_RENDERER");
+    // update the bindings when we update `sokol`
+    println!("cargo:rerun-if-changed=sokol");
 
     // generate bindings to `src/ffi`
     let out_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap()).join("src/ffi");

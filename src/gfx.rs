@@ -486,11 +486,21 @@ pub fn draw(base_elem: u32, n_elems: u32, n_instances: u32) {
 
 // ----------------------------------------
 // Resource creation
-//
-// Be careful to not use them until you call `rokol_gfx::setup` in `init`
+
+// Do not use them until you call `rokol_gfx::setup` in `init`
+
+// make = alloc + init
 
 pub fn make_buffer(desc: &BufferDesc) -> Buffer {
     unsafe { ffi::sg_make_buffer(desc) }
+}
+
+pub fn make_image(desc: &ImageDesc) -> Image {
+    unsafe { ffi::sg_make_image(desc) }
+}
+
+pub fn make_pass(desc: &PassDesc) -> Pass {
+    unsafe { ffi::sg_make_pass(desc) }
 }
 
 pub fn make_pipeline(desc: &PipelineDesc) -> Pipeline {
@@ -501,12 +511,115 @@ pub fn make_shader(desc: &ShaderDesc) -> Shader {
     unsafe { ffi::sg_make_shader(desc) }
 }
 
+// alloc
+
+pub fn alloc_buffer() -> Buffer {
+    unsafe { ffi::sg_alloc_buffer() }
+}
+
 pub fn alloc_image() -> Image {
     unsafe { ffi::sg_alloc_image() }
 }
 
-pub fn make_image(desc: &ImageDesc) -> Image {
-    unsafe { ffi::sg_make_image(desc) }
+pub fn alloc_pass() -> Pass {
+    unsafe { ffi::sg_alloc_pass() }
+}
+
+pub fn alloc_pipeline() -> Pipeline {
+    unsafe { ffi::sg_alloc_pipeline() }
+}
+
+pub fn alloc_shader() -> Shader {
+    unsafe { ffi::sg_alloc_shader() }
+}
+
+// init
+
+pub fn init_buffer(id: Buffer, desc: &BufferDesc) {
+    unsafe { ffi::sg_init_buffer(id, desc) }
+}
+
+pub fn init_image(id: Image, desc: &ImageDesc) {
+    unsafe { ffi::sg_init_image(id, desc) }
+}
+
+pub fn init_pass(id: Pass, desc: &PassDesc) {
+    unsafe { ffi::sg_init_pass(id, desc) }
+}
+
+pub fn init_pipeline(id: Pipeline, desc: &PipelineDesc) {
+    unsafe { ffi::sg_init_pipeline(id, desc) }
+}
+
+pub fn init_shader(id: Shader, desc: &ShaderDesc) {
+    unsafe { ffi::sg_init_shader(id, desc) }
+}
+
+// ----------------------------------------
+// Resource deletion
+
+// rm (destrory) = dealloc + uninit
+
+pub fn rm_buffer(id: Buffer) {
+    unsafe {
+        ffi::sg_destroy_buffer(id);
+    }
+}
+
+pub fn rm_image(id: Image) {
+    unsafe {
+        ffi::sg_destroy_image(id);
+    }
+}
+
+pub fn rm_pass(id: Pass) {
+    unsafe {
+        ffi::sg_destroy_pass(id);
+    }
+}
+
+pub fn rm_pipeline(id: Pipeline) {
+    unsafe {
+        ffi::sg_destroy_pipeline(id);
+    }
+}
+
+pub fn rm_shader(id: Shader) {
+    unsafe {
+        ffi::sg_destroy_shader(id);
+    }
+}
+
+// dealloc
+
+pub fn dealloc_buffer(id: Buffer) {
+    unsafe {
+        ffi::sg_dealloc_buffer(id);
+    }
+}
+
+pub fn dealloc_image(id: Image) {
+    unsafe {
+        ffi::sg_dealloc_image(id);
+    }
+}
+
+pub fn dealloc_pass(id: Pass) {
+    unsafe {
+        ffi::sg_dealloc_pass(id);
+    }
+}
+
+pub fn dealloc_pipeline(id: Pipeline) {
+    unsafe {
+        ffi::sg_dealloc_pipeline(id);
+    }
+}
+
+pub fn dealloc_shader(id: Shader) {
+    unsafe {
+        ffi::sg_dealloc_shader(id);
+    }
 }
 
 // --------------------------------------------------------------------------------
@@ -532,13 +645,13 @@ pub unsafe fn shader_desc(vs: &str, fs: &str) -> ShaderDesc {
     desc
 }
 
-/// [Non-Sokol]
-pub fn idx_desc<T>(buf: &[T], usage: ResourceUsage, label: &str) -> BufferDesc {
+/// [Non-Sokol] Helper for creating index buffer
+pub fn ibuf_desc<T>(buf: &[T], usage: ResourceUsage, label: &str) -> BufferDesc {
     buf_desc(buf, BufferType::Index, usage, label)
 }
 
-/// [Non-Sokol]
-pub fn vtx_desc<T>(buf: &[T], usage: ResourceUsage, label: &str) -> BufferDesc {
+/// [Non-Sokol] Helper for creating vertex buffer
+pub fn vbuf_desc<T>(buf: &[T], usage: ResourceUsage, label: &str) -> BufferDesc {
     buf_desc(buf, BufferType::Vertex, usage, label)
 }
 

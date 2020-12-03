@@ -7,7 +7,10 @@ mod shaders;
 use {
     glam::{Mat4, Vec3},
     image::{io::Reader as ImageReader, GenericImageView},
-    rokol::{app as ra, gfx as rg},
+    rokol::{
+        app as ra,
+        gfx::{self as rg, BakedResource, Buffer, Image, Pipeline},
+    },
     std::path::{Path, PathBuf},
 };
 
@@ -70,7 +73,7 @@ fn load_img(path: &Path) -> rg::Image {
         size: pixels.len() as i32,
     };
 
-    rg::make_image(&desc)
+    Image::create(&desc)
 }
 
 #[derive(Debug, Default)]
@@ -140,7 +143,7 @@ impl rokol::app::RApp for AppData {
             ];
 
             let desc = rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "quad-vertices");
-            rg::make_buffer(&desc)
+            Buffer::create(&desc)
         };
 
         self.bind.index_buffer = {
@@ -153,7 +156,7 @@ impl rokol::app::RApp for AppData {
                 22, 21, 20, 23, 22, 20,
             ];
             let desc = &rg::ibuf_desc(indices, rg::ResourceUsage::Immutable, "texture-indices");
-            rg::make_buffer(&desc)
+            Buffer::create(&desc)
         };
 
         self.pip = {
@@ -174,7 +177,7 @@ impl rokol::app::RApp for AppData {
                 ..Default::default()
             };
 
-            rg::make_pipeline(&pip_desc)
+            Pipeline::create(&pip_desc)
         }
     }
 
@@ -185,8 +188,6 @@ impl rokol::app::RApp for AppData {
 
         let ratio = ra::width() as f32 / ra::height() as f32;
         let proj = Mat4::perspective_lh(60.0, ratio, 0.01, 0.10);
-        glam::
-        // glam::
 
         // hmm_mat4 proj = HMM_Perspective(60.0f, (float)sapp_width()/(float)sapp_height(), 0.01f, 10.0f);
         // hmm_mat4 view = HMM_LookAt(HMM_Vec3(0.0f, 1.5f, 6.0f), HMM_Vec3(0.0f, 0.0f, 0.0f), HMM_Vec3(0.0f, 1.0f, 0.0f));

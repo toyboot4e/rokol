@@ -4,16 +4,16 @@ uniform vs_params {
     mat4 mvp;
 };
 
-layout(location=0) in vec4 pos;
-layout(location=1) in vec4 color0;
-layout(location=2) in vec2 uv0;
+layout(location=0) in vec4 inPos;
+layout(location=1) in vec4 inColor;
+layout(location=2) in vec2 inUv;
 
-out vec4 color;
-out vec2 uv;
+out vec4 outColor;
+out vec2 outUv;
 
 void main() {
-    gl_Position = mvp * pos;
-    color = color0;
-    uv = uv0;
+    gl_Position = mvp * inPos;
+    outColor = inColor;
+    outUv = inUv;
 }
 

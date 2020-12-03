@@ -2,7 +2,10 @@
 
 mod shaders;
 
-use rokol::{app as ra, gfx as rg};
+use rokol::{
+    app as ra,
+    gfx::{self as rg, BakedResource, Buffer, Pipeline},
+};
 
 fn main() -> rokol::Result {
     env_logger::init(); // give implementation to log crate
@@ -73,7 +76,7 @@ impl rokol::app::RApp for AppData {
             ];
 
             let desc = rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "triangle-vertices");
-            rg::make_buffer(&desc)
+            Buffer::create(&desc)
         };
 
         self.pip = {
@@ -92,7 +95,7 @@ impl rokol::app::RApp for AppData {
                 ..Default::default()
             };
 
-            rg::make_pipeline(&pip_desc)
+            Pipeline::create(&pip_desc)
         };
     }
 

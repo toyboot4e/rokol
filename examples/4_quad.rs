@@ -1,8 +1,11 @@
-//! Draw a texture!
+//! Draw a quadliteral!
 
 mod shaders;
 
-use rokol::{app as ra, gfx as rg};
+use rokol::{
+    app as ra,
+    gfx::{self as rg, BakedResource, Buffer, Pipeline},
+};
 
 fn main() -> rokol::Result {
     env_logger::init(); // give implementation to log crate
@@ -73,15 +76,15 @@ impl rokol::app::RApp for AppData {
                 ([-0.5, -0.5, 0.5], [1.0, 1.0, 0.0, 1.0]).into(),
             ];
 
-            let desc = rg::vtx_desc(verts, rg::ResourceUsage::Immutable, "quad-vertices");
-            rg::make_buffer(&desc)
+            let desc = rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "quad-vertices");
+            Buffer::create(&desc)
         };
 
         // index for with 2 triangles
         self.bind.index_buffer = {
             let indices: &[u16] = &[0, 1, 2, 0, 2, 3];
-            let desc = &rg::idx_desc(indices, rg::ResourceUsage::Immutable, "quad-indices");
-            rg::make_buffer(&desc)
+            let desc = &rg::ibuf_desc(indices, rg::ResourceUsage::Immutable, "quad-indices");
+            Buffer::create(&desc)
         };
 
         self.pip = {
@@ -101,7 +104,7 @@ impl rokol::app::RApp for AppData {
                 ..Default::default()
             };
 
-            rg::make_pipeline(&pip_desc)
+            Pipeline::create(&pip_desc)
         }
     }
 

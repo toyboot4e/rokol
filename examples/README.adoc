@@ -11,12 +11,16 @@ $ cargo run --example 2_window
 
 Run example with Cargo, forcing OepnGL renderer:
 
+The `--features` build is recommended because we can cached the build.
+
+Other option is setting `ROKOL_RENDERER`:
+
 [source,sh]
 ----
 $ env ROKOL_RENDERER=GlCore33 cargo run --example 5_quad
 ----
 
-NOTE: Chaning `ROKOL_RENDERER` results in recompilation. We should rather `export ROKOL_RENDERER=GlCore33` (on bash) if we keep using non-default renderer for a while.
+NOTE: Chaning `ROKOL_RENDERER` results in recompilation. We should rather `export ROKOL_RENDERER=GlCore33` (bash)  once if we keep using a non-default renderer for a while.
 
 == Supported shaders
 
@@ -28,7 +32,7 @@ NOTE: Chaning `ROKOL_RENDERER` results in recompilation. We should rather `expor
 | 3_triangle | yes             | yes   |
 | 4_quad     | yes             | yes   |
 | 5_texture  | yes             |       |
-| 6_texcube  | (same as 5)     |       |
+| 6_texcube  | WIP             |       |
 |===
 
 == Credits

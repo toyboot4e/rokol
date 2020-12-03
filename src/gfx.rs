@@ -213,7 +213,7 @@ pub enum ImageType {
 ///
 /// `SG_WRAP_CLAMP_TO_BORDER` is not supported on all backends
 /// and platforms. To check for support, call sg_query_features()
-/// and check the "clamp_to_border" boolean in the returned
+/// and check the "clamp_to_border" nitboolean in the returned
 /// sg_features struct.
 ///
 ///
@@ -371,22 +371,186 @@ pub type BlendState = ffi::sg_blend_state;
 // --------------------------------------------------------------------------------
 // Baked resource types compiled into immutable ones
 
+/// Buffer | Image | Pipeline | Pass | Shader
+///
+/// Resource object baked into immutable state.
+pub trait BakedResource {
+    type Id;
+    type Desc;
+    /// `alloc` + `init`
+    fn create(desc: &Self::Desc) -> Self::Id;
+    fn alloc() -> Self::Id;
+    /// Initializes an allocated resource object
+    fn init(id: Self::Id, desc: &Self::Desc);
+
+    /// `uninit` + `dealloc`
+    fn destroy(id: Self::Id);
+    fn uninit(id: Self::Id);
+    /// Deallocates an uninitlized resouce object
+    fn dealloc(id: Self::Id);
+}
+
 /// [Resource] Handle (ID) of vertex | index buffer
 pub type Buffer = ffi::sg_buffer;
+pub type BufferDesc = ffi::sg_buffer_desc;
 pub type BufferInfo = ffi::sg_buffer_info;
 pub type BufferLayoutDesc = ffi::sg_buffer_layout_desc;
-pub type BufferDesc = ffi::sg_buffer_desc;
+
+impl BakedResource for Buffer {
+    type Id = Buffer;
+    type Desc = BufferDesc;
+
+    fn create(desc: &Self::Desc) -> Self::Id {
+        unsafe { ffi::sg_make_buffer(desc) }
+    }
+
+    fn alloc() -> Self::Id {
+        unsafe { ffi::sg_alloc_buffer() }
+    }
+
+    fn init(id: Self::Id, desc: &Self::Desc) {
+        unsafe { ffi::sg_init_buffer(id, desc) }
+    }
+
+    fn destroy(id: Self::Id) {
+        unsafe {
+            ffi::sg_destroy_buffer(id);
+        }
+    }
+
+    fn uninit(id: Self::Id) {
+        unsafe {
+            ffi::sg_uninit_buffer(id);
+        }
+    }
+
+    fn dealloc(id: Self::Id) {
+        unsafe {
+            ffi::sg_dealloc_buffer(id);
+        }
+    }
+}
+
+/// [Resource] Hadnle (ID) of image
+pub type Image = ffi::sg_image;
+pub type ImageDesc = ffi::sg_image_desc;
+pub type ImageContent = ffi::sg_image_content;
+pub type ImageInfo = ffi::sg_image_info;
+
+impl BakedResource for Image {
+    type Id = Image;
+    type Desc = ImageDesc;
+
+    fn create(desc: &Self::Desc) -> Self::Id {
+        unsafe { ffi::sg_make_image(desc) }
+    }
+
+    fn alloc() -> Self::Id {
+        unsafe { ffi::sg_alloc_image() }
+    }
+
+    fn init(id: Self::Id, desc: &Self::Desc) {
+        unsafe { ffi::sg_init_image(id, desc) }
+    }
+
+    fn destroy(id: Self::Id) {
+        unsafe {
+            ffi::sg_destroy_image(id);
+        }
+    }
+
+    fn uninit(id: Self::Id) {
+        unsafe {
+            ffi::sg_uninit_image(id);
+        }
+    }
+
+    fn dealloc(id: Self::Id) {
+        unsafe {
+            ffi::sg_dealloc_image(id);
+        }
+    }
+}
 
 /// [Resource] Handle (ID) of pipeline object
 pub type Pipeline = ffi::sg_pipeline;
 pub type PipelineInfo = ffi::sg_pipeline_info;
 pub type PipelineDesc = ffi::sg_pipeline_desc;
 
-/// [Resource] Hadnle (ID) of image
-pub type Image = ffi::sg_image;
-pub type ImageContent = ffi::sg_image_content;
-pub type ImageDesc = ffi::sg_image_desc;
-pub type ImageInfo = ffi::sg_image_info;
+impl BakedResource for Pipeline {
+    type Id = Pipeline;
+    type Desc = PipelineDesc;
+
+    fn create(desc: &Self::Desc) -> Self::Id {
+        unsafe { ffi::sg_make_pipeline(desc) }
+    }
+
+    fn alloc() -> Self::Id {
+        unsafe { ffi::sg_alloc_pipeline() }
+    }
+
+    fn init(id: Self::Id, desc: &Self::Desc) {
+        unsafe { ffi::sg_init_pipeline(id, desc) }
+    }
+
+    fn destroy(id: Self::Id) {
+        unsafe {
+            ffi::sg_destroy_pipeline(id);
+        }
+    }
+
+    fn uninit(id: Self::Id) {
+        unsafe {
+            ffi::sg_uninit_pipeline(id);
+        }
+    }
+
+    fn dealloc(id: Self::Id) {
+        unsafe {
+            ffi::sg_dealloc_pipeline(id);
+        }
+    }
+}
+
+/// [Resource] Handle(ID) of pass
+pub type Pass = ffi::sg_pass;
+pub type PassDesc = ffi::sg_pass_desc;
+pub type PassInfo = ffi::sg_pass_info;
+
+impl BakedResource for Pass {
+    type Id = Pass;
+    type Desc = PassDesc;
+
+    fn create(desc: &Self::Desc) -> Self::Id {
+        unsafe { ffi::sg_make_pass(desc) }
+    }
+
+    fn alloc() -> Self::Id {
+        unsafe { ffi::sg_alloc_pass() }
+    }
+
+    fn init(id: Self::Id, desc: &Self::Desc) {
+        unsafe { ffi::sg_init_pass(id, desc) }
+    }
+
+    fn destroy(id: Self::Id) {
+        unsafe {
+            ffi::sg_destroy_pass(id);
+        }
+    }
+
+    fn uninit(id: Self::Id) {
+        unsafe {
+            ffi::sg_uninit_pass(id);
+        }
+    }
+
+    fn dealloc(id: Self::Id) {
+        unsafe {
+            ffi::sg_dealloc_pass(id);
+        }
+    }
+}
 
 /// [Resource] Handle (ID) of shader
 pub type Shader = ffi::sg_shader;
@@ -396,10 +560,40 @@ pub type ShaderImageDesc = ffi::sg_shader_image_desc;
 pub type ShaderInfo = ffi::sg_shader_info;
 pub type ShaderStageDesc = ffi::sg_shader_stage_desc;
 
-/// [Resource] Handle(ID) of pass
-pub type Pass = ffi::sg_pass;
-pub type PassDesc = ffi::sg_pass_desc;
-pub type PassInfo = ffi::sg_pass_info;
+impl BakedResource for Shader {
+    type Id = Shader;
+    type Desc = ShaderDesc;
+
+    fn create(desc: &Self::Desc) -> Self::Id {
+        unsafe { ffi::sg_make_shader(desc) }
+    }
+
+    fn alloc() -> Self::Id {
+        unsafe { ffi::sg_alloc_shader() }
+    }
+
+    fn init(id: Self::Id, desc: &Self::Desc) {
+        unsafe { ffi::sg_init_shader(id, desc) }
+    }
+
+    fn destroy(id: Self::Id) {
+        unsafe {
+            ffi::sg_destroy_shader(id);
+        }
+    }
+
+    fn uninit(id: Self::Id) {
+        unsafe {
+            ffi::sg_uninit_shader(id);
+        }
+    }
+
+    fn dealloc(id: Self::Id) {
+        unsafe {
+            ffi::sg_dealloc_shader(id);
+        }
+    }
+}
 
 // --------------------------------------------------------------------------------
 
@@ -481,144 +675,6 @@ pub fn apply_uniforms<T>(stage: ShaderStage, ub_index: u32, data: &[T]) {
 pub fn draw(base_elem: u32, n_elems: u32, n_instances: u32) {
     unsafe {
         ffi::sg_draw(base_elem as i32, n_elems as i32, n_instances as i32);
-    }
-}
-
-// ----------------------------------------
-// Resource creation
-
-// Do not use them until you call `rokol_gfx::setup` in `init`
-
-// make = alloc + init
-
-pub fn make_buffer(desc: &BufferDesc) -> Buffer {
-    unsafe { ffi::sg_make_buffer(desc) }
-}
-
-pub fn make_image(desc: &ImageDesc) -> Image {
-    unsafe { ffi::sg_make_image(desc) }
-}
-
-pub fn make_pass(desc: &PassDesc) -> Pass {
-    unsafe { ffi::sg_make_pass(desc) }
-}
-
-pub fn make_pipeline(desc: &PipelineDesc) -> Pipeline {
-    unsafe { ffi::sg_make_pipeline(desc) }
-}
-
-pub fn make_shader(desc: &ShaderDesc) -> Shader {
-    unsafe { ffi::sg_make_shader(desc) }
-}
-
-// alloc
-
-pub fn alloc_buffer() -> Buffer {
-    unsafe { ffi::sg_alloc_buffer() }
-}
-
-pub fn alloc_image() -> Image {
-    unsafe { ffi::sg_alloc_image() }
-}
-
-pub fn alloc_pass() -> Pass {
-    unsafe { ffi::sg_alloc_pass() }
-}
-
-pub fn alloc_pipeline() -> Pipeline {
-    unsafe { ffi::sg_alloc_pipeline() }
-}
-
-pub fn alloc_shader() -> Shader {
-    unsafe { ffi::sg_alloc_shader() }
-}
-
-// init
-
-pub fn init_buffer(id: Buffer, desc: &BufferDesc) {
-    unsafe { ffi::sg_init_buffer(id, desc) }
-}
-
-pub fn init_image(id: Image, desc: &ImageDesc) {
-    unsafe { ffi::sg_init_image(id, desc) }
-}
-
-pub fn init_pass(id: Pass, desc: &PassDesc) {
-    unsafe { ffi::sg_init_pass(id, desc) }
-}
-
-pub fn init_pipeline(id: Pipeline, desc: &PipelineDesc) {
-    unsafe { ffi::sg_init_pipeline(id, desc) }
-}
-
-pub fn init_shader(id: Shader, desc: &ShaderDesc) {
-    unsafe { ffi::sg_init_shader(id, desc) }
-}
-
-// ----------------------------------------
-// Resource deletion
-
-// rm (destrory) = dealloc + uninit
-
-pub fn rm_buffer(id: Buffer) {
-    unsafe {
-        ffi::sg_destroy_buffer(id);
-    }
-}
-
-pub fn rm_image(id: Image) {
-    unsafe {
-        ffi::sg_destroy_image(id);
-    }
-}
-
-pub fn rm_pass(id: Pass) {
-    unsafe {
-        ffi::sg_destroy_pass(id);
-    }
-}
-
-pub fn rm_pipeline(id: Pipeline) {
-    unsafe {
-        ffi::sg_destroy_pipeline(id);
-    }
-}
-
-pub fn rm_shader(id: Shader) {
-    unsafe {
-        ffi::sg_destroy_shader(id);
-    }
-}
-
-// dealloc
-
-pub fn dealloc_buffer(id: Buffer) {
-    unsafe {
-        ffi::sg_dealloc_buffer(id);
-    }
-}
-
-pub fn dealloc_image(id: Image) {
-    unsafe {
-        ffi::sg_dealloc_image(id);
-    }
-}
-
-pub fn dealloc_pass(id: Pass) {
-    unsafe {
-        ffi::sg_dealloc_pass(id);
-    }
-}
-
-pub fn dealloc_pipeline(id: Pipeline) {
-    unsafe {
-        ffi::sg_dealloc_pipeline(id);
-    }
-}
-
-pub fn dealloc_shader(id: Shader) {
-    unsafe {
-        ffi::sg_dealloc_shader(id);
     }
 }
 

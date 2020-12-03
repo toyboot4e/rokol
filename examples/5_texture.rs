@@ -1,12 +1,13 @@
 //! Draw a texture!
-//!
-//! FIXME: Doesn't work well with OpenGL. Why?
 
 mod shaders;
 
 use {
     image::{io::Reader as ImageReader, GenericImageView},
-    rokol::{app as ra, gfx as rg},
+    rokol::{
+        app as ra,
+        gfx::{self as rg, BakedResource, Buffer, Image, Pipeline},
+    },
     std::path::{Path, PathBuf},
 };
 
@@ -70,7 +71,7 @@ fn load_img(path: &Path) -> rg::Image {
         size: pixels.len() as i32,
     };
 
-    rg::make_image(&desc)
+    Image::create(&desc)
 }
 
 #[derive(Debug, Default)]
@@ -110,15 +111,15 @@ impl rokol::app::RApp for AppData {
                 ([-0.5, 0.5, 0.0], [255, 255, 255, 255], [0.0, 1.0]).into(),
             ];
 
-            let desc = rg::vtx_desc(verts, rg::ResourceUsage::Immutable, "quad-vertices");
-            rg::make_buffer(&desc)
+            let desc = rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "quad-vertices");
+            Buffer::create(&desc)
         };
 
         // index for with 2 triangles
         self.bind.index_buffer = {
             let indices: &[u16] = &[0, 1, 2, 0, 2, 3];
-            let desc = &rg::idx_desc(indices, rg::ResourceUsage::Immutable, "texture-indices");
-            rg::make_buffer(&desc)
+            let desc = &rg::ibuf_desc(indices, rg::ResourceUsage::Immutable, "texture-indices");
+            Buffer::create(&desc)
         };
 
         self.pip = {
@@ -139,7 +140,7 @@ impl rokol::app::RApp for AppData {
                 ..Default::default()
             };
 
-            rg::make_pipeline(&pip_desc)
+            Pipeline::create(&pip_desc)
         }
     }
 

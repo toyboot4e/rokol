@@ -1,12 +1,12 @@
 //! Draw a texture!
 //!
-//! FIXME: Doesn't work well with OpenGL. Why?
+//! FIXME: WIP
 
 mod shaders;
 
 use {
+    glam::{Mat4, Vec3},
     image::{io::Reader as ImageReader, GenericImageView},
-    nalgebra as na,
     rokol::{app as ra, gfx as rg},
     std::path::{Path, PathBuf},
 };
@@ -17,12 +17,11 @@ fn main() -> rokol::Result {
     let rokol = rokol::Rokol {
         w: 1280,
         h: 720,
-        title: "Rokol - Window".to_string(),
+        title: "Rokol - Texture cube".to_string(),
         ..Default::default()
     };
 
     let mut app = self::AppData::new();
-
     rokol.run(&mut app)
 }
 
@@ -140,7 +139,7 @@ impl rokol::app::RApp for AppData {
                 ([1.0, 1.0, -1.0], white, [1.0, 1.0]).into(),
             ];
 
-            let desc = rg::vtx_desc(verts, rg::ResourceUsage::Immutable, "quad-vertices");
+            let desc = rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "quad-vertices");
             rg::make_buffer(&desc)
         };
 
@@ -153,13 +152,13 @@ impl rokol::app::RApp for AppData {
                 16, 17, 18, 16, 18, 19, //
                 22, 21, 20, 23, 22, 20,
             ];
-            let desc = &rg::idx_desc(indices, rg::ResourceUsage::Immutable, "texture-indices");
+            let desc = &rg::ibuf_desc(indices, rg::ResourceUsage::Immutable, "texture-indices");
             rg::make_buffer(&desc)
         };
 
         self.pip = {
             let pip_desc = rg::PipelineDesc {
-                shader: shaders::make_texture_shader(),
+                shader: shaders::texture_shader(),
                 index_type: rg::IndexType::UInt16 as u32,
                 layout: rg::LayoutDesc {
                     attrs: {
@@ -184,6 +183,11 @@ impl rokol::app::RApp for AppData {
         rg::apply_pipeline(self.pip);
         rg::apply_bindings(&self.bind);
 
+        let ratio = ra::width() as f32 / ra::height() as f32;
+        let proj = Mat4::perspective_lh(60.0, ratio, 0.01, 0.10);
+        glam::
+        // glam::
+
         // hmm_mat4 proj = HMM_Perspective(60.0f, (float)sapp_width()/(float)sapp_height(), 0.01f, 10.0f);
         // hmm_mat4 view = HMM_LookAt(HMM_Vec3(0.0f, 1.5f, 6.0f), HMM_Vec3(0.0f, 0.0f, 0.0f), HMM_Vec3(0.0f, 1.0f, 0.0f));
         // hmm_mat4 view_proj = HMM_MultiplyMat4(proj, view);
@@ -194,10 +198,10 @@ impl rokol::app::RApp for AppData {
         // hmm_mat4 model = HMM_MultiplyMat4(rxm, rym);
         // vs_params.mvp = HMM_MultiplyMat4(view_proj, model);
 
-        let fov = ra::width() as f32 / ra::height() as f32;
-        let proj = na::Perspective3::new(60.0, fov, 0.01, 10.0);
+        // let fov = ra::width() as f32 / ra::height() as f32;
+        // let proj = na::Perspective3::new(60.0, fov, 0.01, 10.0);
 
-        rg::apply_uniforms(rg::ShaderStage::Vs, 0, proj.as_matrix().as_slice());
+        // rg::apply_uniforms(rg::ShaderStage::Vs, 0, proj.as_matrix().as_slice());
 
         rg::draw(0, 36, 1);
         rg::end_pass();

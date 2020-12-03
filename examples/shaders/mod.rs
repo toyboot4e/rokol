@@ -4,7 +4,10 @@
 //!
 //! Set `ROKOL_RENDERER` to force some renderer.
 
-use {rokol::gfx as rg, std::mem::size_of};
+use {
+    rokol::gfx::{self as rg, BakedResource, Shader},
+    std::mem::size_of,
+};
 
 macro_rules! c_str {
     ($path:expr) => {
@@ -17,11 +20,11 @@ fn desc(vs: &str, fs: &str) -> rokol::gfx::ShaderDesc {
 }
 
 pub fn triangle_shader() -> rokol::gfx::Shader {
-    rg::make_shader(&desc(files::TRIANGLE_VS, files::TRIANGLE_FS))
+    Shader::create(&desc(files::TRIANGLE_VS, files::TRIANGLE_FS))
 }
 
 pub fn quad_shader() -> rokol::gfx::Shader {
-    rg::make_shader(&desc(files::QUAD_VS, files::QUAD_FS))
+    Shader::create(&desc(files::QUAD_VS, files::QUAD_FS))
 }
 
 pub fn texture_shader() -> rokol::gfx::Shader {
@@ -32,7 +35,7 @@ pub fn texture_shader() -> rokol::gfx::Shader {
         ..Default::default()
     };
 
-    rg::make_shader(&desc)
+    Shader::create(&desc)
 }
 
 pub fn texcube_shader() -> rokol::gfx::Shader {
@@ -55,7 +58,7 @@ pub fn texcube_shader() -> rokol::gfx::Shader {
         ..Default::default()
     };
 
-    rg::make_shader(&desc)
+    Shader::create(&desc)
 }
 
 // --------------------------------------------------------------------------------

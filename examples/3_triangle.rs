@@ -72,7 +72,7 @@ impl rokol::app::RApp for AppData {
                 ([-0.5, -0.5, 0.5], [0.0, 0.0, 1.0, 1.0]).into(),
             ];
 
-            let desc = rg::vtx_desc(verts, rg::ResourceUsage::Immutable, "triangle-vertices");
+            let desc = rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "triangle-vertices");
             rg::make_buffer(&desc)
         };
 

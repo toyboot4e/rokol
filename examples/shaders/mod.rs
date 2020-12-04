@@ -2,7 +2,7 @@
 //!
 //! Shader files are conditionally embedded to the source code.
 //!
-//! Set `ROKOL_RENDERER` to force some renderer.
+//! Set `buidlrs` for the conditional compiltion information.
 
 use {
     rokol::gfx::{self as rg, BakedResource, Shader},
@@ -39,17 +39,17 @@ pub fn texture_shader() -> rokol::gfx::Shader {
 }
 
 pub fn texcube_shader() -> rokol::gfx::Shader {
-    let mut desc = desc(files::TEXTURE_VS, files::TEXTURE_FS);
+    let mut desc = desc(files::TEXCUBE_VS, files::TEXCUBE_FS);
 
     desc.vs.uniform_blocks[0] = {
         let mut block = rg::ShaderUniformBlockDesc {
+            size: 16 * size_of::<f32>() as i32,
             ..Default::default()
         };
         block.uniforms[0] = rg::ShaderUniformDesc {
             type_: rg::UniformType::Mat4 as u32,
             ..Default::default()
         };
-        block.size += 16 * size_of::<f32>() as i32;
         block
     };
 
@@ -75,8 +75,8 @@ mod files {
     pub static TEXTURE_VS: &str = c_str!("glsl/texture.vert");
     pub static TEXTURE_FS: &str = c_str!("glsl/texture.frag");
 
-    pub static TEXCUVE_VS: &str = c_str!("glsl/texcube.vert");
-    pub static TEXCUVE_FS: &str = c_str!("glsl/texcube.frag");
+    pub static TEXCUBE_VS: &str = c_str!("glsl/texcube.vert");
+    pub static TEXCUBE_FS: &str = c_str!("glsl/texcube.frag");
 }
 
 #[cfg(rokol_gfx = "metal")]

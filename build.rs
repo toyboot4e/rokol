@@ -1,19 +1,14 @@
-//! If you need to do conditional compilation with Rokol renderer, add `rokol_ffi` to your
-//! `Cargo.toml` and then copy this build script to your project.
-//!
-//! Then you can use `#[cfg(rokol_gfx = "d3d11")]` ("d3d11" may be "metal" or "glcore33").
-
 use std::env;
 
 fn main() {
-    println!("cargo:rerun-if-env-changed=ROKOL_RENDERER");
-
-    // Catch `DEP_SOKOL_GFX` defined in `sokol_ffi/build.rs`
+    // catch which graphics backend was selected in `rokol_ffi/build.rs`
     let gfx = env::var("DEP_SOKOL_GFX").expect("`rokol_ffi` failed to select graphics backend?");
-    // Enable conditional compilation with `rokol_gfx` in this crate
-    // (`rokol_gfx` is one of `d3d11`, `metal` or `glcore33`)
+    // For `DEP_<ENV_VARIABLE>`, see:
+    // https://doc.rust-lang.org/cargo/reference/build-scripts.html#the-links-manifest-key
+
+    // and emit it:
     println!("cargo:rustc-cfg=rokol_gfx={}", gfx);
 }
 
-// Note that `rokol_ffi` can emit `DEP_SOKOL_GFX` to only those crates that have `rokol_ffi` in
-// their `Cargo.toml`!
+// TODO: do we need direct dependency to `rokol_ffi` to do conditional compilation based on selected
+// renderer?

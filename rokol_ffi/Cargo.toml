@@ -13,7 +13,9 @@ categories = ["game-engines"]
 links = "sokol"
 
 [features]
-force-glcore33 = []
+glcore33 = []
+metal = []
+d3d11 = []
 
 [dependencies]
 

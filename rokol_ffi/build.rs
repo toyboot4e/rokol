@@ -1,6 +1,4 @@
 //! Build script of `rokol-ffi`
-//!
-//! See `README.md` for more information.
 
 use std::{
     env,
@@ -10,10 +8,6 @@ use std::{
 use cc::Build;
 
 fn main() {
-    // One of D3D11, Metal or GlCore33 can be selected
-    // NOTE: it does not make cache. Prefer setting a feature flag from command line argument
-    println!("cargo:rerun-if-env-changed=ROKOL_RENDERER");
-
     // update the bindings when we update `sokol`
     println!("cargo:rerun-if-changed=sokol");
 
@@ -46,21 +40,17 @@ enum Renderer {
 
 impl Renderer {
     pub fn select(is_msvc: bool) -> Self {
-        // set renderer with environmental variable
-        if let Ok(rdr) = env::var("ROKOL_RENDERER") {
-            return match rdr.as_str() {
-                "D3D11" => Self::D3D11,
-                "Metal" => Self::Metal,
-                "GlCore33" => Self::GlCore33,
-                _ => panic!("ROKOL_RENDERER is invalid: {}", rdr),
-            };
-        }
-
-        // set renderer via feature
-        #[cfg(feature = "force-glcore33")]
+        // set renderer defined by feature
+        #[cfg(feature = "glcore33")]
         return Self::GlCore33;
 
-        // Select default renderer
+        #[cfg(feature = "metal")]
+        return Self::Metal;
+
+        #[cfg(feature = "d3d11")]
+        return Self::D3d11;
+
+        // select default renderer
         // - Windows: D3D11 with MSVC, GLCORE33 otherwise
         // - MacOS: Metal
         // - Linux: GLCORE33
@@ -83,7 +73,7 @@ impl Renderer {
     }
 
     /// Provides with an environmental variable `DEP_SOKOL_GFX` to `build.rs` files in crates that
-    /// are dependent on `rokol_ffi`
+    /// are directly dependent on `rokol_ffi`
     pub fn emit_cargo_metadata(&self) {
         match self {
             Self::D3D11 => println!("cargo:gfx=\"d3d11\""),

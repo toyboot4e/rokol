@@ -62,10 +62,9 @@ Rokol is only tested on macOS (for now).
 Rokol compiles conditionally. User has three options to select their renderer:
 
 . Let Rokol select default renderer
-. Use feature flag of `force-glcore33`
-. Set `ROKOL_RENDERER` environment variable to force using some renderer. One of `GlCore33`, `Metal` or `D3D11` is allowed
+. Use feature flag (like `cargo run --feature rokol/glcore33`)
 
-Rokol user would also want to compile conditionally depending on Rokol renderer. That's possible if they add `rokol_ffi` to their `Cargo.toml` and write some build script. See `rokol/build.rs` and `rokol/examples/conditional.rs` for more details.
+Rokol user would also want to compile conditionally depending on selected backend renderer. That's possible if they add `rokol_ffi` to their `Cargo.toml` and write some build script. See `rokol/build.rs` and `rokol/examples/conditional.rs` for more details.
 
 c.f. https://doc.rust-lang.org/cargo/reference/build-scripts.html[Build Scripts - The Cargo Book]
 

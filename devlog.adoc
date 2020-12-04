@@ -104,3 +104,15 @@ From https://floooh.github.io/[The Brain Dump]:
 * https://floooh.github.io/2019/01/12/sokol-apply-pipeline.html[A small sokol_gfx.h API update] (Jan 12, 2019)
 * https://floooh.github.io/2020/04/26/sokol-spring-2020-update.html[Sokol headers: spring 2020 update] (April 26, 2020)
 
+=== Dec 3, 2020
+
+I started to commit auto-generated bindings to Sokol in this repository. Now I can see declaration diffs when I update Sokol. Also I made sure to re-build the project when I update Sokol:
+
+.rokol_ffi/build.rs
+[source,rust]
+----
+println!("cargo:rerun-if-changed=sokol");
+----
+
+I expected I would get better completions to FFI items on Emacs as bonus. Unfortunately, I did not; probablly I need to remove `include_file!` from my code to get it (on VSCode, I can goto definitions of FFI items though).
+

@@ -205,6 +205,26 @@ pub enum ImageType {
     _Num = ffi::sg_image_type__SG_IMAGETYPE_NUM,
 }
 
+/// The filtering mode when sampling a texture image
+///
+/// This is used in the `sg_image_desc.min_filter` and `sg_image_desc.mag_filter`
+/// members when creating an image object.
+///
+/// The default filter mode is SG_FILTER_NEAREST.
+#[derive(Copy, Clone, Debug)]
+#[repr(u32)]
+pub enum Filter {
+    Linear = ffi::sg_filter_SG_FILTER_LINEAR,
+    LinearMipmap = ffi::sg_filter_SG_FILTER_LINEAR_MIPMAP_LINEAR,
+    LinearMipmapNearest = ffi::sg_filter_SG_FILTER_LINEAR_MIPMAP_NEAREST,
+    Nearest = ffi::sg_filter_SG_FILTER_NEAREST,
+    NearestMipmapLinear = ffi::sg_filter_SG_FILTER_NEAREST_MIPMAP_LINEAR,
+    NearestMipmapNearest = ffi::sg_filter_SG_FILTER_NEAREST_MIPMAP_NEAREST,
+    _Default = ffi::sg_filter__SG_FILTER_DEFAULT,
+    _ForceU32 = ffi::sg_filter__SG_FILTER_FORCE_U32,
+    _Num = ffi::sg_filter__SG_FILTER_NUM,
+}
+
 /// The texture coordinates wrapping mode when sampling a texture image
 ///
 /// This is used in `sg_image_desc` when creating an image..
@@ -299,7 +319,7 @@ pub enum Wrap {
 /// of `sokol_gfx.h`. On some backends, using BGRA for the default frame buffer
 /// allows more efficient frame flips. For your own offscreen-render-targets,
 /// use whatever renderable pixel format is convenient for you.
-#[repr(C)]
+#[repr(u32)]
 #[derive(Copy, Clone, Debug)]
 pub enum PixelFormat {
     _Default,
@@ -326,6 +346,33 @@ pub enum PixelFormat {
     Pvrtc4Rgba,
     Etc2Rgb8,
     Etc2SRgb8,
+}
+
+#[derive(Copy, Clone, Debug)]
+#[repr(u32)]
+pub enum CompareFunc {
+    Always = ffi::sg_compare_func_SG_COMPAREFUNC_ALWAYS,
+    Eq = ffi::sg_compare_func_SG_COMPAREFUNC_EQUAL,
+    Greater = ffi::sg_compare_func_SG_COMPAREFUNC_GREATER,
+    GreaterEq = ffi::sg_compare_func_SG_COMPAREFUNC_GREATER_EQUAL,
+    Less = ffi::sg_compare_func_SG_COMPAREFUNC_LESS,
+    LessEq = ffi::sg_compare_func_SG_COMPAREFUNC_LESS_EQUAL,
+    Never = ffi::sg_compare_func_SG_COMPAREFUNC_NEVER,
+    NotEq = ffi::sg_compare_func_SG_COMPAREFUNC_NOT_EQUAL,
+    _Default = ffi::sg_compare_func__SG_COMPAREFUNC_DEFAULT,
+    _ForceU32 = ffi::sg_compare_func__SG_COMPAREFUNC_FORCE_U32,
+    _Num = ffi::sg_compare_func__SG_COMPAREFUNC_NUM,
+}
+
+#[derive(Copy, Clone, Debug)]
+#[repr(u32)]
+pub enum CullMode {
+    Back = ffi::sg_cull_mode_SG_CULLMODE_BACK,
+    Front = ffi::sg_cull_mode_SG_CULLMODE_FRONT,
+    None = ffi::sg_cull_mode_SG_CULLMODE_NONE,
+    _Default = ffi::sg_cull_mode__SG_CULLMODE_DEFAULT,
+    _ForuceU32 = ffi::sg_cull_mode__SG_CULLMODE_FORCE_U32,
+    _Num = ffi::sg_cull_mode__SG_CULLMODE_NUM,
 }
 
 // --------------------------------------------------------------------------------
@@ -661,6 +708,9 @@ pub fn apply_bindings(bind: &Bindings) {
     }
 }
 
+/// Applies uniform data to shader
+///
+/// `* `ub-index`: uniform block index
 pub fn apply_uniforms<T>(stage: ShaderStage, ub_index: u32, data: &[T]) {
     unsafe {
         ffi::sg_apply_uniforms(
@@ -686,18 +736,21 @@ pub fn draw(base_elem: u32, n_elems: u32, n_instances: u32) {
 /// Caller must ensure the shader strings are null-terminated!
 pub unsafe fn shader_desc(vs: &str, fs: &str) -> ShaderDesc {
     let mut desc = ShaderDesc::default();
+
     desc.vs = ShaderStageDesc {
         source: vs.as_ptr() as *mut _,
         uniform_blocks: [Default::default(); ffi::SG_MAX_SHADERSTAGE_UBS as usize],
         images: [Default::default(); ffi::SG_MAX_SHADERSTAGE_IMAGES as usize],
         ..Default::default()
     };
+
     desc.fs = ShaderStageDesc {
         source: fs.as_ptr() as *mut _,
         uniform_blocks: [Default::default(); ffi::SG_MAX_SHADERSTAGE_UBS as usize],
         images: [Default::default(); ffi::SG_MAX_SHADERSTAGE_IMAGES as usize],
         ..Default::default()
     };
+
     desc
 }
 
@@ -726,6 +779,7 @@ fn buf_desc<T>(
         label: if label == "" {
             std::ptr::null_mut()
         } else {
+            // FIXME: lifetime
             let label = CString::new(label).expect("Unable to create CString in BufferDesc::new");
             label.as_ptr() as *mut _
         },

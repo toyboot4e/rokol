@@ -114,34 +114,34 @@ impl rokol::app::RApp for AppData {
             let verts: &[Vertex] = &[
                 // six rectangles
                 ([-1.0, -1.0, -1.0], white, [0.0, 0.0]).into(),
-                ([1.0, -1.0, -1.0], white, [1.0, 1.0]).into(),
+                ([1.0, -1.0, -1.0], white, [1.0, 0.0]).into(),
                 ([1.0, 1.0, -1.0], white, [1.0, 1.0]).into(),
-                ([-1.0, 1.0, -1.0], white, [1.0, 1.0]).into(),
+                ([-1.0, 1.0, -1.0], white, [0.0, 1.0]).into(),
                 //
-                ([-1.0, -1.0, 1.0], white, [1.0, 1.0]).into(),
-                ([1.0, -1.0, 1.0], white, [1.0, 1.0]).into(),
+                ([-1.0, -1.0, 1.0], white, [0.0, 0.0]).into(),
+                ([1.0, -1.0, 1.0], white, [1.0, 0.0]).into(),
                 ([1.0, 1.0, 1.0], white, [1.0, 1.0]).into(),
-                ([-1.0, 1.0, 1.0], white, [1.0, 1.0]).into(),
+                ([-1.0, 1.0, 1.0], white, [0.0, 1.0]).into(),
                 //
-                ([-1.0, -1.0, -1.0], white, [1.0, 1.0]).into(),
-                ([-1.0, 1.0, -1.0], white, [1.0, 1.0]).into(),
+                ([-1.0, -1.0, -1.0], white, [0.0, 0.0]).into(),
+                ([-1.0, 1.0, -1.0], white, [1.0, 0.0]).into(),
                 ([-1.0, 1.0, 1.0], white, [1.0, 1.0]).into(),
-                ([-1.0, -1.0, 1.0], white, [1.0, 1.0]).into(),
+                ([-1.0, -1.0, 1.0], white, [0.0, 1.0]).into(),
                 //
-                ([1.0, -1.0, -1.0], white, [1.0, 1.0]).into(),
-                ([1.0, 1.0, -1.0], white, [1.0, 1.0]).into(),
+                ([1.0, -1.0, -1.0], white, [0.0, 0.0]).into(),
+                ([1.0, 1.0, -1.0], white, [1.0, 0.0]).into(),
                 ([1.0, 1.0, 1.0], white, [1.0, 1.0]).into(),
-                ([1.0, -1.0, 1.0], white, [1.0, 1.0]).into(),
+                ([1.0, -1.0, 1.0], white, [0.0, 1.0]).into(),
                 //
-                ([1.0, -1.0, -1.0], white, [1.0, 1.0]).into(),
-                ([-1.0, -1.0, 1.0], white, [1.0, 1.0]).into(),
+                ([-1.0, -1.0, -1.0], white, [0.0, 0.0]).into(),
+                ([-1.0, -1.0, 1.0], white, [1.0, 0.0]).into(),
                 ([1.0, -1.0, 1.0], white, [1.0, 1.0]).into(),
-                ([1.0, -1.0, -1.0], white, [1.0, 1.0]).into(),
+                ([1.0, -1.0, -1.0], white, [0.0, 1.0]).into(),
                 //
-                ([-1.0, 1.0, -1.0], white, [1.0, 1.0]).into(),
-                ([-1.0, 1.0, 1.0], white, [1.0, 1.0]).into(),
+                ([-1.0, 1.0, -1.0], white, [0.0, 0.0]).into(),
+                ([-1.0, 1.0, 1.0], white, [1.0, 0.0]).into(),
                 ([1.0, 1.0, 1.0], white, [1.0, 1.0]).into(),
-                ([1.0, 1.0, -1.0], white, [1.0, 1.0]).into(),
+                ([1.0, 1.0, -1.0], white, [0.0, 1.0]).into(),
             ];
 
             let desc = rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "texcube-vertices");
@@ -150,12 +150,12 @@ impl rokol::app::RApp for AppData {
 
         self.bind.index_buffer = {
             let indices: &[u16] = &[
-                0, 1, 2, 0, 2, 3, // rectangle
+                0, 1, 2, 0, 2, 3, // one rectangle
                 6, 5, 4, 7, 6, 4, //
                 8, 9, 10, 8, 10, 11, //
                 14, 13, 12, 15, 14, 12, //
                 16, 17, 18, 16, 18, 19, //
-                22, 21, 20, 23, 22, 20,
+                22, 21, 20, 23, 22, 20, //
             ];
             let desc = &rg::ibuf_desc(indices, rg::ResourceUsage::Immutable, "texcube-indices");
             Buffer::create(&desc)
@@ -193,13 +193,25 @@ impl rokol::app::RApp for AppData {
         rg::apply_pipeline(self.pip);
         rg::apply_bindings(&self.bind);
 
-        let fov = ra::width() as f32 / ra::height() as f32;
-        let proj = Mat4::perspective_lh(60.0, fov, 0.01, 10.0);
+        // left-handed matrices
+        let ratio = ra::height() as f32 / ra::width() as f32;
+        let proj = Mat4::perspective_lh(
+            3.14 / 3.0, // fov_y_radian
+            ratio,      // aspect_ratio
+            0.01,       // z_near
+            10.0,       // z_far
+        );
+
         let view = Mat4::look_at_lh(
-            [0.0, 1.5, 60.0].into(),
+            // camera position
+            [0.0, 1.5, 6.0].into(),
+            // focal point
             [0.0, 0.0, 0.0].into(),
+            // up direction
             [0.0, 1.0, 0.0].into(),
         );
+
+        // column-major matrix notation (v' = Mv)
         let vp = proj * view;
 
         let bytes: &[u8] = unsafe {

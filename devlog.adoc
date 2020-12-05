@@ -94,7 +94,7 @@ https://github.com/floooh/sokol-tools/blob/master/docs/sokol-shdc.md[sokol_shdc]
 +
 Binaries and fips integration for https://github.com/floooh/sokol-tools
 
-I'm not using the cross compiler (for now)
+I'm not using the cross compiler (for now). It creates C header files which considers conditional compilations, but they're not so handy from Rust.
 
 ==== Sokol articles
 

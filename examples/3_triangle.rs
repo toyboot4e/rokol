@@ -81,7 +81,7 @@ impl rokol::app::RApp for AppData {
 
         self.pip = {
             let pip_desc = rg::PipelineDesc {
-                shader: shaders::triangle_shader(),
+                shader: shaders::triangle(),
                 layout: rg::LayoutDesc {
                     attrs: {
                         let mut attrs = [rg::VertexAttrDesc::default(); 16];

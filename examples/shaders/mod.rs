@@ -2,7 +2,7 @@
 //!
 //! Shader files are conditionally embedded to the source code.
 //!
-//! Set `buidlrs` for the conditional compiltion information.
+//! Set `build.rs` for the conditional compiltion information.
 
 use {
     rokol::gfx::{self as rg, BakedResource, Shader},
@@ -19,15 +19,15 @@ fn desc(vs: &str, fs: &str) -> rokol::gfx::ShaderDesc {
     unsafe { rokol::gfx::shader_desc(vs, fs) }
 }
 
-pub fn triangle_shader() -> rokol::gfx::Shader {
+pub fn triangle() -> rokol::gfx::Shader {
     Shader::create(&desc(files::TRIANGLE_VS, files::TRIANGLE_FS))
 }
 
-pub fn quad_shader() -> rokol::gfx::Shader {
+pub fn quad() -> rokol::gfx::Shader {
     Shader::create(&desc(files::QUAD_VS, files::QUAD_FS))
 }
 
-pub fn texture_shader() -> rokol::gfx::Shader {
+pub fn texture() -> rokol::gfx::Shader {
     let mut desc = desc(files::TEXTURE_VS, files::TEXTURE_FS);
 
     desc.fs.images[0] = rg::ShaderImageDesc {
@@ -38,16 +38,18 @@ pub fn texture_shader() -> rokol::gfx::Shader {
     Shader::create(&desc)
 }
 
-pub fn texcube_shader() -> rokol::gfx::Shader {
+pub fn texcube() -> rokol::gfx::Shader {
     let mut desc = desc(files::TEXCUBE_VS, files::TEXCUBE_FS);
 
     desc.vs.uniform_blocks[0] = {
         let mut block = rg::ShaderUniformBlockDesc {
-            size: 16 * size_of::<f32>() as i32,
+            size: std::mem::size_of::<glam::Mat4>() as i32,
             ..Default::default()
         };
         block.uniforms[0] = rg::ShaderUniformDesc {
             type_: rg::UniformType::Mat4 as u32,
+            // NOTE: this is REQUIRED
+            name: std::ffi::CString::new("mvp").unwrap().as_ptr(),
             ..Default::default()
         };
         block

@@ -89,7 +89,7 @@ impl rokol::app::RApp for AppData {
 
         self.pip = {
             let pip_desc = rg::PipelineDesc {
-                shader: shaders::quad_shader(),
+                shader: shaders::quad(),
                 index_type: rg::IndexType::UInt16 as u32,
                 layout: rg::LayoutDesc {
                     attrs: {

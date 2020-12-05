@@ -65,6 +65,8 @@ fn load_img(path: &Path) -> rg::Image {
         width: w as i32,
         height: h as i32,
         usage: rg::ResourceUsage::Immutable as u32,
+        min_filter: rg::Filter::Linear as u32,
+        mag_filter: rg::Filter::Linear as u32,
         ..Default::default()
     };
 
@@ -73,7 +75,7 @@ fn load_img(path: &Path) -> rg::Image {
         size: pixels.len() as i32,
     };
 
-    Image::create(&desc)
+    rg::Image::create(&desc)
 }
 
 #[derive(Debug, Default)]
@@ -142,7 +144,7 @@ impl rokol::app::RApp for AppData {
                 ([1.0, 1.0, -1.0], white, [1.0, 1.0]).into(),
             ];
 
-            let desc = rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "quad-vertices");
+            let desc = rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "texcube-vertices");
             Buffer::create(&desc)
         };
 
@@ -155,30 +157,35 @@ impl rokol::app::RApp for AppData {
                 16, 17, 18, 16, 18, 19, //
                 22, 21, 20, 23, 22, 20,
             ];
-            let desc = &rg::ibuf_desc(indices, rg::ResourceUsage::Immutable, "texture-indices");
+            let desc = &rg::ibuf_desc(indices, rg::ResourceUsage::Immutable, "texcube-indices");
             Buffer::create(&desc)
         };
 
-        self.pip = {
-            let pip_desc = rg::PipelineDesc {
-                shader: shaders::texture_shader(),
-                index_type: rg::IndexType::UInt16 as u32,
-                layout: rg::LayoutDesc {
-                    attrs: {
-                        let mut attrs = [rg::VertexAttrDesc::default(); 16];
-                        attrs[0].format = rg::VertexFormat::Float3 as u32;
-                        attrs[1].format = rg::VertexFormat::UByte4N as u32;
-                        attrs[2].format = rg::VertexFormat::Float2 as u32;
-                        attrs
-                    },
-                    buffers: [rg::BufferLayoutDesc::default();
-                        rokol_ffi::gfx::SG_MAX_SHADERSTAGE_BUFFERS as usize],
+        self.pip = Pipeline::create(&rg::PipelineDesc {
+            layout: rg::LayoutDesc {
+                attrs: {
+                    let mut attrs = [rg::VertexAttrDesc::default(); 16];
+                    attrs[0].format = rg::VertexFormat::Float3 as u32;
+                    attrs[1].format = rg::VertexFormat::UByte4N as u32;
+                    attrs[2].format = rg::VertexFormat::Float2 as u32;
+                    attrs
                 },
+                buffers: [rg::BufferLayoutDesc::default();
+                    rokol_ffi::gfx::SG_MAX_SHADERSTAGE_BUFFERS as usize],
+            },
+            shader: shaders::texcube(),
+            index_type: rg::IndexType::UInt16 as u32,
+            depth_stencil: rg::DepthStencilState {
+                depth_compare_func: rg::CompareFunc::LessEq as u32,
+                depth_write_enabled: true,
                 ..Default::default()
-            };
-
-            Pipeline::create(&pip_desc)
-        }
+            },
+            rasterizer: rg::RasterizerState {
+                cull_mode: rg::CullMode::Back as u32,
+                ..Default::default()
+            },
+            ..Default::default()
+        });
     }
 
     fn frame(&mut self) {
@@ -186,25 +193,25 @@ impl rokol::app::RApp for AppData {
         rg::apply_pipeline(self.pip);
         rg::apply_bindings(&self.bind);
 
-        let ratio = ra::width() as f32 / ra::height() as f32;
-        let proj = Mat4::perspective_lh(60.0, ratio, 0.01, 0.10);
+        let fov = ra::width() as f32 / ra::height() as f32;
+        let proj = Mat4::perspective_lh(60.0, fov, 0.01, 10.0);
+        let view = Mat4::look_at_lh(
+            [0.0, 1.5, 60.0].into(),
+            [0.0, 0.0, 0.0].into(),
+            [0.0, 1.0, 0.0].into(),
+        );
+        let vp = proj * view;
 
-        // hmm_mat4 proj = HMM_Perspective(60.0f, (float)sapp_width()/(float)sapp_height(), 0.01f, 10.0f);
-        // hmm_mat4 view = HMM_LookAt(HMM_Vec3(0.0f, 1.5f, 6.0f), HMM_Vec3(0.0f, 0.0f, 0.0f), HMM_Vec3(0.0f, 1.0f, 0.0f));
-        // hmm_mat4 view_proj = HMM_MultiplyMat4(proj, view);
-        // vs_params_t vs_params;
-        // state.rx += 1.0f; state.ry += 2.0f;
-        // hmm_mat4 rxm = HMM_Rotate(state.rx, HMM_Vec3(1.0f, 0.0f, 0.0f));
-        // hmm_mat4 rym = HMM_Rotate(state.ry, HMM_Vec3(0.0f, 1.0f, 0.0f));
-        // hmm_mat4 model = HMM_MultiplyMat4(rxm, rym);
-        // vs_params.mvp = HMM_MultiplyMat4(view_proj, model);
-
-        // let fov = ra::width() as f32 / ra::height() as f32;
-        // let proj = na::Perspective3::new(60.0, fov, 0.01, 10.0);
-
-        // rg::apply_uniforms(rg::ShaderStage::Vs, 0, proj.as_matrix().as_slice());
+        let bytes: &[u8] = unsafe {
+            std::slice::from_raw_parts(
+                vp.as_ref() as *const _ as *const _,
+                std::mem::size_of::<Mat4>(),
+            )
+        };
+        rg::apply_uniforms(rg::ShaderStage::Vs, 0, bytes);
 
         rg::draw(0, 36, 1);
+
         rg::end_pass();
         rg::commit();
     }

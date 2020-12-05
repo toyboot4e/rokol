@@ -111,7 +111,7 @@ impl rokol::app::RApp for AppData {
                 ([-0.5, 0.5, 0.0], [255, 255, 255, 255], [0.0, 1.0]).into(),
             ];
 
-            let desc = rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "quad-vertices");
+            let desc = rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "texture-vertices");
             Buffer::create(&desc)
         };
 
@@ -122,38 +122,28 @@ impl rokol::app::RApp for AppData {
             Buffer::create(&desc)
         };
 
-        self.pip = {
-            let pip_desc = rg::PipelineDesc {
-                shader: shaders::texture_shader(),
-                index_type: rg::IndexType::UInt16 as u32,
-                layout: rg::LayoutDesc {
-                    attrs: {
-                        let mut attrs = [rg::VertexAttrDesc::default(); 16];
-                        attrs[0].format = rg::VertexFormat::Float3 as u32;
-                        attrs[1].format = rg::VertexFormat::UByte4N as u32;
-                        attrs[2].format = rg::VertexFormat::Float2 as u32;
-                        attrs
-                    },
-                    buffers: [rg::BufferLayoutDesc::default();
-                        rokol_ffi::gfx::SG_MAX_SHADERSTAGE_BUFFERS as usize],
+        self.pip = Pipeline::create(&rg::PipelineDesc {
+            shader: shaders::texture(),
+            index_type: rg::IndexType::UInt16 as u32,
+            layout: rg::LayoutDesc {
+                attrs: {
+                    let mut attrs = [rg::VertexAttrDesc::default(); 16];
+                    attrs[0].format = rg::VertexFormat::Float3 as u32;
+                    attrs[1].format = rg::VertexFormat::UByte4N as u32;
+                    attrs[2].format = rg::VertexFormat::Float2 as u32;
+                    attrs
                 },
-                ..Default::default()
-            };
-
-            Pipeline::create(&pip_desc)
-        }
+                buffers: [rg::BufferLayoutDesc::default();
+                    rokol_ffi::gfx::SG_MAX_SHADERSTAGE_BUFFERS as usize],
+            },
+            ..Default::default()
+        });
     }
 
     fn frame(&mut self) {
         rg::begin_default_pass(&self.pa, ra::width(), ra::height());
         rg::apply_pipeline(self.pip);
         rg::apply_bindings(&self.bind);
-        // rg::apply_uniforms(
-        //     SG_SHADERSTAGE_VS,
-        //     SLOT_vs_params,
-        //     &vs_params,
-        //     sizeof(vs_params),
-        // );
         rg::draw(0, 6, 1);
         rg::end_pass();
         rg::commit();

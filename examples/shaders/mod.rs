@@ -64,6 +64,8 @@ pub fn texcube() -> rokol::gfx::Shader {
 
     desc.fs.images[0] = rg::ShaderImageDesc {
         type_: rg::ImageType::Dim2 as u32,
+        // not necessary
+        name: c_str!("tex").as_ptr() as *const _,
         ..Default::default()
     };
 

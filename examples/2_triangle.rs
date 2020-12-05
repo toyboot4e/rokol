@@ -70,9 +70,9 @@ impl rokol::app::RApp for AppData {
         self.bind.vertex_buffers[0] = {
             let verts: &[Vertex] = &[
                 // (vertex, color)
-                ([0.0, 0.5, 0.5], [1.0, 0.0, 0.0, 1.0]).into(),
-                ([0.5, -0.5, 0.5], [0.0, 1.0, 0.0, 1.0]).into(),
-                ([-0.5, -0.5, 0.5], [0.0, 0.0, 1.0, 1.0]).into(),
+                ([0.0, 0.5, 0.5], [1.0, 0.0, 0.0, 1.0]).into(), // top
+                ([0.5, -0.5, 0.5], [0.0, 1.0, 0.0, 1.0]).into(), // bottom right
+                ([-0.5, -0.5, 0.5], [0.0, 0.0, 1.0, 1.0]).into(), // bottom left
             ];
 
             let desc = rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "triangle-vertices");
@@ -103,7 +103,7 @@ impl rokol::app::RApp for AppData {
         rg::begin_default_pass(&self.pa, ra::width(), ra::height());
         rg::apply_pipeline(self.pip);
         rg::apply_bindings(&self.bind);
-        rg::draw(0, 3, 1);
+        rg::draw(0, 3, 1); // base_elem, n_elems, n_instances
         rg::end_pass();
         rg::commit();
     }

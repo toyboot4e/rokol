@@ -18,16 +18,7 @@ $ cargo run --feature glcore33 --example 5_texture
 
 == Supported shaders
 
-|===
-| example    | GLSL (GlCore33) | Metal | HLSL (D3D11)
-
-| 1_window   | yes             | yes   |
-| 2_clear    | yes             | yes   |
-| 3_triangle | yes             | yes   |
-| 4_quad     | yes             | yes   |
-| 5_texture  | yes             |       |
-| 6_texcube  | WIP             |       |
-|===
+Please use OpenGL.
 
 == Credits
 

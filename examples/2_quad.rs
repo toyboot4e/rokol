@@ -13,7 +13,7 @@ fn main() -> rokol::Result {
     let rokol = rokol::Rokol {
         w: 1280,
         h: 720,
-        title: "Rokol - Window".to_string(),
+        title: "Rokol - Quad".to_string(),
         ..Default::default()
     };
 
@@ -64,25 +64,29 @@ impl AppData {
 
 impl rokol::app::RApp for AppData {
     fn init(&mut self) {
-        let mut desc = rokol::app_desc();
-        rg::setup(&mut desc); // now we can call sokol_gfx functions!
+        rg::setup(&mut rokol::app_desc());
+        // now we can call sokol_gfx functions!
 
         self.bind.vertex_buffers[0] = {
             let verts: &[Vertex] = &[
                 // (vertex, color)
+                // top left
                 ([-0.5, 0.5, 0.5], [1.0, 0.0, 0.0, 1.0]).into(),
+                // top right
                 ([0.5, 0.5, 0.5], [0.0, 1.0, 0.0, 1.0]).into(),
-                ([0.5, -0.5, 0.5], [0.0, 0.0, 1.0, 1.0]).into(),
+                // bottom left
                 ([-0.5, -0.5, 0.5], [1.0, 1.0, 0.0, 1.0]).into(),
+                // bottom right
+                ([0.5, -0.5, 0.5], [0.0, 0.0, 1.0, 1.0]).into(),
             ];
 
             let desc = rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "quad-vertices");
             Buffer::create(&desc)
         };
 
-        // index for with 2 triangles
+        // index for 2 triangles
         self.bind.index_buffer = {
-            let indices: &[u16] = &[0, 1, 2, 0, 2, 3];
+            let indices: &[u16] = &[0, 1, 2, 3, 2, 1];
             let desc = &rg::ibuf_desc(indices, rg::ResourceUsage::Immutable, "quad-indices");
             Buffer::create(&desc)
         };
@@ -112,7 +116,7 @@ impl rokol::app::RApp for AppData {
         rg::begin_default_pass(&self.pa, ra::width(), ra::height());
         rg::apply_pipeline(self.pip);
         rg::apply_bindings(&self.bind);
-        rg::draw(0, 6, 1);
+        rg::draw(0, 6, 1); // base_elem, n_elems, n_instances
         rg::end_pass();
         rg::commit();
     }

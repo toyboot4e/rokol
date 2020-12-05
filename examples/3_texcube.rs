@@ -98,8 +98,8 @@ impl AppData {
 
 impl rokol::app::RApp for AppData {
     fn init(&mut self) {
-        let mut desc = rokol::app_desc();
-        rg::setup(&mut desc); // now we can call sokol_gfx functions!
+        rg::setup(&mut rokol::app_desc());
+        // now we can call sokol_gfx functions!
 
         self.bind.fs_images[0] = {
             let root = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
@@ -181,7 +181,8 @@ impl rokol::app::RApp for AppData {
                 ..Default::default()
             },
             rasterizer: rg::RasterizerState {
-                cull_mode: rg::CullMode::Back as u32,
+                // cull_mode: rg::CullMode::Front as u32,
+                cull_mode: rg::CullMode::None as u32,
                 ..Default::default()
             },
             ..Default::default()
@@ -193,22 +194,28 @@ impl rokol::app::RApp for AppData {
         rg::apply_pipeline(self.pip);
         rg::apply_bindings(&self.bind);
 
+        // TODO: rotate
+        // let spd =
+        // let rot_x = glam::Mat4::rotate(rx, [1.0f, 0.0f, 0.0f]);
+        // let rot_y = glam::Mat4::rotate(ry, [0.0f, 1.0f, 0.0f]);
+        // let model = rot_x * rot_y;
+
         // left-handed matrices
+        let view = Mat4::look_at_lh(
+            // camera position
+            [3.0, 3.0, 8.0].into(),
+            // focal point
+            [0.0, 0.0, 0.0].into(),
+            // up direction
+            [0.0, 1.0, 0.0].into(),
+        );
+
         let ratio = ra::height() as f32 / ra::width() as f32;
         let proj = Mat4::perspective_lh(
             3.14 / 3.0, // fov_y_radian
             ratio,      // aspect_ratio
             0.01,       // z_near
-            10.0,       // z_far
-        );
-
-        let view = Mat4::look_at_lh(
-            // camera position
-            [0.0, 1.5, 6.0].into(),
-            // focal point
-            [0.0, 0.0, 0.0].into(),
-            // up direction
-            [0.0, 1.0, 0.0].into(),
+            100.0,      // z_far
         );
 
         // column-major matrix notation (v' = Mv)

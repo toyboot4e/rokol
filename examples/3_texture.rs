@@ -94,8 +94,8 @@ impl AppData {
 
 impl rokol::app::RApp for AppData {
     fn init(&mut self) {
-        let mut desc = rokol::app_desc();
-        rg::setup(&mut desc); // now we can call sokol_gfx functions!
+        rg::setup(&mut rokol::app_desc());
+        // now we can call sokol_gfx functions!
 
         self.bind.fs_images[0] = {
             let root = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
@@ -144,7 +144,7 @@ impl rokol::app::RApp for AppData {
         rg::begin_default_pass(&self.pa, ra::width(), ra::height());
         rg::apply_pipeline(self.pip);
         rg::apply_bindings(&self.bind);
-        rg::draw(0, 6, 1);
+        rg::draw(0, 6, 1); // base_elem, n_elems, n_instances
         rg::end_pass();
         rg::commit();
     }

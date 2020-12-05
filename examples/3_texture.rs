@@ -6,7 +6,7 @@ use {
     image::{io::Reader as ImageReader, GenericImageView},
     rokol::{
         app as ra,
-        gfx::{self as rg, BakedResource, Buffer, Image, Pipeline},
+        gfx::{self as rg, BakedResource, Buffer, Pipeline},
     },
     std::path::{Path, PathBuf},
 };
@@ -58,20 +58,24 @@ fn load_img(path: &Path) -> rg::Image {
     let (w, h) = img.dimensions();
     let pixels = img.as_bytes();
 
-    let mut desc = rg::ImageDesc {
-        type_: rg::ImageType::Dim2 as u32,
-        width: w as i32,
-        height: h as i32,
-        usage: rg::ResourceUsage::Immutable as u32,
-        ..Default::default()
-    };
+    rg::Image::create(&{
+        let mut desc = rg::ImageDesc {
+            type_: rg::ImageType::Dim2 as u32,
+            width: w as i32,
+            height: h as i32,
+            usage: rg::ResourceUsage::Immutable as u32,
+            min_filter: rg::Filter::Linear as u32,
+            mag_filter: rg::Filter::Linear as u32,
+            ..Default::default()
+        };
 
-    desc.content.subimage[0][0] = rg::SubimageContent {
-        ptr: pixels.as_ptr() as *const _,
-        size: pixels.len() as i32,
-    };
+        desc.content.subimage[0][0] = rg::SubimageContent {
+            ptr: pixels.as_ptr() as *const _,
+            size: pixels.len() as i32,
+        };
 
-    Image::create(&desc)
+        desc
+    })
 }
 
 #[derive(Debug, Default)]
@@ -103,7 +107,7 @@ impl rokol::app::RApp for AppData {
             self::load_img(&path)
         };
 
-        self.bind.vertex_buffers[0] = {
+        self.bind.vertex_buffers[0] = Buffer::create({
             let verts: &[Vertex] = &[
                 ([-0.5, -0.5, 0.0], [255, 255, 255, 255], [0.0, 0.0]).into(),
                 ([0.5, -0.5, 0.0], [255, 255, 255, 255], [1.0, 0.0]).into(),
@@ -111,16 +115,14 @@ impl rokol::app::RApp for AppData {
                 ([-0.5, 0.5, 0.0], [255, 255, 255, 255], [0.0, 1.0]).into(),
             ];
 
-            let desc = rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "texture-vertices");
-            Buffer::create(&desc)
-        };
+            &rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "texture-vertices")
+        });
 
         // index for with 2 triangles
-        self.bind.index_buffer = {
+        self.bind.index_buffer = Buffer::create({
             let indices: &[u16] = &[0, 1, 2, 0, 2, 3];
-            let desc = &rg::ibuf_desc(indices, rg::ResourceUsage::Immutable, "texture-indices");
-            Buffer::create(&desc)
-        };
+            &rg::ibuf_desc(indices, rg::ResourceUsage::Immutable, "texture-indices")
+        });
 
         self.pip = Pipeline::create(&rg::PipelineDesc {
             shader: shaders::texture(),
@@ -133,8 +135,7 @@ impl rokol::app::RApp for AppData {
                     attrs[2].format = rg::VertexFormat::Float2 as u32;
                     attrs
                 },
-                buffers: [rg::BufferLayoutDesc::default();
-                    rokol_ffi::gfx::SG_MAX_SHADERSTAGE_BUFFERS as usize],
+                ..Default::default()
             },
             ..Default::default()
         });
@@ -144,7 +145,7 @@ impl rokol::app::RApp for AppData {
         rg::begin_default_pass(&self.pa, ra::width(), ra::height());
         rg::apply_pipeline(self.pip);
         rg::apply_bindings(&self.bind);
-        rg::draw(0, 6, 1); // base_elem, n_elems, n_instances
+        rg::draw(0, 6, 1); // base_elem, n_indices, n_instances
         rg::end_pass();
         rg::commit();
     }

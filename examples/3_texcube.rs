@@ -60,22 +60,24 @@ fn load_img(path: &Path) -> rg::Image {
     let (w, h) = img.dimensions();
     let pixels = img.as_bytes();
 
-    let mut desc = rg::ImageDesc {
-        type_: rg::ImageType::Dim2 as u32,
-        width: w as i32,
-        height: h as i32,
-        usage: rg::ResourceUsage::Immutable as u32,
-        min_filter: rg::Filter::Linear as u32,
-        mag_filter: rg::Filter::Linear as u32,
-        ..Default::default()
-    };
+    rg::Image::create(&{
+        let mut desc = rg::ImageDesc {
+            type_: rg::ImageType::Dim2 as u32,
+            width: w as i32,
+            height: h as i32,
+            usage: rg::ResourceUsage::Immutable as u32,
+            min_filter: rg::Filter::Linear as u32,
+            mag_filter: rg::Filter::Linear as u32,
+            ..Default::default()
+        };
 
-    desc.content.subimage[0][0] = rg::SubimageContent {
-        ptr: pixels.as_ptr() as *const _,
-        size: pixels.len() as i32,
-    };
+        desc.content.subimage[0][0] = rg::SubimageContent {
+            ptr: pixels.as_ptr() as *const _,
+            size: pixels.len() as i32,
+        };
 
-    rg::Image::create(&desc)
+        desc
+    })
 }
 
 #[derive(Debug, Default)]
@@ -107,7 +109,7 @@ impl rokol::app::RApp for AppData {
             self::load_img(&path)
         };
 
-        self.bind.vertex_buffers[0] = {
+        self.bind.vertex_buffers[0] = Buffer::create({
             let white = [255 as u8, 255, 255, 255];
 
             // cube vertices
@@ -144,11 +146,10 @@ impl rokol::app::RApp for AppData {
                 ([1.0, 1.0, -1.0], white, [0.0, 1.0]).into(),
             ];
 
-            let desc = rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "texcube-vertices");
-            Buffer::create(&desc)
-        };
+            &rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "texcube-vertices")
+        });
 
-        self.bind.index_buffer = {
+        self.bind.index_buffer = Buffer::create({
             let indices: &[u16] = &[
                 0, 1, 2, 0, 2, 3, // one rectangle
                 6, 5, 4, 7, 6, 4, //
@@ -157,9 +158,8 @@ impl rokol::app::RApp for AppData {
                 16, 17, 18, 16, 18, 19, //
                 22, 21, 20, 23, 22, 20, //
             ];
-            let desc = &rg::ibuf_desc(indices, rg::ResourceUsage::Immutable, "texcube-indices");
-            Buffer::create(&desc)
-        };
+            &rg::ibuf_desc(indices, rg::ResourceUsage::Immutable, "texcube-indices")
+        });
 
         self.pip = Pipeline::create(&rg::PipelineDesc {
             layout: rg::LayoutDesc {
@@ -170,8 +170,7 @@ impl rokol::app::RApp for AppData {
                     attrs[2].format = rg::VertexFormat::Float2 as u32;
                     attrs
                 },
-                buffers: [rg::BufferLayoutDesc::default();
-                    rokol_ffi::gfx::SG_MAX_SHADERSTAGE_BUFFERS as usize],
+                ..Default::default()
             },
             shader: shaders::texcube(),
             index_type: rg::IndexType::UInt16 as u32,
@@ -229,7 +228,7 @@ impl rokol::app::RApp for AppData {
         };
         rg::apply_uniforms(rg::ShaderStage::Vs, 0, bytes);
 
-        rg::draw(0, 36, 1);
+        rg::draw(0, 36, 1); // base_elem, n_indices, n_instances
 
         rg::end_pass();
         rg::commit();

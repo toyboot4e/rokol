@@ -67,7 +67,7 @@ impl rokol::app::RApp for AppData {
         rg::setup(&mut rokol::app_desc());
         // now we can call sokol_gfx functions!
 
-        self.bind.vertex_buffers[0] = {
+        self.bind.vertex_buffers[0] = Buffer::create({
             let verts: &[Vertex] = &[
                 // (vertex, color)
                 // top left
@@ -80,43 +80,36 @@ impl rokol::app::RApp for AppData {
                 ([0.5, -0.5, 0.5], [0.0, 0.0, 1.0, 1.0]).into(),
             ];
 
-            let desc = rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "quad-vertices");
-            Buffer::create(&desc)
-        };
+            &rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "quad-vertices")
+        });
 
         // index for 2 triangles
-        self.bind.index_buffer = {
+        self.bind.index_buffer = Buffer::create({
             let indices: &[u16] = &[0, 1, 2, 3, 2, 1];
-            let desc = &rg::ibuf_desc(indices, rg::ResourceUsage::Immutable, "quad-indices");
-            Buffer::create(&desc)
-        };
+            &rg::ibuf_desc(indices, rg::ResourceUsage::Immutable, "quad-indices")
+        });
 
-        self.pip = {
-            let pip_desc = rg::PipelineDesc {
-                shader: shaders::quad(),
-                index_type: rg::IndexType::UInt16 as u32,
-                layout: rg::LayoutDesc {
-                    attrs: {
-                        let mut attrs = [rg::VertexAttrDesc::default(); 16];
-                        attrs[0].format = rg::VertexFormat::Float3 as u32;
-                        attrs[1].format = rg::VertexFormat::Float4 as u32;
-                        attrs
-                    },
-                    buffers: [rg::BufferLayoutDesc::default();
-                        rokol_ffi::gfx::SG_MAX_SHADERSTAGE_BUFFERS as usize],
+        self.pip = Pipeline::create(&rg::PipelineDesc {
+            shader: shaders::quad(),
+            index_type: rg::IndexType::UInt16 as u32,
+            layout: rg::LayoutDesc {
+                attrs: {
+                    let mut attrs = [rg::VertexAttrDesc::default(); 16];
+                    attrs[0].format = rg::VertexFormat::Float3 as u32;
+                    attrs[1].format = rg::VertexFormat::Float4 as u32;
+                    attrs
                 },
                 ..Default::default()
-            };
-
-            Pipeline::create(&pip_desc)
-        }
+            },
+            ..Default::default()
+        });
     }
 
     fn frame(&mut self) {
         rg::begin_default_pass(&self.pa, ra::width(), ra::height());
         rg::apply_pipeline(self.pip);
         rg::apply_bindings(&self.bind);
-        rg::draw(0, 6, 1); // base_elem, n_elems, n_instances
+        rg::draw(0, 6, 1); // base_elem, n_indices, n_instances
         rg::end_pass();
         rg::commit();
     }

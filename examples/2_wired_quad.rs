@@ -67,7 +67,7 @@ impl rokol::app::RApp for AppData {
         rg::setup(&mut rokol::app_desc());
         // now we can call `sokol_gfx` functions!
 
-        self.bind.vertex_buffers[0] = {
+        self.bind.vertex_buffers[0] = Buffer::create({
             let verts: &[Vertex] = &[
                 // top left
                 ([-0.5, 0.5, 0.5], [1.0, 0.0, 0.0, 1.0]).into(),
@@ -79,22 +79,20 @@ impl rokol::app::RApp for AppData {
                 ([0.5, -0.5, 0.5], [0.0, 0.0, 1.0, 1.0]).into(),
             ];
 
-            let desc = rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "quad-vertices");
-            Buffer::create(&desc)
-        };
+            &rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "quad-vertices")
+        });
 
         // index for 2 triangles
-        self.bind.index_buffer = {
+        self.bind.index_buffer = Buffer::create({
             let indices: &[u8] = &[
                 0, 1, 1, 2, 2, 0, // first triangle
                 3, 2, 2, 1, 1, 3, // second triangle
             ];
-            let desc = &rg::ibuf_desc(indices, rg::ResourceUsage::Immutable, "quad-indices");
-            Buffer::create(&desc)
-        };
+            &rg::ibuf_desc(indices, rg::ResourceUsage::Immutable, "quad-indices")
+        });
 
-        self.pip = {
-            let pip_desc = rg::PipelineDesc {
+        self.pip = Pipeline::create({
+            &rg::PipelineDesc {
                 shader: shaders::quad(),
                 index_type: rg::IndexType::UInt16 as u32,
                 primitive_type: rg::PrimitiveType::Lines as u32,
@@ -105,21 +103,19 @@ impl rokol::app::RApp for AppData {
                         attrs[1].format = rg::VertexFormat::Float4 as u32;
                         attrs
                     },
-                    buffers: [rg::BufferLayoutDesc::default();
-                        rokol_ffi::gfx::SG_MAX_SHADERSTAGE_BUFFERS as usize],
+                    ..Default::default()
                 },
                 ..Default::default()
-            };
-
-            Pipeline::create(&pip_desc)
-        }
+            }
+        });
     }
 
     fn frame(&mut self) {
         rg::begin_default_pass(&self.pa, ra::width(), ra::height());
         rg::apply_pipeline(self.pip);
         rg::apply_bindings(&self.bind);
-        rg::draw(0, 12, 1); // base_elem, n_elems, n_instances
+        // draw 12 lines (two triangles)
+        rg::draw(0, 12, 1); // base_elem, n_indices, n_instances
         rg::end_pass();
         rg::commit();
     }

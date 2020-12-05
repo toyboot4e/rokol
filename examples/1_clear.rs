@@ -32,13 +32,11 @@ impl AppData {
 
 impl rokol::app::RApp for AppData {
     fn init(&mut self) {
-        let mut desc = rokol::app_desc();
-        rg::setup(&mut desc);
+        rg::setup(&mut rokol::app_desc());
     }
 
     fn frame(&mut self) {
-        let [w, h] = ra::size();
-        rg::begin_default_pass(&self.pa, w, h);
+        rg::begin_default_pass(&self.pa, ra::width(), ra::height());
         rg::end_pass();
         rg::commit();
     }

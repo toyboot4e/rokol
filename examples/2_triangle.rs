@@ -67,7 +67,7 @@ impl rokol::app::RApp for AppData {
         let mut desc = rokol::app_desc();
         rg::setup(&mut desc); // now we can call sokol_gfx functions!
 
-        self.bind.vertex_buffers[0] = {
+        self.bind.vertex_buffers[0] = Buffer::create({
             let verts: &[Vertex] = &[
                 // (vertex, color)
                 ([0.0, 0.5, 0.5], [1.0, 0.0, 0.0, 1.0]).into(), // top
@@ -75,12 +75,11 @@ impl rokol::app::RApp for AppData {
                 ([-0.5, -0.5, 0.5], [0.0, 0.0, 1.0, 1.0]).into(), // bottom left
             ];
 
-            let desc = rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "triangle-vertices");
-            Buffer::create(&desc)
-        };
+            &rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "triangle-vertices")
+        });
 
-        self.pip = {
-            let pip_desc = rg::PipelineDesc {
+        self.pip = Pipeline::create({
+            &rg::PipelineDesc {
                 shader: shaders::triangle(),
                 layout: rg::LayoutDesc {
                     attrs: {
@@ -89,21 +88,18 @@ impl rokol::app::RApp for AppData {
                         attrs[1].format = rg::VertexFormat::Float4 as u32;
                         attrs
                     },
-                    buffers: [rg::BufferLayoutDesc::default();
-                        rokol_ffi::gfx::SG_MAX_SHADERSTAGE_BUFFERS as usize],
+                    ..Default::default()
                 },
                 ..Default::default()
-            };
-
-            Pipeline::create(&pip_desc)
-        };
+            }
+        });
     }
 
     fn frame(&mut self) {
         rg::begin_default_pass(&self.pa, ra::width(), ra::height());
         rg::apply_pipeline(self.pip);
         rg::apply_bindings(&self.bind);
-        rg::draw(0, 3, 1); // base_elem, n_elems, n_instances
+        rg::draw(0, 3, 1); // base_elem, n_indices, n_instances
         rg::end_pass();
         rg::commit();
     }

@@ -9,9 +9,16 @@ use {
     std::mem::size_of,
 };
 
-macro_rules! c_str {
+/// Creates a null-terminated string from a file
+macro_rules! shd_file {
     ($path:expr) => {
         concat!(include_str!($path), "\0");
+    };
+}
+
+macro_rules! c_str {
+    ($s:expr) => {
+        concat!($s, "\0");
     };
 }
 
@@ -49,7 +56,7 @@ pub fn texcube() -> rokol::gfx::Shader {
         block.uniforms[0] = rg::ShaderUniformDesc {
             type_: rg::UniformType::Mat4 as u32,
             // NOTE: this is REQUIRED
-            name: std::ffi::CString::new("mvp").unwrap().as_ptr(),
+            name: c_str!("mvp").as_ptr() as *const _,
             ..Default::default()
         };
         block
@@ -68,26 +75,26 @@ pub fn texcube() -> rokol::gfx::Shader {
 
 #[cfg(rokol_gfx = "glcore33")]
 mod files {
-    pub static TRIANGLE_VS: &str = c_str!("glsl/triangle.vert");
-    pub static TRIANGLE_FS: &str = c_str!("glsl/triangle.frag");
+    pub static TRIANGLE_VS: &str = shd_file!("glsl/triangle.vert");
+    pub static TRIANGLE_FS: &str = shd_file!("glsl/triangle.frag");
 
-    pub static QUAD_VS: &str = c_str!("glsl/quad.vert");
-    pub static QUAD_FS: &str = c_str!("glsl/quad.frag");
+    pub static QUAD_VS: &str = shd_file!("glsl/quad.vert");
+    pub static QUAD_FS: &str = shd_file!("glsl/quad.frag");
 
-    pub static TEXTURE_VS: &str = c_str!("glsl/texture.vert");
-    pub static TEXTURE_FS: &str = c_str!("glsl/texture.frag");
+    pub static TEXTURE_VS: &str = shd_file!("glsl/texture.vert");
+    pub static TEXTURE_FS: &str = shd_file!("glsl/texture.frag");
 
-    pub static TEXCUBE_VS: &str = c_str!("glsl/texcube.vert");
-    pub static TEXCUBE_FS: &str = c_str!("glsl/texcube.frag");
+    pub static TEXCUBE_VS: &str = shd_file!("glsl/texcube.vert");
+    pub static TEXCUBE_FS: &str = shd_file!("glsl/texcube.frag");
 }
 
 #[cfg(rokol_gfx = "metal")]
 mod files {
-    pub static TRIANGLE_VS: &str = c_str!("metal/triangle_vs.metal");
-    pub static TRIANGLE_FS: &str = c_str!("metal/triangle_fs.metal");
+    pub static TRIANGLE_VS: &str = shd_file!("metal/triangle_vs.metal");
+    pub static TRIANGLE_FS: &str = shd_file!("metal/triangle_fs.metal");
 
-    pub static QUAD_VS: &str = c_str!("metal/quad_vs.metal");
-    pub static QUAD_FS: &str = c_str!("metal/quad_fs.metal");
+    pub static QUAD_VS: &str = shd_file!("metal/quad_vs.metal");
+    pub static QUAD_FS: &str = shd_file!("metal/quad_fs.metal");
 
     pub static TEXTURE_VS: &str = "<unimplemented shader>";
     pub static TEXTURE_FS: &str = "<unimplemented shader>";

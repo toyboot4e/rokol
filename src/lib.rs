@@ -2,17 +2,20 @@
 //!
 //! [Sokol]: https://github.com/floooh/sokol
 //!
-//! Tip: Sokol [considers] zero-initizialized structurs to be in ‘default state’.
+//! Check out the [examples] to get more information.
+//!
+//! [examples]: https://github.com/toyboot4e/rokol/blob/master/example
+//!
+//! * Tip: Sokol [considers] zero-initizialized structurs to be in ‘default state’.
 //!
 //! [considers]: https://floooh.github.io/2017/08/06/sokol-api-update.html
-//!
-//! Very early in progress... please don't try to use it!
 
 pub use rokol_ffi as ffi;
 use std::ffi::CString;
 
 pub mod app;
 pub mod gfx;
+pub mod imgui;
 
 /// Any error upcasted to [`Box`]
 pub type Error = Box<dyn std::error::Error>;
@@ -34,11 +37,11 @@ pub struct Rokol {
 
     pub msaa_sample_count: u32,
 
-    /// [Platform] Preferred swap interval
+    /// (Platform) Preferred swap interval
     pub swap_interval: u32,
     pub use_high_dpi: bool,
     pub is_full_screen: bool,
-    /// [Platform]
+    /// (Platform)
     pub enable_alpha: bool,
     pub use_user_cursor_image: bool,
 
@@ -127,7 +130,8 @@ impl Rokol {
 
 /// `sokol_glue.h`
 ///
-/// Creates application description considering `sokol_gfx.h`. Used in [`app::RApp::init`].
+/// Glue code for creating application considering `sokol_gfx.h`. Should be sed in
+/// [`app::RApp::init`] to call `gfx::setup`.
 pub fn app_desc() -> rokol_ffi::gfx::sg_desc {
     let mut desc: rokol_ffi::gfx::sg_desc = Default::default();
     desc.context = unsafe { rokol_ffi::glue::sapp_sgcontext() };

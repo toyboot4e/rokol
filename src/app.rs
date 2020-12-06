@@ -379,12 +379,12 @@ pub fn size() -> [u32; 2] {
     [self::width(), self::height()]
 }
 
-/// TODO: use [`PixelFormat`] in rokol::gfx
+/// TODO: use [`crate::gfx::PixelFormat`]
 pub fn color_fmt() -> i32 {
     unsafe { ffi::sapp_color_format() }
 }
 
-/// TODO: use [`DeapthFormat`] in rokol::gfx
+/// TODO: use [`crate::gfx::DepthFormat`]
 pub fn depth_format() -> i32 {
     unsafe { ffi::sapp_depth_format() }
 }
@@ -404,14 +404,14 @@ pub fn dpi_scale() -> f32 {
     unsafe { ffi::sapp_dpi_scale() }
 }
 
-/// [mobile] Show or hide the mobile device onscreen keyboard
+/// (Mobile) Show or hide the mobile device onscreen keyboard
 pub fn set_show_kbd(do_show: bool) {
     unsafe {
         ffi::sapp_show_keyboard(do_show);
     }
 }
 
-/// [mobile] True if the mobile device onscreen keyboard is currently shown
+/// (Mobile) True if the mobile device onscreen keyboard is currently shown
 pub fn is_kbd_shown() -> bool {
     unsafe { ffi::sapp_keyboard_shown() }
 }
@@ -490,7 +490,7 @@ pub fn frame_count() -> u64 {
     unsafe { ffi::sapp_frame_count() }
 }
 
-/// [Clipboard] Write string into clipboard
+/// (Clipboard) Write string into clipboard
 pub fn set_clipboard(s: &str) -> Result<(), std::ffi::NulError> {
     // unfortunate cost to make it null-terminated
     let c_str = CString::new(s)?;
@@ -500,26 +500,26 @@ pub fn set_clipboard(s: &str) -> Result<(), std::ffi::NulError> {
     Ok(())
 }
 
-/// [Clipboard] Read string from clipboard (usually during `SAPP_EVENTTYPE_CLIPBOARD_PASTED`)
+/// (Clipboard) Read string from clipboard (usually during `SAPP_EVENTTYPE_CLIPBOARD_PASTED`)
 pub fn clipboard() -> Result<String, std::str::Utf8Error> {
     let ptr = unsafe { ffi::sapp_get_clipboard_string() };
     let c_str = unsafe { CStr::from_ptr(ptr) };
     c_str.to_str().map(|s| s.to_string())
 }
 
-/// [Desktop] Set the window title (only on desktop platforms)
+/// (Desktop) Set the window title (only on desktop platforms)
 pub fn set_win_title(title: &str) -> Result<(), std::ffi::NulError> {
     let c_str = CString::new(title)?;
     unsafe { ffi::sapp_set_window_title(c_str.as_ptr() as *mut _) };
     Ok(())
 }
 
-/// [Drag] The total number of dropped files (after an `SAPP_EVENTTYPE_FILES_DROPPED` event)
+/// (Drag) The total number of dropped files (after an `SAPP_EVENTTYPE_FILES_DROPPED` event)
 pub fn n_dropped_files() -> u32 {
     unsafe { ffi::sapp_get_num_dropped_files() as u32 }
 }
 
-/// [Drag] The dropped file paths
+/// (Drag) The dropped file paths
 pub fn dropped_file_path(ix: u32) -> Result<String, std::str::Utf8Error> {
     let ptr = unsafe { ffi::sapp_get_dropped_file_path(ix as i32) };
     let c_str = unsafe { CString::from_raw(ptr as *mut _) };

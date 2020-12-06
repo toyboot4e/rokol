@@ -27,7 +27,7 @@ macro_rules! raw_access {
 }
 
 // --------------------------------------------------------------------------------
-// Enums
+// Resource enums
 
 /// Actions to be performed at the start of a rendering pass in `begin_pass` or `begindefault_pass`
 ///
@@ -89,6 +89,42 @@ pub enum ResourceUsage {
     _Num = ffi::sg_usage__SG_USAGE_NUM,
 }
 
+/// Fs | Vs
+#[derive(Copy, Clone, Debug)]
+#[repr(u32)]
+pub enum ShaderStage {
+    /// Fragment shader
+    Fs = ffi::sg_shader_stage_SG_SHADERSTAGE_FS,
+    /// Vertex shader
+    Vs = ffi::sg_shader_stage_SG_SHADERSTAGE_VS,
+    // _ForceU32 = ffi::sg_shader_stage__SG_SHADERSTAGE_FORCE_U32,
+}
+
+#[derive(Copy, Clone, Debug)]
+#[repr(u32)]
+pub enum UniformType {
+    Float = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT,
+    Float2 = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT2,
+    Float3 = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT3,
+    Float4 = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT4,
+    Invalid = ffi::sg_uniform_type_SG_UNIFORMTYPE_INVALID,
+    Mat4 = ffi::sg_uniform_type_SG_UNIFORMTYPE_MAT4,
+    _ForceU32 = ffi::sg_uniform_type__SG_UNIFORMTYPE_FORCE_U32,
+    _Num = ffi::sg_uniform_type__SG_UNIFORMTYPE_NUM,
+}
+
+#[derive(Copy, Clone, Debug)]
+#[repr(u32)]
+pub enum SamplerType {
+    _Default = ffi::sg_sampler_type__SG_SAMPLERTYPE_DEFAULT,
+    Float = ffi::sg_sampler_type_SG_SAMPLERTYPE_FLOAT,
+    SInt = ffi::sg_sampler_type_SG_SAMPLERTYPE_SINT,
+    UInt = ffi::sg_sampler_type_SG_SAMPLERTYPE_UINT,
+}
+
+// --------------------------------------------------------------------------------
+// Binding enums
+
 /// Data type of a vertex component
 ///
 /// Used to describe the layout of vertex data when creating a pipeline object.
@@ -123,39 +159,6 @@ pub enum VertexFormat {
     _ForceU32 = ffi::sg_vertex_format__SG_VERTEXFORMAT_FORCE_U32,
 }
 
-/// Fs | Vs
-#[derive(Copy, Clone, Debug)]
-#[repr(u32)]
-pub enum ShaderStage {
-    /// Fragment shader
-    Fs = ffi::sg_shader_stage_SG_SHADERSTAGE_FS,
-    /// Vertex shader
-    Vs = ffi::sg_shader_stage_SG_SHADERSTAGE_VS,
-    // _ForceU32 = ffi::sg_shader_stage__SG_SHADERSTAGE_FORCE_U32,
-}
-
-#[derive(Copy, Clone, Debug)]
-#[repr(u32)]
-pub enum UniformType {
-    Float = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT,
-    Float2 = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT2,
-    Float3 = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT3,
-    Float4 = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT4,
-    Invalid = ffi::sg_uniform_type_SG_UNIFORMTYPE_INVALID,
-    Mat4 = ffi::sg_uniform_type_SG_UNIFORMTYPE_MAT4,
-    _ForceU32 = ffi::sg_uniform_type__SG_UNIFORMTYPE_FORCE_U32,
-    _Num = ffi::sg_uniform_type__SG_UNIFORMTYPE_NUM,
-}
-
-#[derive(Copy, Clone, Debug)]
-#[repr(u32)]
-pub enum SamplerType {
-    _Default = ffi::sg_sampler_type__SG_SAMPLERTYPE_DEFAULT,
-    Float = ffi::sg_sampler_type_SG_SAMPLERTYPE_FLOAT,
-    SInt = ffi::sg_sampler_type_SG_SAMPLERTYPE_SINT,
-    UInt = ffi::sg_sampler_type_SG_SAMPLERTYPE_UINT,
-}
-
 /// Index | Vertex
 #[derive(Copy, Clone, Debug)]
 #[repr(u32)]
@@ -178,6 +181,23 @@ pub enum IndexType {
     _ForceU32 = ffi::sg_index_type__SG_INDEXTYPE_FORCE_U32,
     _Num = ffi::sg_index_type__SG_INDEXTYPE_NUM,
 }
+
+/// Common subset of 3D primitive types supported across all 3D APIs. Field of [`PipelineDesc`].
+#[derive(Copy, Clone, Debug)]
+#[repr(u32)]
+pub enum PrimitiveType {
+    _Default = ffi::sg_primitive_type__SG_PRIMITIVETYPE_DEFAULT,
+    _ForuceU32 = ffi::sg_primitive_type__SG_PRIMITIVETYPE_FORCE_U32,
+    _Num = ffi::sg_primitive_type__SG_PRIMITIVETYPE_NUM,
+    Lines = ffi::sg_primitive_type_SG_PRIMITIVETYPE_LINES,
+    LinesStrip = ffi::sg_primitive_type_SG_PRIMITIVETYPE_LINE_STRIP,
+    Points = ffi::sg_primitive_type_SG_PRIMITIVETYPE_POINTS,
+    Triangles = ffi::sg_primitive_type_SG_PRIMITIVETYPE_TRIANGLES,
+    TrianglesStrip = ffi::sg_primitive_type_SG_PRIMITIVETYPE_TRIANGLE_STRIP,
+}
+
+// --------------------------------------------------------------------------------
+// Image enums
 
 /// 2D | 3D | Array | Cube
 ///
@@ -254,7 +274,7 @@ pub enum Filter {
 #[repr(u32)]
 pub enum Wrap {
     _Default = ffi::sg_wrap__SG_WRAP_DEFAULT,
-    /// [Platform]
+    /// (Platform)
     ClampToBorder = ffi::sg_wrap_SG_WRAP_CLAMP_TO_BORDER,
     ClampToEdge = ffi::sg_wrap_SG_WRAP_CLAMP_TO_EDGE,
     MirroredRepeat = ffi::sg_wrap_SG_WRAP_MIRRORED_REPEAT,
@@ -348,6 +368,9 @@ pub enum PixelFormat {
     Etc2SRgb8,
 }
 
+// --------------------------------------------------------------------------------
+// Rendering enums
+
 #[derive(Copy, Clone, Debug)]
 #[repr(u32)]
 pub enum CompareFunc {
@@ -378,6 +401,9 @@ pub enum CullMode {
 // --------------------------------------------------------------------------------
 // Wrapped structs
 
+/// Pass action
+///
+/// Wraps `ffi::sg_pass_action` just to add methods without trait.
 #[derive(Debug, Default)]
 pub struct PassAction {
     raw: ffi::sg_pass_action,
@@ -437,7 +463,7 @@ pub trait BakedResource {
     fn dealloc(id: Self::Id);
 }
 
-/// [Resource] Handle (ID) of vertex | index buffer
+/// (Resource) Handle (ID) of vertex | index buffer
 pub type Buffer = ffi::sg_buffer;
 pub type BufferDesc = ffi::sg_buffer_desc;
 pub type BufferInfo = ffi::sg_buffer_info;
@@ -478,7 +504,7 @@ impl BakedResource for Buffer {
     }
 }
 
-/// [Resource] Hadnle (ID) of image
+/// (Resource) Handle (ID) of image
 pub type Image = ffi::sg_image;
 pub type ImageDesc = ffi::sg_image_desc;
 pub type ImageContent = ffi::sg_image_content;
@@ -519,7 +545,7 @@ impl BakedResource for Image {
     }
 }
 
-/// [Resource] Handle (ID) of pipeline object
+/// (Resource) Handle (ID) of pipeline object
 pub type Pipeline = ffi::sg_pipeline;
 pub type PipelineInfo = ffi::sg_pipeline_info;
 pub type PipelineDesc = ffi::sg_pipeline_desc;
@@ -559,7 +585,7 @@ impl BakedResource for Pipeline {
     }
 }
 
-/// [Resource] Handle(ID) of pass
+/// (Resource) Handle(ID) of pass
 pub type Pass = ffi::sg_pass;
 pub type PassDesc = ffi::sg_pass_desc;
 pub type PassInfo = ffi::sg_pass_info;
@@ -599,7 +625,7 @@ impl BakedResource for Pass {
     }
 }
 
-/// [Resource] Handle (ID) of shader
+/// (Resource) Handle (ID) of shader
 pub type Shader = ffi::sg_shader;
 pub type ShaderAttrDesc = ffi::sg_shader_attr_desc;
 pub type ShaderDesc = ffi::sg_shader_desc;

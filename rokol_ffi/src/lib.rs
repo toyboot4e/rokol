@@ -23,7 +23,6 @@ pub mod gfx {
     // suppress all warnings
     #![allow(warnings)]
 
-    // Include generated bindings
     include!("ffi/sokol_gfx.rs");
 }
 
@@ -33,4 +32,15 @@ pub mod glue {
     extern "C" {
         pub fn sapp_sgcontext() -> crate::gfx::sg_context_desc;
     }
+}
+
+pub mod imgui {
+    //! `sokol_imgui.h`
+
+    // suppress all warnings
+    #![allow(warnings)]
+
+    use crate::{app::*, gfx::*};
+
+    include!("ffi/sokol_imgui.rs");
 }

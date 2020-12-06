@@ -64,8 +64,8 @@ impl AppData {
 
 impl rokol::app::RApp for AppData {
     fn init(&mut self) {
-        let mut desc = rokol::app_desc();
-        rg::setup(&mut desc); // now we can call sokol_gfx functions!
+        rg::setup(&mut rokol::app_desc());
+        // now we can call sokol_gfx functions!
 
         self.bind.vertex_buffers[0] = Buffer::create({
             let verts: &[Vertex] = &[
@@ -78,20 +78,15 @@ impl rokol::app::RApp for AppData {
             &rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "triangle-vertices")
         });
 
-        self.pip = Pipeline::create({
-            &rg::PipelineDesc {
-                shader: shaders::triangle(),
-                layout: rg::LayoutDesc {
-                    attrs: {
-                        let mut attrs = [rg::VertexAttrDesc::default(); 16];
-                        attrs[0].format = rg::VertexFormat::Float3 as u32;
-                        attrs[1].format = rg::VertexFormat::Float4 as u32;
-                        attrs
-                    },
-                    ..Default::default()
-                },
-                ..Default::default()
-            }
+        self.pip = Pipeline::create(&rg::PipelineDesc {
+            shader: shaders::triangle(),
+            layout: {
+                let mut desc = rg::LayoutDesc::default();
+                desc.attrs[0].format = rg::VertexFormat::Float3 as u32;
+                desc.attrs[1].format = rg::VertexFormat::Float4 as u32;
+                desc
+            },
+            ..Default::default()
         });
     }
 

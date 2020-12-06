@@ -127,15 +127,12 @@ impl rokol::app::RApp for AppData {
         self.pip = Pipeline::create(&rg::PipelineDesc {
             shader: shaders::texture(),
             index_type: rg::IndexType::UInt16 as u32,
-            layout: rg::LayoutDesc {
-                attrs: {
-                    let mut attrs = [rg::VertexAttrDesc::default(); 16];
-                    attrs[0].format = rg::VertexFormat::Float3 as u32;
-                    attrs[1].format = rg::VertexFormat::UByte4N as u32;
-                    attrs[2].format = rg::VertexFormat::Float2 as u32;
-                    attrs
-                },
-                ..Default::default()
+            layout: {
+                let mut desc = rg::LayoutDesc::default();
+                desc.attrs[0].format = rg::VertexFormat::Float3 as u32;
+                desc.attrs[1].format = rg::VertexFormat::UByte4N as u32;
+                desc.attrs[2].format = rg::VertexFormat::Float2 as u32;
+                desc
             },
             ..Default::default()
         });

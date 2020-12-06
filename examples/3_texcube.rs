@@ -20,7 +20,7 @@ fn main() -> rokol::Result {
     let rokol = rokol::Rokol {
         w: 1280,
         h: 720,
-        title: "Rokol - Texture cube".to_string(),
+        title: "Rokol - Textured cube".to_string(),
         ..Default::default()
     };
 
@@ -162,15 +162,12 @@ impl rokol::app::RApp for AppData {
         });
 
         self.pip = Pipeline::create(&rg::PipelineDesc {
-            layout: rg::LayoutDesc {
-                attrs: {
-                    let mut attrs = [rg::VertexAttrDesc::default(); 16];
-                    attrs[0].format = rg::VertexFormat::Float3 as u32;
-                    attrs[1].format = rg::VertexFormat::UByte4N as u32;
-                    attrs[2].format = rg::VertexFormat::Float2 as u32;
-                    attrs
-                },
-                ..Default::default()
+            layout: {
+                let mut desc = rg::LayoutDesc::default();
+                desc.attrs[0].format = rg::VertexFormat::Float3 as u32;
+                desc.attrs[1].format = rg::VertexFormat::UByte4N as u32;
+                desc.attrs[2].format = rg::VertexFormat::Float2 as u32;
+                desc
             },
             shader: shaders::texcube(),
             index_type: rg::IndexType::UInt16 as u32,
@@ -180,6 +177,7 @@ impl rokol::app::RApp for AppData {
                 ..Default::default()
             },
             rasterizer: rg::RasterizerState {
+                // FIXME:
                 // cull_mode: rg::CullMode::Front as u32,
                 cull_mode: rg::CullMode::None as u32,
                 ..Default::default()

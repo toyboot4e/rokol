@@ -34,7 +34,10 @@ fn main() {
     // Do not whitelist dependent items of whitelisted items
     let gen = gen.whitelist_recursively(false);
     // Only generate bindings to `sokol_imgui` items
+    let gen = gen.whitelist_type("simgui.*");
+    let gen = gen.whitelist_function("simgui.*");
     let gen = gen.whitelist_type("sg_imgui.*");
+    let gen = gen.whitelist_function("sg_imgui.*");
     // NOTE: Now, `sokol_imgui.rs` does not compile. Instead, we'll import `sokol_gfx`
     //       items in `lib.rs`.)
     gen.generate()

@@ -29,17 +29,19 @@ pub mod gfx {
 pub mod glue {
     //! `sokol_glue.h`
 
+    // there's only one function so let's write it manually
     extern "C" {
         pub fn sapp_sgcontext() -> crate::gfx::sg_context_desc;
     }
 }
 
 pub mod imgui {
-    //! `sokol_imgui.h`
+    //! `sokol_imgui.h`, `sokol_gfx_imgui.h`
 
     // suppress all warnings
     #![allow(warnings)]
 
+    // blacklisted items
     use crate::{app::*, gfx::*};
 
     include!("ffi/sokol_imgui.rs");

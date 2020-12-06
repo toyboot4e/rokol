@@ -44,6 +44,134 @@ impl<T> ::std::cmp::PartialEq for __BindgenUnionField<T> {
 }
 impl<T> ::std::cmp::Eq for __BindgenUnionField<T> {}
 #[repr(C)]
+pub struct simgui_desc_t {
+    pub max_vertices: ::std::os::raw::c_int,
+    pub color_format: sg_pixel_format,
+    pub depth_format: sg_pixel_format,
+    pub sample_count: ::std::os::raw::c_int,
+    pub dpi_scale: f32,
+    pub ini_filename: *const ::std::os::raw::c_char,
+    pub no_default_font: bool,
+    pub disable_hotkeys: bool,
+}
+#[test]
+fn bindgen_test_layout_simgui_desc_t() {
+    assert_eq!(
+        ::std::mem::size_of::<simgui_desc_t>(),
+        40usize,
+        concat!("Size of: ", stringify!(simgui_desc_t))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<simgui_desc_t>(),
+        8usize,
+        concat!("Alignment of ", stringify!(simgui_desc_t))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<simgui_desc_t>())).max_vertices as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(simgui_desc_t),
+            "::",
+            stringify!(max_vertices)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<simgui_desc_t>())).color_format as *const _ as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(simgui_desc_t),
+            "::",
+            stringify!(color_format)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<simgui_desc_t>())).depth_format as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(simgui_desc_t),
+            "::",
+            stringify!(depth_format)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<simgui_desc_t>())).sample_count as *const _ as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(simgui_desc_t),
+            "::",
+            stringify!(sample_count)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<simgui_desc_t>())).dpi_scale as *const _ as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(simgui_desc_t),
+            "::",
+            stringify!(dpi_scale)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<simgui_desc_t>())).ini_filename as *const _ as usize },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(simgui_desc_t),
+            "::",
+            stringify!(ini_filename)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<simgui_desc_t>())).no_default_font as *const _ as usize },
+        32usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(simgui_desc_t),
+            "::",
+            stringify!(no_default_font)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<simgui_desc_t>())).disable_hotkeys as *const _ as usize },
+        33usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(simgui_desc_t),
+            "::",
+            stringify!(disable_hotkeys)
+        )
+    );
+}
+impl Default for simgui_desc_t {
+    fn default() -> Self {
+        unsafe { ::std::mem::zeroed() }
+    }
+}
+extern "C" {
+    pub fn simgui_setup(desc: *const simgui_desc_t);
+}
+extern "C" {
+    pub fn simgui_new_frame(
+        width: ::std::os::raw::c_int,
+        height: ::std::os::raw::c_int,
+        delta_time: f64,
+    );
+}
+extern "C" {
+    pub fn simgui_render();
+}
+extern "C" {
+    pub fn simgui_handle_event(ev: *const sapp_event) -> bool;
+}
+extern "C" {
+    pub fn simgui_shutdown();
+}
+#[repr(C)]
 #[derive(Copy, Clone)]
 pub struct sg_imgui_str_t {
     pub buf: [::std::os::raw::c_char; 96usize],
@@ -3674,4 +3802,55 @@ impl Default for sg_imgui_t {
     fn default() -> Self {
         unsafe { ::std::mem::zeroed() }
     }
+}
+extern "C" {
+    pub fn sg_imgui_init(ctx: *mut sg_imgui_t);
+}
+extern "C" {
+    pub fn sg_imgui_discard(ctx: *mut sg_imgui_t);
+}
+extern "C" {
+    pub fn sg_imgui_draw(ctx: *mut sg_imgui_t);
+}
+extern "C" {
+    pub fn sg_imgui_draw_buffers_content(ctx: *mut sg_imgui_t);
+}
+extern "C" {
+    pub fn sg_imgui_draw_images_content(ctx: *mut sg_imgui_t);
+}
+extern "C" {
+    pub fn sg_imgui_draw_shaders_content(ctx: *mut sg_imgui_t);
+}
+extern "C" {
+    pub fn sg_imgui_draw_pipelines_content(ctx: *mut sg_imgui_t);
+}
+extern "C" {
+    pub fn sg_imgui_draw_passes_content(ctx: *mut sg_imgui_t);
+}
+extern "C" {
+    pub fn sg_imgui_draw_capture_content(ctx: *mut sg_imgui_t);
+}
+extern "C" {
+    pub fn sg_imgui_draw_capabilities_content(ctx: *mut sg_imgui_t);
+}
+extern "C" {
+    pub fn sg_imgui_draw_buffers_window(ctx: *mut sg_imgui_t);
+}
+extern "C" {
+    pub fn sg_imgui_draw_images_window(ctx: *mut sg_imgui_t);
+}
+extern "C" {
+    pub fn sg_imgui_draw_shaders_window(ctx: *mut sg_imgui_t);
+}
+extern "C" {
+    pub fn sg_imgui_draw_pipelines_window(ctx: *mut sg_imgui_t);
+}
+extern "C" {
+    pub fn sg_imgui_draw_passes_window(ctx: *mut sg_imgui_t);
+}
+extern "C" {
+    pub fn sg_imgui_draw_capture_window(ctx: *mut sg_imgui_t);
+}
+extern "C" {
+    pub fn sg_imgui_draw_capabilities_window(ctx: *mut sg_imgui_t);
 }

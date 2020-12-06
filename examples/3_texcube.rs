@@ -1,6 +1,4 @@
-//! Draw a texture!
-//!
-//! FIXME: WIP
+//! Textured cube
 
 mod shaders;
 
@@ -100,8 +98,7 @@ impl AppData {
 
 impl rokol::app::RApp for AppData {
     fn init(&mut self) {
-        rg::setup(&mut rokol::app_desc());
-        // now we can call sokol_gfx functions!
+        rg::setup(&mut rokol::glue::app_desc());
 
         self.bind.fs_images[0] = {
             let root = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());

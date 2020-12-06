@@ -64,8 +64,7 @@ impl AppData {
 
 impl rokol::app::RApp for AppData {
     fn init(&mut self) {
-        rg::setup(&mut rokol::app_desc());
-        // now we can call sokol_gfx functions!
+        rg::setup(&mut rokol::glue::app_desc());
 
         self.bind.vertex_buffers[0] = Buffer::create({
             let verts: &[Vertex] = &[

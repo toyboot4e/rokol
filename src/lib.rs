@@ -15,6 +15,8 @@ use std::ffi::CString;
 
 pub mod app;
 pub mod gfx;
+pub mod glue;
+
 pub mod imgui;
 
 /// Any error upcasted to [`Box`]
@@ -86,39 +88,43 @@ impl Rokol {
         #[cfg(rokol_gfx = "d3d11")]
         log::info!("Rokol renderer: D3D11");
 
-        let mut desc = ffi::app::sapp_desc::default();
+        let mut desc = {
+            let mut desc = ffi::app::sapp_desc::default();
 
-        desc.width = self.w as i32;
-        desc.height = self.h as i32;
+            // just assign `Rokol` variables
+            desc.width = self.w as i32;
+            desc.height = self.h as i32;
 
-        let title = CString::new(self.title.as_bytes())?;
-        desc.window_title = title.as_ptr() as *mut _;
+            let title = CString::new(self.title.as_bytes())?;
+            desc.window_title = title.as_ptr() as *mut _;
 
-        desc.swap_interval = self.swap_interval as i32;
+            desc.swap_interval = self.swap_interval as i32;
 
-        desc.high_dpi = self.use_high_dpi;
-        desc.fullscreen = self.is_full_screen;
+            desc.high_dpi = self.use_high_dpi;
+            desc.fullscreen = self.is_full_screen;
 
-        desc.alpha = self.enable_alpha;
-        desc.user_cursor = self.use_user_cursor_image;
+            desc.alpha = self.enable_alpha;
+            desc.user_cursor = self.use_user_cursor_image;
 
-        desc.enable_clipboard = self.enable_clipboard;
-        desc.clipboard_size = self.max_clipboard_size_in_bytes as i32;
+            desc.enable_clipboard = self.enable_clipboard;
+            desc.clipboard_size = self.max_clipboard_size_in_bytes as i32;
 
-        desc.enable_dragndrop = self.enable_drag_and_drop;
-        desc.max_dropped_files = self.n_max_dropped_files as i32;
-        desc.max_dropped_file_path_length = self.max_dropped_file_path_len_in_bytes as i32;
+            desc.enable_dragndrop = self.enable_drag_and_drop;
+            desc.max_dropped_files = self.n_max_dropped_files as i32;
+            desc.max_dropped_file_path_length = self.max_dropped_file_path_len_in_bytes as i32;
 
-        use self::app::RAppFfiCallback;
-        desc.user_data = app as *mut _ as *mut _;
+            use self::app::RAppFfiCallback;
+            desc.user_data = app as *mut _ as *mut _;
 
-        desc.init_userdata_cb = Some(<T as RAppFfiCallback>::init_userdata_cb);
-        desc.frame_userdata_cb = Some(<T as RAppFfiCallback>::frame_userdata_cb);
-        desc.cleanup_userdata_cb = Some(<T as RAppFfiCallback>::cleanup_userdata_cb);
-        desc.event_userdata_cb = Some(<T as RAppFfiCallback>::event_userdata_cb);
-        desc.fail_userdata_cb = Some(<T as RAppFfiCallback>::fail_userdata_cb);
+            // set up callbacks
+            desc.init_userdata_cb = Some(<T as RAppFfiCallback>::init_userdata_cb);
+            desc.frame_userdata_cb = Some(<T as RAppFfiCallback>::frame_userdata_cb);
+            desc.cleanup_userdata_cb = Some(<T as RAppFfiCallback>::cleanup_userdata_cb);
+            desc.event_userdata_cb = Some(<T as RAppFfiCallback>::event_userdata_cb);
+            desc.fail_userdata_cb = Some(<T as RAppFfiCallback>::fail_userdata_cb);
 
-        // desc.stream_userdata_cb = Some(<T as RAppFfiCallback>::stream_userdata_cb);
+            desc
+        };
 
         unsafe {
             rokol_ffi::app::sapp_run(&mut desc as *mut _);
@@ -126,14 +132,4 @@ impl Rokol {
 
         Ok(())
     }
-}
-
-/// `sokol_glue.h`
-///
-/// Glue code for creating application considering `sokol_gfx.h`. Should be sed in
-/// [`app::RApp::init`] to call `gfx::setup`.
-pub fn app_desc() -> rokol_ffi::gfx::sg_desc {
-    let mut desc: rokol_ffi::gfx::sg_desc = Default::default();
-    desc.context = unsafe { rokol_ffi::glue::sapp_sgcontext() };
-    desc
 }

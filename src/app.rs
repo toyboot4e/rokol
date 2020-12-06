@@ -60,19 +60,6 @@ pub trait RApp {
         eprint!("{}", msg);
     }
 
-    // /// Function called by `sokol_audio` in callback mode.
-    // ///
-    // /// The default implementation clears the buffer to zero. Applications
-    // /// using this mode are expected to mix audio data into the buffer.
-    // ///
-    // /// This is called from a separate thread on all desktop platforms.
-    // fn audio_stream(&mut self, buffer: &mut [f32], num_frames: i32, num_channels: i32) {
-    //     let len = (num_frames * num_channels) as usize;
-    //     for i in 0..len {
-    //         buffer[i] = 0.0;
-    //     }
-    // }
-
     // --------------------------------------------------------------------------------
     // C callback functions set to [`RAppDesc`]
 }
@@ -384,7 +371,7 @@ pub fn color_fmt() -> i32 {
     unsafe { ffi::sapp_color_format() }
 }
 
-/// TODO: use [`crate::gfx::DepthFormat`]
+/// TODO: use [`crate::gfx::PixelFormat`]
 pub fn depth_format() -> i32 {
     unsafe { ffi::sapp_depth_format() }
 }

@@ -32,7 +32,7 @@ impl AppData {
 
 impl rokol::app::RApp for AppData {
     fn init(&mut self) {
-        rg::setup(&mut rokol::app_desc());
+        rg::setup(&mut rokol::glue::app_desc());
     }
 
     fn frame(&mut self) {

@@ -8,8 +8,10 @@ use std::{
 use cc::Build;
 
 fn main() {
-    // update the bindings when we update `sokol`
+    // update the bindings when we update `sokol`, `cimgui` or `wrappers`
     println!("cargo:rerun-if-changed=sokol");
+    println!("cargo:rerun-if-changed=cimgui");
+    println!("cargo:rerun-if-changed=wrappers");
 
     // generate bindings to `src/ffi`
     let out_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap()).join("src/ffi");
@@ -28,6 +30,19 @@ fn main() {
     self::gen_bindings("wrappers/app.h", &out_dir.join("sokol_app.rs"), &renderer);
     self::gen_bindings("wrappers/gfx.h", &out_dir.join("sokol_gfx.rs"), &renderer);
 
+    let gen = self::new_bindgen("wrappers/imgui.h", &renderer);
+    // Do not whitelist dependent items of whitelisted items
+    let gen = gen.whitelist_recursively(false);
+    // Only generate bindings to `sokol_imgui` items
+    let gen = gen.whitelist_type("sg_imgui.*");
+    // NOTE: Now, `sokol_imgui.rs` does not compile. Instead, we'll import `sokol_gfx`
+    //       items in `lib.rs`.)
+    gen.generate()
+        .unwrap()
+        .write_to_file(&out_dir.join("sokol_imgui.rs"))
+        .unwrap();
+
+    // TODO: implement sokol_imgui
     self::compile(&mut build, is_msvc, &renderer, "wrappers/impl.c", debug);
 }
 
@@ -94,13 +109,16 @@ fn maybe_select_objective_c(wrapper: &str) -> PathBuf {
 
 fn new_bindgen(wrapper_str: &str, renderer: &Renderer) -> bindgen::Builder {
     let root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
-    let sokol_dir = root.join("sokol");
-    let wrapper = self::maybe_select_objective_c(wrapper_str);
 
     let b = bindgen::builder();
+
+    let b = b.clang_arg(format!("-I{}", root.join("sokol").display()));
+    let b = b.clang_arg(format!("-I{}", root.join("sokol/util").display()));
+
+    let wrapper = self::maybe_select_objective_c(wrapper_str);
     let b = b.header(format!("{}", wrapper.display()));
-    let b = b.clang_arg(format!("-I{}", sokol_dir.display()));
     let b = b.clang_arg(format!("-D{}", renderer.sokol_flag_name()));
+
     let b = b.derive_default(true);
     b
 }
@@ -122,15 +140,15 @@ fn compile(
     will_set_debug_flags: bool,
 ) {
     let root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
-    let sokol_dir = root.join("sokol");
 
     // ----------------------------------------
     // Set up compiler flags
 
-    build.include(&sokol_dir);
-    let src = self::maybe_select_objective_c(src_path_str);
-    build.file(&src);
+    build.include(&root.join("sokol"));
+    build.include(&root.join("sokol/util"));
+    build.include(&root.join("cimgui"));
 
+    build.file(&self::maybe_select_objective_c(src_path_str));
     build.flag(&format!("-D{}", renderer.sokol_flag_name()));
 
     // MacOS: need ARC
@@ -138,17 +156,13 @@ fn compile(
         build.flag("-fobjc-arc");
     }
 
-    // x86_64-pc-windows-gnu: additional compile/link flags
+    // x86_64-pc-windows-gnu: additional compile flags
     if cfg!(target_os = "windows") && !is_msvc {
         build
             .flag("-D_WIN32_WINNT=0x0601")
             .flag_if_supported("-Wno-cast-function-type")
             .flag_if_supported("-Wno-sign-compare")
             .flag_if_supported("-Wno-unknown-pragmas");
-
-        // also link some libraries here..
-        println!("cargo:rustc-link-lib=static=gdi32");
-        println!("cargo:rustc-link-lib=static=ole32");
     }
 
     if will_set_debug_flags {
@@ -162,6 +176,12 @@ fn compile(
 
     // ----------------------------------------
     // Link platform-dependent libraries
+
+    // x86_64-pc-windows-gnu
+    if cfg!(target_os = "windows") && !is_msvc {
+        println!("cargo:rustc-link-lib=static=gdi32");
+        println!("cargo:rustc-link-lib=static=ole32");
+    }
 
     // MacOS: frameworks
     if cfg!(target_os = "macos") {

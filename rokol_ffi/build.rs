@@ -28,7 +28,7 @@ fn main() {
     self::gen_bindings("wrappers/app.h", &out_dir.join("sokol_app.rs"), &renderer);
     self::gen_bindings("wrappers/gfx.h", &out_dir.join("sokol_gfx.rs"), &renderer);
 
-    self::compile(&mut build, is_msvc, &renderer, "wrappers/sokol.c", debug);
+    self::compile(&mut build, is_msvc, &renderer, "wrappers/impl.c", debug);
 }
 
 /// Helper for selecting Sokol renderer
@@ -92,25 +92,23 @@ fn maybe_select_objective_c(wrapper: &str) -> PathBuf {
     }
 }
 
-fn gen_bindings(wrapper_str: &str, ffi_output: &Path, renderer: &Renderer) {
+fn new_bindgen(wrapper_str: &str, renderer: &Renderer) -> bindgen::Builder {
     let root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
     let sokol_dir = root.join("sokol");
-
-    // ----------------------------------------
-    // Generate FFI
-
     let wrapper = self::maybe_select_objective_c(wrapper_str);
 
-    let bindings = {
-        let b = bindgen::builder();
-        let b = b.header(format!("{}", wrapper.display()));
-        let b = b.clang_arg(format!("-I{}", sokol_dir.display()));
-        let b = b.clang_arg(format!("-D{}", renderer.sokol_flag_name()));
-        let b = b.derive_default(true);
-        b.generate().unwrap()
-    };
+    let b = bindgen::builder();
+    let b = b.header(format!("{}", wrapper.display()));
+    let b = b.clang_arg(format!("-I{}", sokol_dir.display()));
+    let b = b.clang_arg(format!("-D{}", renderer.sokol_flag_name()));
+    let b = b.derive_default(true);
+    b
+}
 
-    bindings
+fn gen_bindings(wrapper_str: &str, ffi_output: &Path, renderer: &Renderer) {
+    let gen = new_bindgen(wrapper_str, renderer);
+    gen.generate()
+        .unwrap()
         .write_to_file(ffi_output)
         .expect("Couldn't write bindings!");
 }

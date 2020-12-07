@@ -1,4 +1,4 @@
-//! Draw a texture!
+//! Blend two textures with fragment shader!
 
 mod shaders;
 
@@ -102,11 +102,9 @@ impl rokol::app::RApp for AppData {
     fn init(&mut self) {
         rg::setup(&mut rokol::glue::app_desc());
 
-        self.bind.fs_images[0] = {
-            let root = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
-            let path = root.join("examples/images/RPG Nature Tileset.png");
-            self::load_img(&path)
-        };
+        let root = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
+        self.bind.fs_images[0] = self::load_img(&root.join("examples/images/container2.png"));
+        self.bind.fs_images[1] = self::load_img(&root.join("examples/images/awesomeface.png"));
 
         self.bind.vertex_buffers[0] = Buffer::create({
             let verts: &[Vertex] = &[
@@ -126,7 +124,7 @@ impl rokol::app::RApp for AppData {
         });
 
         self.pip = Pipeline::create(&rg::PipelineDesc {
-            shader: shaders::texture(),
+            shader: shaders::texture_multi(),
             index_type: rg::IndexType::UInt16 as u32,
             layout: {
                 let mut desc = rg::LayoutDesc::default();

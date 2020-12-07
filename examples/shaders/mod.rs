@@ -3,39 +3,32 @@
 //! Shader files are conditionally embedded to the source code.
 //!
 //! Set `build.rs` for the conditional compiltion information.
+//!
+//! NOTE: Be sure to set uniform names (or maybe fail).
 
-use {
-    rokol::gfx::{self as rg, BakedResource, Shader},
-    std::mem::size_of,
-};
+use rokol::gfx::{self as rg, BakedResource, Shader};
 
 /// Creates a null-terminated string from a file
-macro_rules! shd_file {
-    ($path:expr) => {
-        concat!(include_str!($path), "\0");
-    };
-}
-
 macro_rules! c_str {
     ($s:expr) => {
         concat!($s, "\0");
     };
 }
 
-fn desc(vs: &str, fs: &str) -> rokol::gfx::ShaderDesc {
-    unsafe { rokol::gfx::shader_desc(vs, fs) }
+fn desc(vs_fs: &[&str; 2]) -> rokol::gfx::ShaderDesc {
+    unsafe { rokol::gfx::shader_desc(vs_fs[0], vs_fs[1]) }
 }
 
 pub fn triangle() -> rokol::gfx::Shader {
-    Shader::create(&desc(files::TRIANGLE_VS, files::TRIANGLE_FS))
+    Shader::create(&desc(&TRIANGLE))
 }
 
 pub fn quad() -> rokol::gfx::Shader {
-    Shader::create(&desc(files::QUAD_VS, files::QUAD_FS))
+    Shader::create(&desc(&QUAD))
 }
 
 pub fn texture() -> rokol::gfx::Shader {
-    let mut desc = desc(files::TEXTURE_VS, files::TEXTURE_FS);
+    let mut desc = desc(&TEX);
 
     desc.fs.images[0] = rg::ShaderImageDesc {
         type_: rg::ImageType::Dim2 as u32,
@@ -45,8 +38,25 @@ pub fn texture() -> rokol::gfx::Shader {
     Shader::create(&desc)
 }
 
+pub fn texture_multi() -> rokol::gfx::Shader {
+    let mut desc = desc(&TEX_MULTI);
+
+    desc.fs.images[0] = rg::ShaderImageDesc {
+        type_: rg::ImageType::Dim2 as u32,
+        name: c_str!("tex1").as_ptr() as *const _,
+        ..Default::default()
+    };
+    desc.fs.images[1] = rg::ShaderImageDesc {
+        type_: rg::ImageType::Dim2 as u32,
+        name: c_str!("tex2").as_ptr() as *const _,
+        ..Default::default()
+    };
+
+    Shader::create(&desc)
+}
+
 pub fn texcube() -> rokol::gfx::Shader {
-    let mut desc = desc(files::TEXCUBE_VS, files::TEXCUBE_FS);
+    let mut desc = desc(&TEX_CUBE);
 
     desc.vs.uniform_blocks[0] = {
         let mut block = rg::ShaderUniformBlockDesc {
@@ -55,7 +65,6 @@ pub fn texcube() -> rokol::gfx::Shader {
         };
         block.uniforms[0] = rg::ShaderUniformDesc {
             type_: rg::UniformType::Mat4 as u32,
-            // NOTE: this is REQUIRED
             name: c_str!("mvp").as_ptr() as *const _,
             ..Default::default()
         };
@@ -64,8 +73,38 @@ pub fn texcube() -> rokol::gfx::Shader {
 
     desc.fs.images[0] = rg::ShaderImageDesc {
         type_: rg::ImageType::Dim2 as u32,
-        // not necessary
         name: c_str!("tex").as_ptr() as *const _,
+        ..Default::default()
+    };
+
+    Shader::create(&desc)
+}
+
+pub fn texcube_multi() -> rokol::gfx::Shader {
+    let mut desc = desc(&TEX_CUBE_MULTI);
+
+    desc.vs.uniform_blocks[0] = {
+        let mut block = rg::ShaderUniformBlockDesc {
+            size: std::mem::size_of::<glam::Mat4>() as i32,
+            ..Default::default()
+        };
+        block.uniforms[0] = rg::ShaderUniformDesc {
+            type_: rg::UniformType::Mat4 as u32,
+            name: c_str!("mvp").as_ptr() as *const _,
+            ..Default::default()
+        };
+        block
+    };
+
+    desc.fs.images[0] = rg::ShaderImageDesc {
+        type_: rg::ImageType::Dim2 as u32,
+        name: c_str!("tex1").as_ptr() as *const _,
+        ..Default::default()
+    };
+
+    desc.fs.images[1] = rg::ShaderImageDesc {
+        type_: rg::ImageType::Dim2 as u32,
+        name: c_str!("tex2").as_ptr() as *const _,
         ..Default::default()
     };
 
@@ -75,47 +114,69 @@ pub fn texcube() -> rokol::gfx::Shader {
 // --------------------------------------------------------------------------------
 // Shader files
 
+macro_rules! shd_set {
+    ($a:expr, $b:expr) => {
+        [
+            concat!(include_str!($a), "\0"),
+            concat!(include_str!($b), "\0"),
+        ]
+    };
+}
+
 #[cfg(rokol_gfx = "glcore33")]
-mod files {
-    pub static TRIANGLE_VS: &str = shd_file!("glsl/triangle.vert");
-    pub static TRIANGLE_FS: &str = shd_file!("glsl/triangle.frag");
-
-    pub static QUAD_VS: &str = shd_file!("glsl/quad.vert");
-    pub static QUAD_FS: &str = shd_file!("glsl/quad.frag");
-
-    pub static TEXTURE_VS: &str = shd_file!("glsl/texture.vert");
-    pub static TEXTURE_FS: &str = shd_file!("glsl/texture.frag");
-
-    pub static TEXCUBE_VS: &str = shd_file!("glsl/texcube.vert");
-    pub static TEXCUBE_FS: &str = shd_file!("glsl/texcube.frag");
+macro_rules! def_shd {
+    ($name:ident, $file:expr) => {
+        static $name: [&str; 2] = [
+            concat!(include_str!(concat!("glsl/", $file, ".vert")), "\0"),
+            concat!(include_str!(concat!("glsl/", $file, ".frag")), "\0"),
+        ];
+    };
 }
 
 #[cfg(rokol_gfx = "metal")]
-mod files {
-    pub static TRIANGLE_VS: &str = shd_file!("metal/triangle_vs.metal");
-    pub static TRIANGLE_FS: &str = shd_file!("metal/triangle_fs.metal");
-
-    pub static QUAD_VS: &str = shd_file!("metal/quad_vs.metal");
-    pub static QUAD_FS: &str = shd_file!("metal/quad_fs.metal");
-
-    pub static TEXTURE_VS: &str = "<unimplemented shader>";
-    pub static TEXTURE_FS: &str = "<unimplemented shader>";
-
-    pub static TEXCUBE_VS: &str = "<unimplemented shader>";
-    pub static TEXCUBE_FS: &str = "<unimplemented shader>";
+macro_rules! def_shd {
+    ($name:ident, $file:expr) => {
+        static $name: [&str; 2] = [
+            concat!(include_str!(concat!("metal/", $file, "_vs.metal")), "\0"),
+            concat!(include_str!(concat!("metal/", $file, "_fs.metal")), "\0"),
+        ];
+    };
 }
 
 #[cfg(rokol_gfx = "d3d11")]
-mod files {
-    pub static triangle_VS: &str = "<unimplemented shader>";
-    pub static triangle_FS: &str = "<unimplemented shader>";
-
-    pub static QUAD_VS: &str = "<unimplemented shader>";
-    pub static QUAD_FS: &str = "<unimplemented shader>";
-
-    pub static TEXTURE_VS: &str = "<unimplemented shader>";
-    pub static TEXTURE_FS: &str = "<unimplemented shader>";
-
-    pub static TEXCUBE_VS: &str = "<unimplemented shader>";
-    pub static TEXCUBE_FS: &str = "<unimplemented shader>";
+macro_rules! def_shd {
+    ($name:ident, $file:expr) => {
+        static $name: [&str; 2] = [
+            concat!(include_str!(concat!("d3d11/", $file, "_vs.hlsl")), "\0"),
+            concat!(include_str!(concat!("d3d11/", $file, "_fs.hlsl")), "\0"),
+        ]
+    };
 }
+
+def_shd!(TRIANGLE, "triangle");
+def_shd!(QUAD, "quad");
+def_shd!(TEX, "texture");
+def_shd!(TEX_MULTI, "texture_multi");
+def_shd!(TEX_CUBE, "texcube");
+def_shd!(TEX_CUBE_MULTI, "texcube_multi");
+
+// #[cfg(rokol_gfx = "glcore33")]
+// mod files {
+//     pub static TRIANGLE: [&str; 2] = shd_set!("glsl/triangle.vert", "glsl/triangle.frag");
+//     pub static QUAD: [&str; 2] = shd_set!("glsl/quad.vert", "glsl/quad.frag");
+//     pub static TEXTURE: [&str; 2] = shd_set!("glsl/texture.vert", "glsl/texture.frag");
+//     pub static TEX_MULTI: [&str; 2] =
+//         shd_set!("glsl/texture_multi.vert", "glsl/texture_multi.frag");
+//     pub static TEX_CUBE: [&str; 2] = shd_set!("glsl/texcube.vert", "glsl/texcube.frag");
+//     pub static TEX_CUBE_MULTI: [&str; 2] =
+//         shd_set!("glsl/texcube_multi.vert", "glsl/texcube_multi.frag");
+// }
+
+// #[cfg(rokol_gfx = "metal")]
+// mod files {
+//     pub static TRIANGLE: [&str; 2] = shd_set!("metal/triangle_vs.metal", "metal/triangle_fs.metal");
+//     pub static QUAD: [&str; 2] = shd_set!("metal/quad_vs.metal", "metal/quad_fs.metal");
+// }
+
+// #[cfg(rokol_gfx = "d3d11")]
+// mod files {}

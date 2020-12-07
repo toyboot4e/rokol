@@ -1,5 +1,7 @@
 //! Draw a quadliteral!
 
+// FIXME:
+
 mod shaders;
 
 use rokol::{
@@ -108,10 +110,12 @@ impl rokol::app::RApp for AppData {
 
     fn frame(&mut self) {
         rg::begin_default_pass(&self.pa, ra::width(), ra::height());
-        rg::apply_pipeline(self.pip);
-        rg::apply_bindings(&self.bind);
-        // draw 12 lines (two triangles)
-        rg::draw(0, 12, 1); // base_elem, n_indices, n_instances
+        {
+            rg::apply_pipeline(self.pip);
+            rg::apply_bindings(&self.bind);
+            // draw 12 lines (two triangles)
+            rg::draw(0, 12, 1); // base_elem, n_indices, n_instances
+        }
         rg::end_pass();
         rg::commit();
     }

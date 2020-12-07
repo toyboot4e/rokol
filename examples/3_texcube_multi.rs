@@ -102,11 +102,9 @@ impl rokol::app::RApp for AppData {
     fn init(&mut self) {
         rg::setup(&mut rokol::glue::app_desc());
 
-        self.bind.fs_images[0] = {
-            let root = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
-            let path = root.join("examples/images/container2.png");
-            self::load_img(&path)
-        };
+        let root = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
+        self.bind.fs_images[0] = self::load_img(&root.join("examples/images/container2.png"));
+        self.bind.fs_images[1] = self::load_img(&root.join("examples/images/awesomeface.png"));
 
         self.bind.vertex_buffers[0] = Buffer::create({
             let white = [255 as u8, 255, 255, 255];
@@ -168,7 +166,7 @@ impl rokol::app::RApp for AppData {
                 desc.attrs[2].format = rg::VertexFormat::Float2 as u32;
                 desc
             },
-            shader: shaders::texcube(),
+            shader: shaders::texcube_multi(),
             index_type: rg::IndexType::UInt16 as u32,
             depth_stencil: rg::DepthStencilState {
                 depth_compare_func: rg::CompareFunc::LessEq as u32,

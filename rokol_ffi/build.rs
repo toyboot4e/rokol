@@ -52,7 +52,7 @@ fn main() {
         // NOTE: Now, `sokol_imgui.rs` does not compile. Instead, we'll import `sokol_gfx`
         //       items in `lib.rs`.)
         gen.generate()
-            .unwrap()
+            .expect("failed to generate FFI to Sokol ImGUI")
             .write_to_file(&gen_dir.join("sokol_imgui.rs"))
             .unwrap();
     }
@@ -68,6 +68,7 @@ fn main() {
 }
 
 /// Helper for selecting Sokol renderer
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Renderer {
     D3D11,
     Metal,
@@ -119,15 +120,6 @@ impl Renderer {
     }
 }
 
-/// Change extension to `.` on macOS
-fn maybe_select_objective_c(wrapper: &str) -> PathBuf {
-    if cfg!(target_os = "macos") {
-        PathBuf::from(wrapper).with_extension("m")
-    } else {
-        PathBuf::from(wrapper)
-    }
-}
-
 fn new_bindgen(wrapper_str: &str, renderer: &Renderer) -> bindgen::Builder {
     let root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
 
@@ -167,7 +159,9 @@ fn compile(
     // ----------------------------------------
     // Set up compiler flags
 
+    // -Isokol
     build.include(&root.join("sokol"));
+    // -Isokol/util
     build.include(&root.join("sokol/util"));
 
     // #include "cimugi.h"
@@ -176,15 +170,20 @@ fn compile(
         // https://doc.rust-lang.org/cargo/reference/build-scripts.html#-sys-packages
         let cimgui = PathBuf::from(env::var("DEP_IMGUI_THIRD_PARTY").unwrap());
         build.include(cimgui);
+        let imgui = PathBuf::from(env::var("DEP_IMGUI_THIRD_PARTY").unwrap()).join("imgui");
+        build.include(imgui);
     }
 
-    // we have to use `impl.m` on macOS (TODO: why?)
-    build.file(&self::maybe_select_objective_c(src_path_str));
+    build.file(PathBuf::from(src_path_str));
+
+    // #define SOKOL_<RENDERER>
     build.flag(&format!("-D{}", renderer.sokol_flag_name()));
 
     // MacOS: need ARC
     if cfg!(target_os = "macos") {
         build.flag("-fobjc-arc");
+        build.flag("-std=c99");
+        build.flag("-ObjC");
     }
 
     // x86_64-pc-windows-gnu: additional compile flags

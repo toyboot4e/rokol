@@ -6,6 +6,9 @@
 #include "sokol_app.h"
 #include "sokol_gfx.h"
 
+#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
+#include "cimgui.h"
+
 // simgui*
 #include "sokol_imgui.h"
 // sg_imgui*

@@ -14,8 +14,6 @@ fn main() {
     println!("cargo:rerun-if-changed=sokol");
     println!("cargo:rerun-if-changed=wrappers");
 
-    // generate bindings to `src/ffi`
-    let out_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap()).join("src/ffi");
     let mut build = Build::new();
 
     let debug = env::var("ROKOL_FORCE_DEBUG").ok().is_some() || env::var("DEBUG").ok().is_some();
@@ -25,14 +23,25 @@ fn main() {
     };
 
     let renderer = Renderer::select(is_msvc);
-
+    // emit `DEP_SOKOL_GFX_<Renderer>`
     renderer.emit_cargo_metadata();
 
-    self::gen_bindings("wrappers/app.h", &out_dir.join("sokol_app.rs"), &renderer);
-    self::gen_bindings("wrappers/gfx.h", &out_dir.join("sokol_gfx.rs"), &renderer);
+    // generate bindings to `src/ffi`
+    let gen_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap()).join("src/ffi");
+    self::gen_bindings(
+        "wrappers/rokol_app.h",
+        &gen_dir.join("sokol_app.rs"),
+        &renderer,
+    );
+
+    self::gen_bindings(
+        "wrappers/rokol_gfx.h",
+        &gen_dir.join("sokol_gfx.rs"),
+        &renderer,
+    );
 
     {
-        let gen = self::new_bindgen("wrappers/imgui.h", &renderer);
+        let gen = self::new_bindgen("wrappers/rokol_imgui.h", &renderer);
         // Do not whitelist dependent items of whitelisted items
         let gen = gen.whitelist_recursively(false);
         // Only generate bindings to `sokol_imgui` and `sokol_gfx_imgui` items
@@ -44,11 +53,18 @@ fn main() {
         //       items in `lib.rs`.)
         gen.generate()
             .unwrap()
-            .write_to_file(&out_dir.join("sokol_imgui.rs"))
+            .write_to_file(&gen_dir.join("sokol_imgui.rs"))
             .unwrap();
     }
 
-    self::compile(&mut build, is_msvc, &renderer, "wrappers/impl.c", debug);
+    // compile and link to them
+    self::compile(
+        &mut build,
+        is_msvc,
+        &renderer,
+        "wrappers/rokol_impl.c",
+        debug,
+    );
 }
 
 /// Helper for selecting Sokol renderer
@@ -123,8 +139,7 @@ fn new_bindgen(wrapper_str: &str, renderer: &Renderer) -> bindgen::Builder {
     let cimgui = PathBuf::from(env::var("DEP_IMGUI_THIRD_PARTY").unwrap());
     let b = b.clang_arg(format!("-I{}", cimgui.display()));
 
-    let wrapper = self::maybe_select_objective_c(wrapper_str);
-    let b = b.header(format!("{}", wrapper.display()));
+    let b = b.header(format!("{}", wrapper_str));
     let b = b.clang_arg(format!("-D{}", renderer.sokol_flag_name()));
 
     let b = b.derive_default(true);
@@ -155,12 +170,15 @@ fn compile(
     build.include(&root.join("sokol"));
     build.include(&root.join("sokol/util"));
 
+    // #include "cimugi.h"
     {
-        // `imgui-sys` contains `cimgui`, which is exported with their `build.rs`
+        // https://github.com/imgui-rs/imgui-rs/blob/master/imgui-sys/build.rs#L30
+        // https://doc.rust-lang.org/cargo/reference/build-scripts.html#-sys-packages
         let cimgui = PathBuf::from(env::var("DEP_IMGUI_THIRD_PARTY").unwrap());
         build.include(cimgui);
     }
 
+    // we have to use `impl.m` on macOS (TODO: why?)
     build.file(&self::maybe_select_objective_c(src_path_str));
     build.flag(&format!("-D{}", renderer.sokol_flag_name()));
 

@@ -57,10 +57,8 @@ pub fn texture_multi() -> rokol::gfx::Shader {
 pub fn texcube() -> rokol::gfx::Shader {
     gen(&TEX_CUBE, |desc| {
         desc.vs.uniform_blocks[0] = {
-            let mut block = rg::ShaderUniformBlockDesc {
-                size: std::mem::size_of::<glam::Mat4>() as i32,
-                ..Default::default()
-            };
+            let mut block = rg::ShaderUniformBlockDesc::default();
+            block.size = std::mem::size_of::<glam::Mat4>() as i32;
             block.uniforms[0] = rg::ShaderUniformDesc {
                 type_: rg::UniformType::Mat4 as u32,
                 name: c_str!("mvp").as_ptr() as *const _,
@@ -80,10 +78,8 @@ pub fn texcube() -> rokol::gfx::Shader {
 pub fn texcube_multi() -> rokol::gfx::Shader {
     gen(&TEX_CUBE_MULTI, |desc| {
         desc.vs.uniform_blocks[0] = {
-            let mut block = rg::ShaderUniformBlockDesc {
-                size: std::mem::size_of::<glam::Mat4>() as i32,
-                ..Default::default()
-            };
+            let mut block = rg::ShaderUniformBlockDesc::default();
+            block.size = std::mem::size_of::<glam::Mat4>() as i32;
             block.uniforms[0] = rg::ShaderUniformDesc {
                 type_: rg::UniformType::Mat4 as u32,
                 name: c_str!("mvp").as_ptr() as *const _,

@@ -1,11 +1,13 @@
-//! Application
+//! Application ([`FFI`])
+//!
+//! [`FFI`]: rokol_ffi::app
 
 use {
     bitflags::bitflags,
     rokol_ffi::app as ffi,
     std::{
         ffi::{c_void, CStr, CString},
-        os::raw::{c_char, c_int},
+        os::raw::c_char,
     },
 };
 

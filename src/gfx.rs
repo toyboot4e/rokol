@@ -1,12 +1,49 @@
-//! Graphics
+//! Graphics ([`FFI`])
+//!
+//! [`FFI`]: rokol_ffi::gfx
+//!
+//! # Initialization
+//!
+//! [`setup`] should be called from [`crate::app::RApp::init`]:
+//!
+//! ```no_run
+//! rokol::gfx::setup(&rokol::glue::app_desc());
+//! ```
+//!
+//! # Resource types
+//!
+//! [`BakedResource`] implementations:
+//!
+//! * [`Buffer`]: index or vertex buffer
+//! * [`Image`]: 2D or 3D image
+//! * [`Pass`]: screen or offscreen rendering pass
+//! * [`Pipeline`]: vertex-layouts, shader and render states
+//! * [`Shader`]: vertex and fragment shaders with shader-parameter declarations
+//!
+//! # Render loop
+//!
+//! For example, one frame with one screen rendering pass:
+//!
+//! * [`begin_default_pass`]
+//!     * [`viewport`] and [`scissor`]
+//!     * [`apply_pipeline`]
+//!     * [`apply_bindings`]
+//!     * [`apply_uniforms`]
+//!     * [`draw`]
+//! * [`end_pass`]
+//! * [`commit`]
 
 use {rokol_ffi::gfx as ffi, std::ffi::CString, std::mem::size_of};
 
-pub fn setup(desc: &mut Desc) {
+/// Should be called from [`crate::app::RApp::init`]
+pub fn setup(desc: &mut SetupDesc) {
     unsafe {
         ffi::sg_setup(desc as *const _ as *mut _);
     }
 }
+
+/// [`setup`] parameter, which is created from [`crate::glue::app_desc`]
+pub type SetupDesc = ffi::sg_desc;
 
 macro_rules! raw_access {
     ($name:ident, $t:path) => {
@@ -371,6 +408,7 @@ pub enum PixelFormat {
 // --------------------------------------------------------------------------------
 // Rendering enums
 
+/// `"`, `!=`, `>`, `>=`, `<`, `<=`, `true`, `false`
 #[derive(Copy, Clone, Debug)]
 #[repr(u32)]
 pub enum CompareFunc {
@@ -387,6 +425,7 @@ pub enum CompareFunc {
     _Num = ffi::sg_compare_func__SG_COMPAREFUNC_NUM,
 }
 
+/// Front | Back | None
 #[derive(Copy, Clone, Debug)]
 #[repr(u32)]
 pub enum CullMode {
@@ -464,6 +503,8 @@ pub trait BakedResource {
 }
 
 /// (Resource) Handle (ID) of vertex | index buffer
+///
+/// Created from [`BufferDesc`] via [`BakedResource::create`].
 pub type Buffer = ffi::sg_buffer;
 pub type BufferDesc = ffi::sg_buffer_desc;
 pub type BufferInfo = ffi::sg_buffer_info;
@@ -546,6 +587,8 @@ impl BakedResource for Image {
 }
 
 /// (Resource) Handle (ID) of pipeline object
+///
+/// Created from [`PipelineDesc`] via [`BakedResource::create`].
 pub type Pipeline = ffi::sg_pipeline;
 pub type PipelineInfo = ffi::sg_pipeline_info;
 pub type PipelineDesc = ffi::sg_pipeline_desc;
@@ -585,7 +628,9 @@ impl BakedResource for Pipeline {
     }
 }
 
-/// (Resource) Handle(ID) of pass
+/// (Resource) Handle(ID) of rendering pass
+///
+/// Created from [`PassDesc`] via [`BakedResource::create`].
 pub type Pass = ffi::sg_pass;
 pub type PassDesc = ffi::sg_pass_desc;
 pub type PassInfo = ffi::sg_pass_info;
@@ -626,6 +671,8 @@ impl BakedResource for Pass {
 }
 
 /// (Resource) Handle (ID) of shader
+///
+/// Created from [`ShaderDesc`] via [`BakedResource::create`].
 pub type Shader = ffi::sg_shader;
 pub type ShaderAttrDesc = ffi::sg_shader_attr_desc;
 pub type ShaderDesc = ffi::sg_shader_desc;
@@ -678,7 +725,6 @@ pub type DepthAttachmentAction = ffi::sg_depth_attachment_action;
 pub type DepthStencilState = ffi::sg_depth_stencil_state;
 pub type RasterizerState = ffi::sg_rasterizer_state;
 
-pub type Desc = ffi::sg_desc;
 pub type Features = ffi::sg_features;
 
 pub type LayoutDesc = ffi::sg_layout_desc;
@@ -748,9 +794,26 @@ pub fn apply_uniforms<T>(stage: ShaderStage, ub_index: u32, data: &[T]) {
     }
 }
 
+/// `draw(base_elems, n_elems, n_instances)`
 pub fn draw(base_elem: u32, n_elems: u32, n_instances: u32) {
     unsafe {
         ffi::sg_draw(base_elem as i32, n_elems as i32, n_instances as i32);
+    }
+}
+
+/// Must be called inside a rendering pass
+pub fn scissor(x: u32, y: u32, w: u32, h: u32) {
+    unsafe {
+        // origin_top_left: true
+        ffi::sg_apply_scissor_rect(x as i32, y as i32, w as i32, h as i32, true);
+    }
+}
+
+/// Must be called inside a rendering pass
+pub fn viewport(x: u32, y: u32, w: u32, h: u32) {
+    unsafe {
+        // origin_top_left: true
+        ffi::sg_apply_viewport(x as i32, y as i32, w as i32, h as i32, true);
     }
 }
 

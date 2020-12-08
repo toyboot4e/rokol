@@ -17,7 +17,7 @@ pub mod app;
 pub mod gfx;
 pub mod glue;
 
-pub mod imgui;
+// pub mod imgui;
 
 /// Any error upcasted to [`Box`]
 pub type Error = Box<dyn std::error::Error>;

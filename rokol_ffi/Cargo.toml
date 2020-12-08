@@ -3,14 +3,15 @@ name = "rokol_ffi"
 version = "0.1.0"
 authors = ["toyboot4e <toyboot4e@gmail.com>"]
 edition = "2018"
+exclude = ["examples"]
 description = "Rust FFI to Sokol"
 repository = "https://github.com/toyboot4e/rokol"
-keywords = ["gamedev"]
 license = "MIT"
-categories = ["game-engines"]
+keywords = ["gamedev", "ffi"]
 
 # https://doc.rust-lang.org/cargo/reference/build-scripts.html#the-links-manifest-key
 links = "sokol"
+# emits `DEP_SOKOL_GFX` to crates that list `rokol_ffi` in their `Cargo.toml`
 
 [features]
 glcore33 = []

@@ -6,9 +6,9 @@ edition = "2018"
 exclude = ["examples"]
 description = "Wrapper of Sokol"
 repository = "https://github.com/toyboot4e/rokol"
-keywords = ["gamedev"]
 license = "MIT"
-categories = ["game-engines"]
+categories = ["game-development", "graphics"]
+keywords = ["graphics", "gamedev"]
 
 [features]
 # https://doc.rust-lang.org/cargo/reference/features.html#the-features-section
@@ -25,3 +25,4 @@ rokol_ffi = { path = "rokol_ffi", version = "0.1.0" }
 env_logger = "0.8.1"
 image = "0.23.11"
 glam = "0.11.0"
+# imgui = "0.6.0"

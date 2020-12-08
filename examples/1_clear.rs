@@ -19,6 +19,7 @@ fn main() -> rokol::Result {
 
 #[derive(Debug)]
 struct AppData {
+    /// Clears the frame color buffer on starting screen rendering pass
     pa: rg::PassAction,
 }
 
@@ -36,6 +37,7 @@ impl rokol::app::RApp for AppData {
     }
 
     fn frame(&mut self) {
+        // start rendering pass to the frame buffer
         rg::begin_default_pass(&self.pa, ra::width(), ra::height());
         rg::end_pass();
         rg::commit();

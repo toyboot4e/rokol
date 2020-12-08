@@ -1,37 +1,45 @@
-//! Graphics ([`FFI`])
-//!
-//! [`FFI`]: rokol_ffi::gfx
-//!
-//! # Initialization
-//!
-//! [`setup`] should be called from [`crate::app::RApp::init`]:
-//!
-//! ```no_run
-//! rokol::gfx::setup(&rokol::glue::app_desc());
-//! ```
-//!
-//! # Resource types
-//!
-//! [`BakedResource`] implementations:
-//!
-//! * [`Buffer`]: index or vertex buffer
-//! * [`Image`]: 2D or 3D image
-//! * [`Pass`]: screen or offscreen rendering pass
-//! * [`Pipeline`]: vertex-layouts, shader and render states
-//! * [`Shader`]: vertex and fragment shaders with shader-parameter declarations
-//!
-//! # Render loop
-//!
-//! For example, one frame with one screen rendering pass:
-//!
-//! * [`begin_default_pass`]
-//!     * [`viewport`] and [`scissor`]
-//!     * [`apply_pipeline`]
-//!     * [`apply_bindings`]
-//!     * [`apply_uniforms`]
-//!     * [`draw`]
-//! * [`end_pass`]
-//! * [`commit`]
+/*!
+
+Graphics ([`FFI`])
+
+[`FFI`]: rokol_ffi::gfx
+
+# Resource types
+
+[`BakedResource`] implementations:
+
+* [`Buffer`]: index or vertex buffer
+* [`Image`]: 2D or 3D image
+* [`Pass`]: screen or offscreen rendering pass
+* [`Pipeline`]: vertex-layouts, shader and render states
+* [`Shader`]: vertex and fragment shaders with shader-parameter declarations
+
+Be sure to specify uniform names when making [`Shader`].
+
+# Render loop
+
+For example, for one frame with one screen rendering pass:
+
+* [`begin_default_pass`] (screen rendering pass)
+    * [`viewport`] and [`scissor`]
+    * [`apply_pipeline`] (vertex-layouts, shader and render states)
+    * [`apply_bindings`] ([`Bindings`]: vertex and index buffer and images)
+    * [`apply_uniforms`] (set shader uniform with an index)
+    * [`draw`]
+* [`end_pass`]
+* [`commit`]
+
+# References
+
+* Sokol articles (The Brain Dump)
+    * [A Tour of sokol_gfx.h](https://floooh.github.io/2017/07/29/sokol-gfx-tour.html) (2017)
+    * [A small sokol_gfx.h API update](https://floooh.github.io/2019/01/12/sokol-apply-pipeline.html) (2019)
+    * [Sokol headers: spring 2020 update](https://floooh.github.io/2020/04/26/sokol-spring-2020-update.html) (2020)
+* [Learn OpenGL](https://learnopengl.com/)
+* [Learn OpenGL Examples (with Sokol in C)](https://www.geertarien.com/learnopengl-examples-html5/)
+* [zig-renderkit](https://github.com/prime31/zig-renderkit)
+
+*/
 
 use {rokol_ffi::gfx as ffi, std::ffi::CString, std::mem::size_of};
 
@@ -45,28 +53,10 @@ pub fn setup(desc: &mut SetupDesc) {
 /// [`setup`] parameter, which is created from [`crate::glue::app_desc`]
 pub type SetupDesc = ffi::sg_desc;
 
-macro_rules! raw_access {
-    ($name:ident, $t:path) => {
-        impl $name {
-            #[allow(dead_code)]
-            #[inline]
-            fn raw(&self) -> &$t {
-                &self.raw
-            }
-
-            #[allow(dead_code)]
-            #[inline]
-            fn raw_mut(&mut self) -> &mut $t {
-                &mut self.raw
-            }
-        }
-    };
-}
-
 // --------------------------------------------------------------------------------
 // Resource enums
 
-/// Actions to be performed at the start of a rendering pass in `begin_pass` or `begindefault_pass`
+/// Actions to be performed at the start of a rendering pass in [`begin_pass`] or [`begin_default_pass`]
 ///
 /// `sg_action` in `sokol_gfx.h`.
 ///
@@ -137,6 +127,7 @@ pub enum ShaderStage {
     // _ForceU32 = ffi::sg_shader_stage__SG_SHADERSTAGE_FORCE_U32,
 }
 
+/// Mat4 | Float | Float2 | Float3 | Float4
 #[derive(Copy, Clone, Debug)]
 #[repr(u32)]
 pub enum UniformType {
@@ -150,6 +141,7 @@ pub enum UniformType {
     _Num = ffi::sg_uniform_type__SG_UNIFORMTYPE_NUM,
 }
 
+/// Float | SInt | UInt
 #[derive(Copy, Clone, Debug)]
 #[repr(u32)]
 pub enum SamplerType {
@@ -437,12 +429,9 @@ pub enum CullMode {
     _Num = ffi::sg_cull_mode__SG_CULLMODE_NUM,
 }
 
-// --------------------------------------------------------------------------------
-// Wrapped structs
-
 /// Pass action
 ///
-/// Wraps `ffi::sg_pass_action` just to add methods without trait.
+/// Wraps [`ffi::sg_pass_action`] just to add methods without trait.
 #[derive(Debug, Default)]
 pub struct PassAction {
     raw: ffi::sg_pass_action,
@@ -477,13 +466,16 @@ impl PassAction {
 // Re-exports from the FFI
 
 pub type AttachmentDesc = ffi::sg_attachment_desc;
+
+/// Vertex/index buffer and image slots
 pub type Bindings = ffi::sg_bindings;
+
 pub type BlendState = ffi::sg_blend_state;
 
 // --------------------------------------------------------------------------------
 // Baked resource types compiled into immutable ones
 
-/// Buffer | Image | Pipeline | Pass | Shader
+/// [`Buffer`] | [`Image`] | [`Pipeline`] | [`Pass`] | [`Shader`]
 ///
 /// Resource object baked into immutable state.
 pub trait BakedResource {
@@ -586,10 +578,11 @@ impl BakedResource for Image {
     }
 }
 
-/// (Resource) Handle (ID) of pipeline object
+/// (Resource) Handle (ID) of pipeline object: vertex layouts, shader and render states
 ///
 /// Created from [`PipelineDesc`] via [`BakedResource::create`].
 pub type Pipeline = ffi::sg_pipeline;
+
 pub type PipelineInfo = ffi::sg_pipeline_info;
 pub type PipelineDesc = ffi::sg_pipeline_desc;
 
@@ -750,9 +743,17 @@ pub type WgpuContextDesc = ffi::sg_wgpu_context_desc;
 // --------------------------------------------------------------------------------
 // Functions
 
+/// Screen rendering pass
 pub fn begin_default_pass(pa: &impl AsRef<ffi::sg_pass_action>, w: u32, h: u32) {
     unsafe {
         ffi::sg_begin_default_pass(pa.as_ref(), w as i32, h as i32);
+    }
+}
+
+/// Offscreeen rendering pass
+pub fn begin_pass(pass: Pass, pa: &impl AsRef<ffi::sg_pass_action>) {
+    unsafe {
+        ffi::sg_begin_pass(pass, pa.as_ref());
     }
 }
 
@@ -768,12 +769,14 @@ pub fn commit() {
     }
 }
 
+/// Applies [`Pipeline`]: vertex-layouts, shader and render states)
 pub fn apply_pipeline(pip: Pipeline) {
     unsafe {
         ffi::sg_apply_pipeline(pip);
     }
 }
 
+/// Applies buffer [`Bindings`]: vertex/index buffer and images
 pub fn apply_bindings(bind: &Bindings) {
     unsafe {
         ffi::sg_apply_bindings(bind);
@@ -782,7 +785,7 @@ pub fn apply_bindings(bind: &Bindings) {
 
 /// Applies uniform data to shader
 ///
-/// `* `ub-index`: uniform block index
+/// * `ub-index`: uniform block index
 pub fn apply_uniforms<T>(stage: ShaderStage, ub_index: u32, data: &[T]) {
     unsafe {
         ffi::sg_apply_uniforms(

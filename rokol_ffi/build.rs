@@ -204,7 +204,7 @@ fn compile(
     // ----------------------------------------
     // Compile
 
-    println!("cargo:rustc-link-lib=static=cimgui");
+    // println!("cargo:rustc-link-lib=static=cimgui");
     // println!("cargo:rustc-link-lib=static=imgui");
 
     // libsokol.a

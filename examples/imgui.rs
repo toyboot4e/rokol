@@ -39,7 +39,7 @@ impl rokol::app::RApp for AppData {
     fn cleanup(&mut self) {
         unsafe {
             rokol_ffi::gfx::sg_shutdown();
-            rokol_ffi::imgui::simgui_shutdown();
+            // rokol_ffi::imgui::simgui_shutdown();
         }
     }
 

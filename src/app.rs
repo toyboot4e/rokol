@@ -1,6 +1,12 @@
-//! Application ([`FFI`])
-//!
-//! [`FFI`]: rokol_ffi::app
+/*!
+
+Application ([`FFI`])
+
+[`FFI`]: rokol_ffi::app
+
+[`crate::Rokol::run`] runs an implementation of [`RApp`].
+
+*/
 
 use {
     bitflags::bitflags,
@@ -12,7 +18,7 @@ use {
 };
 
 // --------------------------------------------------------------------------------
-// Hidden items from the FFI
+// Hidden items
 
 // See [`crate::Builder`]
 
@@ -361,7 +367,7 @@ pub fn height() -> u32 {
     unsafe { ffi::sapp_height() as u32 }
 }
 
-/// [Non-Sokol] Width and height of the current frame buffer in pixels
+/// (Non-Sokol) Returns `[rokol::width(), rokol::height()]`
 ///
 /// This function is Rokol-only and Sokol doesn't have a corresponding function.
 pub fn size() -> [u32; 2] {

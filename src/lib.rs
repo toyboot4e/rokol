@@ -1,14 +1,22 @@
-//! Wrapper of [Sokol] libraries
-//!
-//! [Sokol]: https://github.com/floooh/sokol
-//!
-//! Check out the [examples] to get more information.
-//!
-//! [examples]: https://github.com/toyboot4e/rokol/blob/master/example
-//!
-//! * Tip: Sokol [considers] zero-initizialized structurs to be in ‘default state’.
-//!
-//! [considers]: https://floooh.github.io/2017/08/06/sokol-api-update.html
+/*!
+
+Wrapper of [Sokol] libraries
+
+NOTE: This crate is very early in progress. I'd do Learn OpenGL examples to make it better.
+
+[Sokol]: https://github.com/floooh/sokol
+
+Check out the [examples] to get more information.
+
+[examples]: https://github.com/toyboot4e/rokol/blob/master/examples
+
+
+NOTE: Sokol [considers] zero-initizialized structurs to be in default state. It means
+[`Default::default`] is ensured to make sense!
+
+[considers]: https://floooh.github.io/2017/08/06/sokol-api-update.html
+
+*/
 
 pub use rokol_ffi as ffi;
 use std::ffi::CString;
@@ -25,9 +33,9 @@ pub type Error = Box<dyn std::error::Error>;
 /// Any error is upcasted to [`Box`]
 pub type Result = std::result::Result<(), Error>;
 
-/// Configuration to run a Rokol application
+/// Entry point of Rokol applications
 ///
-/// Basically a wrapper of [`ffi::app::sapp_desc`].
+/// Basically a wrapper of [`rokol_ffi::app::sapp_desc`].
 #[derive(Debug)]
 pub struct Rokol {
     /// Preferred width of the window / canvas

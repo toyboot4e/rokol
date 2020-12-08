@@ -5,6 +5,7 @@ Rust FFI to [Sokol] headers for [Rokol]
 [Sokol]: https://github.com/floooh/sokol
 [Rokol]: https://github.com/toyboot4e/rokol
 
+TODO: ImGUI support
 
 Generated with [`bindgen`], implementing [`Default`] trait
 ([`Bindgen::derive_default(true)`][derive]).

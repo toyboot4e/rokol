@@ -9,6 +9,3 @@ fn main() {
     // and emit it:
     println!("cargo:rustc-cfg=rokol_gfx={}", gfx);
 }
-
-// TODO: do we need direct dependency to `rokol_ffi` to do conditional compilation based on selected
-// renderer?

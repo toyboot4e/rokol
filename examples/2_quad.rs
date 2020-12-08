@@ -46,8 +46,11 @@ where
 
 #[derive(Debug, Default)]
 struct AppData {
+    /// Clears the frame color buffer on starting screen rendering pass
     pa: rg::PassAction,
+    /// Vertex layouts, shader and render states
     pip: rg::Pipeline,
+    /// Vertex/index buffer and image slots
     bind: rg::Bindings,
 }
 

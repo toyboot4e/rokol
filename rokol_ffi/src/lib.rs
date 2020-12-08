@@ -35,14 +35,14 @@ pub mod glue {
     }
 }
 
-pub mod imgui {
-    //! `sokol_imgui.h`, `sokol_gfx_imgui.h`
-
-    // suppress all warnings
-    #![allow(warnings)]
-
-    // blacklisted items
-    use crate::{app::*, gfx::*};
-
-    include!("ffi/sokol_imgui.rs");
-}
+// pub mod imgui {
+//     //! `sokol_imgui.h`, `sokol_gfx_imgui.h`
+//
+//     // suppress all warnings
+//     #![allow(warnings)]
+//
+//     // blacklisted items
+//     use crate::{app::*, gfx::*};
+//
+//     include!("ffi/sokol_imgui.rs");
+// }

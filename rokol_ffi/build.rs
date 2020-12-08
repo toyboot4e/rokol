@@ -1,5 +1,7 @@
 //! Build script of `rokol-ffi`
 
+// NOTE: in Crates.io, the file system is read-only and writing to `src/ffi` can fail.
+
 // TODO: consider read-only file system (crates.io)
 
 use std::{
@@ -127,6 +129,7 @@ fn new_bindgen(wrapper_str: &str, renderer: &Renderer) -> bindgen::Builder {
 
     let b = b.clang_arg(format!("-I{}", root.join("sokol").display()));
     let b = b.clang_arg(format!("-I{}", root.join("sokol/util").display()));
+
     // `imgui-sys` contains `cimgui`, which is exported with their `build.rs`
     // let cimgui = PathBuf::from(env::var("DEP_IMGUI_THIRD_PARTY").unwrap());
     // let b = b.clang_arg(format!("-I{}", cimgui.display()));
@@ -142,10 +145,7 @@ fn new_bindgen(wrapper_str: &str, renderer: &Renderer) -> bindgen::Builder {
 
 fn gen_bindings(wrapper_str: &str, ffi_output: &Path, renderer: &Renderer) {
     let gen = new_bindgen(wrapper_str, renderer);
-    gen.generate()
-        .unwrap()
-        .write_to_file(ffi_output)
-        .expect("Couldn't write bindings!");
+    gen.generate().unwrap().write_to_file(ffi_output).ok();
 }
 
 /// Compiles the given `wrapper` file and create FFI to it
@@ -204,7 +204,10 @@ fn compile(
     // ----------------------------------------
     // Compile
 
-    // TODO: link to ImGUI
+    println!("cargo:rustc-link-lib=static=cimgui");
+    // println!("cargo:rustc-link-lib=static=imgui");
+
+    // libsokol.a
     build.compile("sokol");
 
     // ----------------------------------------
@@ -220,6 +223,9 @@ fn compile(
     if cfg!(target_os = "macos") {
         println!("cargo:rustc-link-lib=framework=Cocoa");
         println!("cargo:rustc-link-lib=framework=QuartzCore");
+        println!("cargo:rustc-link-lib=framework=Quartz");
+        println!("cargo:rustc-link-lib=framework=Foundation");
+
         match renderer {
             Renderer::Metal => {
                 println!("cargo:rustc-link-lib=framework=Metal");
@@ -230,13 +236,14 @@ fn compile(
             }
             Renderer::D3D11 => panic!("Trying to use D3D11 on macOS"),
         }
-        println!("cargo:rustc-link-lib=framework=AudioToolbox");
+
+        // println!("cargo:rustc-link-lib=framework=AudioToolbox");
     }
 
     // Linux: libs
     if cfg!(target_os = "linux") {
         println!("cargo:rustc-link-lib=dylib=GL");
         println!("cargo:rustc-link-lib=dylib=X11");
-        println!("cargo:rustc-link-lib=dylib=asound");
+        // println!("cargo:rustc-link-lib=dylib=asound");
     }
 }

@@ -1,6 +1,6 @@
 [package]
 name = "rokol"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["toyboot4e <toyboot4e@gmail.com>"]
 edition = "2018"
 exclude = ["examples"]
@@ -19,7 +19,7 @@ d3d11 = ["rokol_ffi/d3d11"]
 [dependencies]
 log = "0.4.11"
 bitflags = "1.2.1"
-rokol_ffi = { path = "rokol_ffi", version = "0.1.0" }
+rokol_ffi = { path = "rokol_ffi", version = "0.1.1" }
 
 [dev-dependencies]
 env_logger = "0.8.1"

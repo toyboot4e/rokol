@@ -116,3 +116,7 @@ println!("cargo:rerun-if-changed=sokol");
 
 I expected I would get better completions to FFI items on Emacs as bonus. Unfortunately, I did not; probablly I need to remove `include_file!` from my code to get it (on VSCode, I can goto definitions of FFI items though).
 
+=== Dec 12, 2020
+
+I drew textured cubes! Examples code explaind [here](https://github.com/toyboot4e/rokol) (also conteins screenshots).
+

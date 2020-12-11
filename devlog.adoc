@@ -118,5 +118,5 @@ I expected I would get better completions to FFI items on Emacs as bonus. Unfort
 
 === Dec 12, 2020
 
-I drew textured cubes! Examples code explaind [here](https://github.com/toyboot4e/rokol) (also conteins screenshots).
+I drew textured cubes! Examples code explaind [here](https://toyboot4e.github.io/rokol) (also conteins screenshots).
 

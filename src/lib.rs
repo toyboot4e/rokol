@@ -96,6 +96,8 @@ impl Rokol {
         #[cfg(rokol_gfx = "d3d11")]
         log::info!("Rokol renderer: D3D11");
 
+        let title_cstring = CString::new(self.title.as_bytes())?;
+
         let mut desc = {
             let mut desc = ffi::app::sapp_desc::default();
 
@@ -103,8 +105,7 @@ impl Rokol {
             desc.width = self.w as i32;
             desc.height = self.h as i32;
 
-            let title = CString::new(self.title.as_bytes())?;
-            desc.window_title = title.as_ptr() as *mut _;
+            desc.window_title = title_cstring.as_ptr() as *mut _;
 
             desc.swap_interval = self.swap_interval as i32;
 

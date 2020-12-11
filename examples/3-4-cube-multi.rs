@@ -114,32 +114,34 @@ impl rokol::app::RApp for AppData {
 
             // cube vertices
             let verts: &[Vertex] = &[
-                // six rectangles
-                ([-1.0, -1.0, -1.0], white, [0.0, 0.0]).into(),
-                ([1.0, -1.0, -1.0], white, [1.0, 0.0]).into(),
-                ([1.0, 1.0, -1.0], white, [1.0, 1.0]).into(),
-                ([-1.0, 1.0, -1.0], white, [0.0, 1.0]).into(),
-                //
+                // (pos, color, uv)
+
+                // z = -1
+                ([-1.0, -1.0, -1.0], white, [0.0, 0.0]).into(), // bottom left
+                ([1.0, -1.0, -1.0], white, [1.0, 0.0]).into(),  // bottom right
+                ([1.0, 1.0, -1.0], white, [1.0, 1.0]).into(),   // top right
+                ([-1.0, 1.0, -1.0], white, [0.0, 1.0]).into(),  // top left
+                // z = 1
                 ([-1.0, -1.0, 1.0], white, [0.0, 0.0]).into(),
                 ([1.0, -1.0, 1.0], white, [1.0, 0.0]).into(),
                 ([1.0, 1.0, 1.0], white, [1.0, 1.0]).into(),
                 ([-1.0, 1.0, 1.0], white, [0.0, 1.0]).into(),
-                //
+                // x = -1
                 ([-1.0, -1.0, -1.0], white, [0.0, 0.0]).into(),
                 ([-1.0, 1.0, -1.0], white, [1.0, 0.0]).into(),
                 ([-1.0, 1.0, 1.0], white, [1.0, 1.0]).into(),
                 ([-1.0, -1.0, 1.0], white, [0.0, 1.0]).into(),
-                //
+                // x = 1
                 ([1.0, -1.0, -1.0], white, [0.0, 0.0]).into(),
                 ([1.0, 1.0, -1.0], white, [1.0, 0.0]).into(),
                 ([1.0, 1.0, 1.0], white, [1.0, 1.0]).into(),
                 ([1.0, -1.0, 1.0], white, [0.0, 1.0]).into(),
-                //
+                // y = -1
                 ([-1.0, -1.0, -1.0], white, [0.0, 0.0]).into(),
                 ([-1.0, -1.0, 1.0], white, [1.0, 0.0]).into(),
                 ([1.0, -1.0, 1.0], white, [1.0, 1.0]).into(),
                 ([1.0, -1.0, -1.0], white, [0.0, 1.0]).into(),
-                //
+                // y = 1
                 ([-1.0, 1.0, -1.0], white, [0.0, 0.0]).into(),
                 ([-1.0, 1.0, 1.0], white, [1.0, 0.0]).into(),
                 ([1.0, 1.0, 1.0], white, [1.0, 1.0]).into(),
@@ -169,7 +171,7 @@ impl rokol::app::RApp for AppData {
                 desc.attrs[2].format = rg::VertexFormat::Float2 as u32;
                 desc
             },
-            shader: shaders::texcube_multi(),
+            shader: shaders::cube_multi(),
             index_type: rg::IndexType::UInt16 as u32,
             depth_stencil: rg::DepthStencilState {
                 depth_compare_func: rg::CompareFunc::LessEq as u32,
@@ -178,7 +180,7 @@ impl rokol::app::RApp for AppData {
             },
             rasterizer: rg::RasterizerState {
                 // FIXME:
-                cull_mode: rg::CullMode::Front as u32,
+                cull_mode: rg::CullMode::None as u32,
                 ..Default::default()
             },
             ..Default::default()
@@ -198,7 +200,7 @@ impl rokol::app::RApp for AppData {
             // let model = rot_x * rot_y;
 
             // left-handed matrices
-            let view = Mat4::look_at_lh(
+            let view = Mat4::look_at_rh(
                 // camera position
                 [2.0, 2.0, 4.0].into(),
                 // focal point
@@ -208,7 +210,7 @@ impl rokol::app::RApp for AppData {
             );
 
             let ratio = ra::width() as f32 / ra::height() as f32;
-            let proj = Mat4::perspective_lh(
+            let proj = Mat4::perspective_rh(
                 3.14 / 3.0, // fov_y_radian
                 ratio,      // aspect_ratio
                 0.01,       // z_near

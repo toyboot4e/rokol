@@ -1,9 +1,9 @@
-//! Textured cube
+//! Textured cube with multiple instances
 
 mod shaders;
 
 use {
-    glam::Mat4,
+    glam::{Mat4, Vec3},
     image::{io::Reader as ImageReader, GenericImageView},
     rokol::{
         app as ra,
@@ -88,14 +88,30 @@ struct AppData {
     pip: rg::Pipeline,
     /// Vertex/index buffer and image slots
     bind: rg::Bindings,
+    /// Positions of cubes
+    cubes: [Vec3; 10],
 }
 
 impl AppData {
     pub fn new() -> Self {
         let color = [100.0 / 255.0, 149.0 / 255.0, 237.0 / 255.0, 1.0];
 
+        let cubes = [
+            [0.0, 0.0, 0.0].into(),
+            [2.0, 5.0, -15.0].into(),
+            [-1.5, -2.2, -2.5].into(),
+            [-3.8, -2.0, -12.3].into(),
+            [2.4, -0.4, -3.5].into(),
+            [-1.7, 3.0, -7.5].into(),
+            [1.3, -2.0, -2.5].into(),
+            [1.5, 2.0, -2.5].into(),
+            [1.5, 0.2, -1.5].into(),
+            [-1.3, 1.0, -1.5].into(),
+        ];
+
         Self {
             pa: rg::PassAction::clear(color),
+            cubes,
             ..Default::default()
         }
     }
@@ -105,11 +121,9 @@ impl rokol::app::RApp for AppData {
     fn init(&mut self) {
         rg::setup(&mut rokol::glue::app_desc());
 
-        self.bind.fs_images[0] = {
-            let root = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
-            let path = root.join("examples/images/container2.png");
-            self::load_img(&path)
-        };
+        let root = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
+        self.bind.fs_images[0] = self::load_img(&root.join("examples/images/container2.png"));
+        self.bind.fs_images[1] = self::load_img(&root.join("examples/images/awesomeface.png"));
 
         self.bind.vertex_buffers[0] = Buffer::create({
             let white = [255 as u8, 255, 255, 255];
@@ -117,35 +131,35 @@ impl rokol::app::RApp for AppData {
             // cube vertices
             let verts: &[Vertex] = &[
                 // six rectangles
-                ([-1.0, -1.0, -1.0], white, [0.0, 0.0]).into(),
-                ([1.0, -1.0, -1.0], white, [1.0, 0.0]).into(),
-                ([1.0, 1.0, -1.0], white, [1.0, 1.0]).into(),
-                ([-1.0, 1.0, -1.0], white, [0.0, 1.0]).into(),
+                ([-0.5, -0.5, -0.5], white, [0.0, 0.0]).into(),
+                ([0.5, -0.5, -0.5], white, [1.0, 0.0]).into(),
+                ([0.5, 0.5, -0.5], white, [1.0, 1.0]).into(),
+                ([-0.5, 0.5, -0.5], white, [0.0, 1.0]).into(),
                 //
-                ([-1.0, -1.0, 1.0], white, [0.0, 0.0]).into(),
-                ([1.0, -1.0, 1.0], white, [1.0, 0.0]).into(),
-                ([1.0, 1.0, 1.0], white, [1.0, 1.0]).into(),
-                ([-1.0, 1.0, 1.0], white, [0.0, 1.0]).into(),
+                ([-0.5, -0.5, 0.5], white, [0.0, 0.0]).into(),
+                ([0.5, -0.5, 0.5], white, [1.0, 0.0]).into(),
+                ([0.5, 0.5, 0.5], white, [1.0, 1.0]).into(),
+                ([-0.5, 0.5, 0.5], white, [0.0, 1.0]).into(),
                 //
-                ([-1.0, -1.0, -1.0], white, [0.0, 0.0]).into(),
-                ([-1.0, 1.0, -1.0], white, [1.0, 0.0]).into(),
-                ([-1.0, 1.0, 1.0], white, [1.0, 1.0]).into(),
-                ([-1.0, -1.0, 1.0], white, [0.0, 1.0]).into(),
+                ([-0.5, -0.5, -0.5], white, [0.0, 0.0]).into(),
+                ([-0.5, 0.5, -0.5], white, [1.0, 0.0]).into(),
+                ([-0.5, 0.5, 0.5], white, [1.0, 1.0]).into(),
+                ([-0.5, -0.5, 0.5], white, [0.0, 1.0]).into(),
                 //
-                ([1.0, -1.0, -1.0], white, [0.0, 0.0]).into(),
-                ([1.0, 1.0, -1.0], white, [1.0, 0.0]).into(),
-                ([1.0, 1.0, 1.0], white, [1.0, 1.0]).into(),
-                ([1.0, -1.0, 1.0], white, [0.0, 1.0]).into(),
+                ([0.5, -0.5, -0.5], white, [0.0, 0.0]).into(),
+                ([0.5, 0.5, -0.5], white, [1.0, 0.0]).into(),
+                ([0.5, 0.5, 0.5], white, [1.0, 1.0]).into(),
+                ([0.5, -0.5, 0.5], white, [0.0, 1.0]).into(),
                 //
-                ([-1.0, -1.0, -1.0], white, [0.0, 0.0]).into(),
-                ([-1.0, -1.0, 1.0], white, [1.0, 0.0]).into(),
-                ([1.0, -1.0, 1.0], white, [1.0, 1.0]).into(),
-                ([1.0, -1.0, -1.0], white, [0.0, 1.0]).into(),
+                ([-0.5, -0.5, -0.5], white, [0.0, 0.0]).into(),
+                ([-0.5, -0.5, 0.5], white, [1.0, 0.0]).into(),
+                ([0.5, -0.5, 0.5], white, [1.0, 1.0]).into(),
+                ([0.5, -0.5, -0.5], white, [0.0, 1.0]).into(),
                 //
-                ([-1.0, 1.0, -1.0], white, [0.0, 0.0]).into(),
-                ([-1.0, 1.0, 1.0], white, [1.0, 0.0]).into(),
-                ([1.0, 1.0, 1.0], white, [1.0, 1.0]).into(),
-                ([1.0, 1.0, -1.0], white, [0.0, 1.0]).into(),
+                ([-0.5, 0.5, -0.5], white, [0.0, 0.0]).into(),
+                ([-0.5, 0.5, 0.5], white, [1.0, 0.0]).into(),
+                ([0.5, 0.5, 0.5], white, [1.0, 1.0]).into(),
+                ([0.5, 0.5, -0.5], white, [0.0, 1.0]).into(),
             ];
 
             &rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "texcube-vertices")
@@ -171,7 +185,7 @@ impl rokol::app::RApp for AppData {
                 desc.attrs[2].format = rg::VertexFormat::Float2 as u32;
                 desc
             },
-            shader: shaders::texcube(),
+            shader: shaders::more_cubes(),
             index_type: rg::IndexType::UInt16 as u32,
             depth_stencil: rg::DepthStencilState {
                 depth_compare_func: rg::CompareFunc::LessEq as u32,
@@ -180,7 +194,7 @@ impl rokol::app::RApp for AppData {
             },
             rasterizer: rg::RasterizerState {
                 // FIXME:
-                cull_mode: rg::CullMode::Front as u32,
+                cull_mode: rg::CullMode::Back as u32,
                 ..Default::default()
             },
             ..Default::default()
@@ -200,9 +214,9 @@ impl rokol::app::RApp for AppData {
             // let model = rot_x * rot_y;
 
             // left-handed matrices
-            let view = Mat4::look_at_lh(
+            let view = Mat4::look_at_rh(
                 // camera position
-                [2.0, 2.0, 4.0].into(),
+                [0.0, 0.0, 3.0].into(), // reversed
                 // focal point
                 [0.0, 0.0, 0.0].into(),
                 // up direction
@@ -210,8 +224,8 @@ impl rokol::app::RApp for AppData {
             );
 
             let ratio = ra::width() as f32 / ra::height() as f32;
-            let proj = Mat4::perspective_lh(
-                3.14 / 3.0, // fov_y_radian
+            let proj = Mat4::perspective_rh(
+                3.14 / 4.0, // fov_y_radian
                 ratio,      // aspect_ratio
                 0.01,       // z_near
                 100.0,      // z_far
@@ -220,15 +234,22 @@ impl rokol::app::RApp for AppData {
             // column-major matrix notation (v' = Mv)
             let vp = proj * view;
 
-            let bytes: &[u8] = unsafe {
-                std::slice::from_raw_parts(
-                    vp.as_ref() as *const _ as *const _,
-                    std::mem::size_of::<Mat4>(),
-                )
-            };
-            rg::apply_uniforms(rg::ShaderStage::Vs, 0, bytes);
+            // for each cube positions
+            for (i, pos) in self.cubes.iter().enumerate() {
+                let m = Mat4::from_translation(pos.clone());
+                let angle = 3.14 / 9.0 * i as f32;
+                let m = m * Mat4::from_axis_angle([1.0, 0.3, 0.5].into(), angle);
+                let mvp = vp * m;
+                let bytes: &[u8] = unsafe {
+                    std::slice::from_raw_parts(
+                        mvp.as_ref() as *const _ as *const _,
+                        std::mem::size_of::<Mat4>(),
+                    )
+                };
+                rg::apply_uniforms(rg::ShaderStage::Vs, 0, bytes);
 
-            rg::draw(0, 36, 1); // base_elem, n_indices, n_instances
+                rg::draw(0, 36, 1); // base_elem, n_indices, n_instances
+            }
         }
         rg::end_pass();
         rg::commit();

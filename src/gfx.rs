@@ -429,6 +429,17 @@ pub enum CullMode {
     _Num = ffi::sg_cull_mode__SG_CULLMODE_NUM,
 }
 
+/// CCW | CW |
+#[derive(Copy, Clone, Debug)]
+#[repr(u32)]
+pub enum FaceWinding {
+    _Default = ffi::sg_face_winding__SG_FACEWINDING_DEFAULT,
+    Ccw = ffi::sg_face_winding_SG_FACEWINDING_CCW,
+    Cw = ffi::sg_face_winding_SG_FACEWINDING_CW,
+    _Num = ffi::sg_face_winding__SG_FACEWINDING_NUM,
+    _ForceU32 = ffi::sg_face_winding__SG_FACEWINDING_FORCE_U32,
+}
+
 /// Pass action
 ///
 /// Wraps [`ffi::sg_pass_action`] just to add methods without trait.
@@ -820,9 +831,6 @@ pub fn viewport(x: u32, y: u32, w: u32, h: u32) {
     }
 }
 
-// --------------------------------------------------------------------------------
-// Helpers
-
 /// [Non-Sokol] Helper for making shaders
 ///
 /// Caller must ensure the shader strings are null-terminated!
@@ -868,10 +876,10 @@ fn buf_desc<T>(
         content: buf.as_ptr() as *mut _,
         type_: buffer_type as u32,
         usage: usage as u32,
-        label: if label == "" {
+        label: if label.is_empty() {
             std::ptr::null_mut()
         } else {
-            // FIXME: lifetime
+            // FIXME: lifetime. maybe use global CString storage?
             let label = CString::new(label).expect("Unable to create CString in BufferDesc::new");
             label.as_ptr() as *mut _
         },

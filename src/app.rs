@@ -31,17 +31,17 @@ use {
 // --------------------------------------------------------------------------------
 // Primary trait
 
-/// `rokol::app` callbacks
+/// [`rokol::app`] callbacks
 ///
 /// All provided function callbacks will be called from the same thread,
-/// but this may be different from the thread where `sokol_main()` was called.
+/// but this may be different from the thread where `main` was called.
 pub trait RApp {
     /// Called once after the rendering surface, 3D API and swap chain have been initialized by
     /// `sokol_app`
     fn init(&mut self) {}
 
     /// Called on the same thread as the init callback, but might be on a different thread than the
-    /// `sokol_main()` function
+    /// `main` function
     fn frame(&mut self) {}
 
     /// Called once after the user quits the application

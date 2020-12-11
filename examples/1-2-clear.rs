@@ -1,4 +1,4 @@
-//! Open a window and fill it with corn-flower blue!
+//! Open a window and fill it with corn-flower blue color!
 
 use rokol::{app as ra, gfx as rg};
 
@@ -8,7 +8,7 @@ fn main() -> rokol::Result {
     let rokol = rokol::Rokol {
         w: 1280,
         h: 720,
-        title: "Rokol - Window".to_string(),
+        title: "Rokol - Clear".to_string(),
         ..Default::default()
     };
 

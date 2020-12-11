@@ -17,7 +17,7 @@ fn main() -> rokol::Result {
     let rokol = rokol::Rokol {
         w: 1280,
         h: 720,
-        title: "Rokol - Window".to_string(),
+        title: "Rokol - Texture".to_string(),
         ..Default::default()
     };
 

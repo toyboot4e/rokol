@@ -418,6 +418,8 @@ pub enum CompareFunc {
 }
 
 /// Front | Back | None
+///
+/// https://learnopengl.com/Advanced-OpenGL/Face-culling
 #[derive(Copy, Clone, Debug)]
 #[repr(u32)]
 pub enum CullMode {
@@ -429,12 +431,16 @@ pub enum CullMode {
     _Num = ffi::sg_cull_mode__SG_CULLMODE_NUM,
 }
 
-/// CCW | CW |
+/// CCW | CW
+///
+/// https://learnopengl.com/Advanced-OpenGL/Face-culling
 #[derive(Copy, Clone, Debug)]
 #[repr(u32)]
 pub enum FaceWinding {
     _Default = ffi::sg_face_winding__SG_FACEWINDING_DEFAULT,
+    /// Counter clockwise winding ordering (the default)
     Ccw = ffi::sg_face_winding_SG_FACEWINDING_CCW,
+    /// Clockwise winding ordering
     Cw = ffi::sg_face_winding_SG_FACEWINDING_CW,
     _Num = ffi::sg_face_winding__SG_FACEWINDING_NUM,
     _ForceU32 = ffi::sg_face_winding__SG_FACEWINDING_FORCE_U32,

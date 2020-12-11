@@ -1,5 +1,7 @@
 //! Just open a window with Rokol!
 
+use rokol::gfx as rg;
+
 fn main() -> rokol::Result {
     env_logger::init(); // give implementation to log crate
 
@@ -20,5 +22,7 @@ struct AppData {}
 impl rokol::app::RApp for AppData {
     fn init(&mut self) {
         println!("Hello, Rokol! And this is the `init` callback!");
+        // NOTE: `Rokol` always discards the graphics so we have to set it up:
+        rg::setup(&mut rokol::glue::app_desc());
     }
 }

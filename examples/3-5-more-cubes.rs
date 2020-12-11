@@ -18,7 +18,7 @@ fn main() -> rokol::Result {
     let rokol = rokol::Rokol {
         w: 1280,
         h: 720,
-        title: "Rokol - Textured cube".to_string(),
+        title: "Rokol - More cubes".to_string(),
         ..Default::default()
     };
 

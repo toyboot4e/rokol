@@ -148,7 +148,7 @@ impl rokol::app::RApp for AppData {
                 ([1.0, 1.0, -1.0], white, [0.0, 1.0]).into(),
             ];
 
-            &rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "texcube-vertices")
+            &rg::vbuf_desc_immutable(verts, "texcube-vertices")
         });
 
         self.bind.index_buffer = Buffer::create({
@@ -160,7 +160,7 @@ impl rokol::app::RApp for AppData {
                 16, 17, 18, 16, 18, 19, //
                 22, 21, 20, 23, 22, 20, //
             ];
-            &rg::ibuf_desc(indices, rg::ResourceUsage::Immutable, "texcube-indices")
+            &rg::ibuf_desc_immutable(indices, "texcube-indices")
         });
 
         self.pip = Pipeline::create(&rg::PipelineDesc {

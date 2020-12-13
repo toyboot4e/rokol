@@ -82,13 +82,13 @@ impl rokol::app::RApp for AppData {
                 ([0.5, -0.5, 0.5], [0.0, 0.0, 1.0, 1.0]).into(),
             ];
 
-            &rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "quad-vertices")
+            &rg::vbuf_desc_immutable(verts, "quad-vertices")
         });
 
         // index for 2 triangles
         self.bind.index_buffer = Buffer::create({
             let indices: &[u16] = &[0, 1, 2, 3, 2, 1];
-            &rg::ibuf_desc(indices, rg::ResourceUsage::Immutable, "quad-indices")
+            &rg::ibuf_desc_immutable(indices, "quad-indices")
         });
 
         self.pip = Pipeline::create(&rg::PipelineDesc {

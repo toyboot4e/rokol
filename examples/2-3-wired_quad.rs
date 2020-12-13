@@ -83,7 +83,7 @@ impl rokol::app::RApp for AppData {
                 ([0.5, -0.5, 0.5], [0.0, 0.0, 1.0, 1.0]).into(),
             ];
 
-            &rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "quad-vertices")
+            &rg::vbuf_desc_immutable(verts, "quad-vertices")
         });
 
         // index for 2 triangles
@@ -92,7 +92,7 @@ impl rokol::app::RApp for AppData {
                 0, 1, 1, 2, 2, 0, // first triangle
                 3, 2, 2, 1, 1, 3, // second triangle
             ];
-            &rg::ibuf_desc(indices, rg::ResourceUsage::Immutable, "quad-indices")
+            &rg::ibuf_desc_immutable(indices, "quad-indices")
         });
 
         self.pip = Pipeline::create({

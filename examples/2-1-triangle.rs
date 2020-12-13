@@ -77,7 +77,7 @@ impl rokol::app::RApp for AppData {
                 ([-0.5, -0.5, 0.5], [0.0, 0.0, 1.0, 1.0]).into(), // bottom left
             ];
 
-            &rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "triangle-vertices")
+            &rg::vbuf_desc_immutable(verts, "triangle-vertices")
         });
 
         self.pip = Pipeline::create(&rg::PipelineDesc {

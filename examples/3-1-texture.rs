@@ -119,13 +119,13 @@ impl rokol::app::RApp for AppData {
                 ([-0.5, 0.5, 0.0], [255, 255, 255, 255], [0.0, 1.0]).into(),
             ];
 
-            &rg::vbuf_desc(verts, rg::ResourceUsage::Immutable, "texture-vertices")
+            &rg::vbuf_desc_immutable(verts, "texture-vertices")
         });
 
         // index for with 2 triangles
         self.bind.index_buffer = Buffer::create({
             let indices: &[u16] = &[0, 1, 2, 0, 2, 3];
-            &rg::ibuf_desc(indices, rg::ResourceUsage::Immutable, "texture-indices")
+            &rg::ibuf_desc_immutable(indices, "texture-indices")
         });
 
         self.pip = Pipeline::create(&rg::PipelineDesc {

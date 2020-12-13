@@ -865,41 +865,45 @@ pub unsafe fn shader_desc(vs: &str, fs: &str) -> ShaderDesc {
 }
 
 /// [Non-Sokol] Helper for creating index buffer
-pub fn ibuf_desc<T>(buf: &[T], usage: ResourceUsage, label: &str) -> BufferDesc {
+pub fn ibuf_desc_immutable<T>(buf: &[T], label: &str) -> BufferDesc {
     let size = (std::mem::size_of::<T>() * buf.len()) as i32;
-    buf_desc(
-        buf.as_ptr() as *const _,
-        size,
-        BufferType::Index,
-        usage,
-        label,
-    )
+
+    unsafe {
+        buf_desc(
+            buf.as_ptr() as *const _,
+            size,
+            BufferType::Index,
+            ResourceUsage::Immutable,
+            label,
+        )
+    }
 }
 
-/// [Non-Sokol] Helper for creating vertex buffer
-pub fn vbuf_desc<T>(buf: &[T], usage: ResourceUsage, label: &str) -> BufferDesc {
+/// [Non-Sokol] Helper for creating index buffer
+pub fn ibuf_desc_dyn<T>(size: i32, usage: ResourceUsage, label: &str) -> BufferDesc {
+    unsafe { buf_desc(std::ptr::null_mut(), size, BufferType::Index, usage, label) }
+}
+
+/// [Non-Sokol] Helper for creating immutable vertex buffer
+pub fn vbuf_desc_immutable<T>(buf: &[T], label: &str) -> BufferDesc {
     let size = (std::mem::size_of::<T>() * buf.len()) as i32;
-    buf_desc(
-        buf.as_ptr() as *const _,
-        size,
-        BufferType::Vertex,
-        usage,
-        label,
-    )
+    unsafe {
+        buf_desc(
+            buf.as_ptr() as *const _,
+            size,
+            BufferType::Vertex,
+            ResourceUsage::Immutable,
+            label,
+        )
+    }
 }
 
-/// [Non-Sokol] Helper for creating vertex buffer
-pub fn vbuf_desc_stream(size: i32, label: &str) -> BufferDesc {
-    buf_desc(
-        std::ptr::null_mut(),
-        size,
-        BufferType::Vertex,
-        ResourceUsage::Stream,
-        label,
-    )
+/// [Non-Sokol] Helper for creating dynamic vertex buffer
+pub fn vbuf_desc_dyn(size: i32, usage: ResourceUsage, label: &str) -> BufferDesc {
+    unsafe { buf_desc(std::ptr::null_mut(), size, BufferType::Vertex, usage, label) }
 }
 
-fn buf_desc(
+pub unsafe fn buf_desc(
     ptr: *const c_void,
     size: i32,
     buffer_type: BufferType,

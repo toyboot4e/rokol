@@ -41,7 +41,11 @@ For example, for one frame with one screen rendering pass:
 
 */
 
-use {rokol_ffi::gfx as ffi, std::ffi::CString, std::mem::size_of};
+use {
+    rokol_ffi::gfx as ffi,
+    std::ffi::{c_void, CString},
+    std::mem::size_of,
+};
 
 /// Should be called from [`crate::app::RApp::init`]
 pub fn setup(desc: &mut SetupDesc) {
@@ -862,24 +866,49 @@ pub unsafe fn shader_desc(vs: &str, fs: &str) -> ShaderDesc {
 
 /// [Non-Sokol] Helper for creating index buffer
 pub fn ibuf_desc<T>(buf: &[T], usage: ResourceUsage, label: &str) -> BufferDesc {
-    buf_desc(buf, BufferType::Index, usage, label)
+    let size = (std::mem::size_of::<T>() * buf.len()) as i32;
+    buf_desc(
+        buf.as_ptr() as *const _,
+        size,
+        BufferType::Index,
+        usage,
+        label,
+    )
 }
 
 /// [Non-Sokol] Helper for creating vertex buffer
 pub fn vbuf_desc<T>(buf: &[T], usage: ResourceUsage, label: &str) -> BufferDesc {
-    buf_desc(buf, BufferType::Vertex, usage, label)
+    let size = (std::mem::size_of::<T>() * buf.len()) as i32;
+    buf_desc(
+        buf.as_ptr() as *const _,
+        size,
+        BufferType::Vertex,
+        usage,
+        label,
+    )
 }
 
-fn buf_desc<T>(
-    buf: &[T],
+/// [Non-Sokol] Helper for creating vertex buffer
+pub fn vbuf_desc_stream(size: i32, label: &str) -> BufferDesc {
+    buf_desc(
+        std::ptr::null_mut(),
+        size,
+        BufferType::Vertex,
+        ResourceUsage::Stream,
+        label,
+    )
+}
+
+fn buf_desc(
+    ptr: *const c_void,
+    size: i32,
     buffer_type: BufferType,
     usage: ResourceUsage,
     label: &str,
 ) -> BufferDesc {
-    let size = (std::mem::size_of::<T>() * buf.len()) as i32;
     ffi::sg_buffer_desc {
         size,
-        content: buf.as_ptr() as *mut _,
+        content: ptr,
         type_: buffer_type as u32,
         usage: usage as u32,
         label: if label.is_empty() {

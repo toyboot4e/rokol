@@ -2,7 +2,7 @@
 
 #define SOKOL_TRACE_HOOKS
 
-// blacklisted includes
+// required includes (blacklisted with `bindgen`)
 #include "sokol_app.h"
 #include "sokol_gfx.h"
 

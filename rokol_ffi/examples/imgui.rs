@@ -1,4 +1,4 @@
-//! Just for testing link to `sokol_gfx.h` and `cimgui`
+// //! Just for testing link to `sokol_gfx.h` and `cimgui`
 
 use rokol_ffi::imgui as ri;
 

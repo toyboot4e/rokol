@@ -6,6 +6,7 @@ Rust FFI to [Sokol] headers for [Rokol]
 [Rokol]: https://github.com/toyboot4e/rokol
 
 TODO: ImGUI support
+TODO: Do not use `include!` so that we get editor support in Emacs
 
 Generated with [`bindgen`], implementing [`Default`] trait
 ([`Bindgen::derive_default(true)`][derive]).
@@ -47,14 +48,26 @@ pub mod glue {
     }
 }
 
-// pub mod imgui {
-//     //! `sokol_imgui.h`, `sokol_gfx_imgui.h`
-//
-//     // suppress all warnings
-//     #![allow(warnings)]
-//
-//     // blacklisted items
-//     use crate::{app::*, gfx::*};
-//
-//     include!("ffi/sokol_imgui.rs");
-// }
+pub mod imgui {
+    //! `sokol_imgui.h`, `sokol_gfx_imgui.h`
+
+    // suppress all warnings
+    #![allow(warnings)]
+
+    // blacklisted items
+    use crate::{app::*, gfx::*};
+
+    include!("ffi/sokol_imgui.rs");
+}
+
+#[cfg(test)]
+mod test {
+    /// Just to make sure we link to `sokol`
+    fn link_test() {
+        unsafe {
+            let mut desc: crate::gfx::sg_desc = Default::default();
+            desc.context = crate::glue::sapp_sgcontext();
+            crate::gfx::sg_setup(&desc);
+        }
+    }
+}

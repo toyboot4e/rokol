@@ -42,6 +42,7 @@ fn main() {
         &renderer,
     );
 
+    // TODO imgui
     // {
     //     let gen = self::new_bindgen("wrappers/rokol_imgui.h", &renderer);
     //     // Do not whitelist dependent items of whitelisted items
@@ -130,11 +131,12 @@ fn new_bindgen(wrapper_str: &str, renderer: &Renderer) -> bindgen::Builder {
     let b = b.clang_arg(format!("-I{}", root.join("sokol").display()));
     let b = b.clang_arg(format!("-I{}", root.join("sokol/util").display()));
 
-    // `imgui-sys` contains `cimgui`, which is exported with their `build.rs`
-    // let cimgui = PathBuf::from(env::var("DEP_IMGUI_THIRD_PARTY").unwrap());
-    // let b = b.clang_arg(format!("-I{}", cimgui.display()));
-    // let imgui = PathBuf::from(env::var("DEP_IMGUI_THIRD_PARTY").unwrap()).join("imgui");
-    // let b = b.clang_arg(format!("-I{}", imgui.display()));
+    // TODO: ImGUI
+    {
+        // `imgui-sys` contains `cimgui`, which is exported with their `build.rs`
+        // let cimgui = PathBuf::from(env::var("DEP_IMGUI_THIRD_PARTY").unwrap());
+        // let b = b.clang_arg(format!("-I{}", cimgui.display()));
+    }
 
     let b = b.header(format!("{}", wrapper_str));
     let b = b.clang_arg(format!("-D{}", renderer.sokol_flag_name()));
@@ -161,19 +163,19 @@ fn compile(
     // ----------------------------------------
     // Set up compiler flags
 
+    build.flag("-std=c99");
+
     // -Isokol
     build.include(&root.join("sokol"));
     // -Isokol/util
     build.include(&root.join("sokol/util"));
 
-    // // #include "cimugi.h"
+    // TODO: ImGUI (`#include "cimgui.h"`)
     // {
     //     // https://github.com/imgui-rs/imgui-rs/blob/master/imgui-sys/build.rs#L30
     //     // https://doc.rust-lang.org/cargo/reference/build-scripts.html#-sys-packages
     //     let cimgui = PathBuf::from(env::var("DEP_IMGUI_THIRD_PARTY").unwrap());
-    //     build.include(cimgui);
-    //     let imgui = PathBuf::from(env::var("DEP_IMGUI_THIRD_PARTY").unwrap()).join("imgui");
-    //     build.include(imgui);
+    //     build.include(&cimgui);
     // }
 
     build.file(PathBuf::from(src_path_str));
@@ -184,7 +186,6 @@ fn compile(
     // MacOS: need ARC
     if cfg!(target_os = "macos") {
         build.flag("-fobjc-arc");
-        build.flag("-std=c99");
         build.flag("-ObjC");
     }
 

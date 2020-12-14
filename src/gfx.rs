@@ -841,6 +841,35 @@ pub fn viewport(x: u32, y: u32, w: u32, h: u32) {
     }
 }
 
+/// Uploads vertices/indices to vertex/index buffer
+///
+/// Requires [`ResourceUsage::Dynamic`] or [`ResourceUsage::Stream`].
+///
+/// This can only be called once per frame.
+pub fn update_buffer<T>(buf: Buffer, data: &[T]) {
+    let size = size_of::<T>() * data.len();
+    unsafe {
+        ffi::sg_update_buffer(buf, data.as_ptr() as *const _, size as i32);
+    }
+}
+
+/// Appends vertices/indices to vertex/index buffer
+///
+/// Requires [`ResourceUsage::Dynamic`] or [`ResourceUsage::Stream`].
+///
+/// This can be called multiple times per frame. Returns a byte offset to the start of the written
+/// data. The offset can be assgined to [`Bindings::vertex_offsets`] or [`Bindings::
+/// index_buffer_offset`].
+pub fn append_buffer<T>(buf: Buffer, data: &[T]) -> i32 {
+    let n_bytes = size_of::<T>() * data.len();
+    unsafe { ffi::sg_append_buffer(buf, data.as_ptr() as *const _, n_bytes as i32) }
+}
+
+// sg_update_image(sg_image img, const sg_image_content* content)
+
+// --------------------------------------------------------------------------------
+// Helper functions
+
 /// [Non-Sokol] Helper for making shaders
 ///
 /// Caller must ensure the shader strings are null-terminated!

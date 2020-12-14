@@ -22,7 +22,9 @@ bitflags = "1.2.1"
 rokol_ffi = { path = "rokol_ffi", version = "0.1.1" }
 
 [dev-dependencies]
+# examples only dependencies
 env_logger = "0.8.1"
 image = "0.23.11"
 glam = "0.11.0"
+# TODO: ImGUI
 # imgui = "0.6.0"

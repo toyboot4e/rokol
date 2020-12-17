@@ -401,6 +401,35 @@ pub enum PixelFormat {
     Etc2SRgb8,
 }
 
+/// The source and destination factors in blending operations.
+///
+/// Used for fields of [`PipelineDesc::blend`].
+///
+/// The default value is SG_BLENDFACTOR_ONE for source
+/// factors, and SG_BLENDFACTOR_ZERO for destination factors.
+#[repr(u32)]
+#[derive(Copy, Clone, Debug)]
+pub enum BlendFactor {
+    _Default = ffi::sg_blend_factor__SG_BLENDFACTOR_DEFAULT as u32,
+    Zero = ffi::sg_blend_factor_SG_BLENDFACTOR_ZERO as u32,
+    One = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE as u32,
+    Color = ffi::sg_blend_factor_SG_BLENDFACTOR_SRC_COLOR as u32,
+    OneMinusSourceColor = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_SRC_COLOR as u32,
+    SrcAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_SRC_ALPHA as u32,
+    OneMinusSrcAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_SRC_ALPHA as u32,
+    DstColor = ffi::sg_blend_factor_SG_BLENDFACTOR_DST_COLOR as u32,
+    OneMinusDstColor = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_DST_COLOR as u32,
+    DstAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_DST_ALPHA as u32,
+    OneMinusDstAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_DST_ALPHA as u32,
+    SrcAlphaSatuerd = ffi::sg_blend_factor_SG_BLENDFACTOR_SRC_ALPHA_SATURATED as u32,
+    BlendColor = ffi::sg_blend_factor_SG_BLENDFACTOR_BLEND_COLOR as u32,
+    OneMinusBlendColor = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_BLEND_COLOR as u32,
+    BlendAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_BLEND_ALPHA as u32,
+    OneMinusBlendAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_BLEND_ALPHA as u32,
+    _Num = ffi::sg_blend_factor__SG_BLENDFACTOR_NUM as u32,
+    _ForceU32 = ffi::sg_blend_factor__SG_BLENDFACTOR_FORCE_U32 as u32,
+}
+
 // --------------------------------------------------------------------------------
 // Rendering enums
 
@@ -423,7 +452,7 @@ pub enum CompareFunc {
 
 /// Front | Back | None
 ///
-/// https://learnopengl.com/Advanced-OpenGL/Face-culling
+/// <https://learnopengl.com/Advanced-OpenGL/Face-culling>
 #[derive(Copy, Clone, Debug)]
 #[repr(u32)]
 pub enum CullMode {
@@ -437,7 +466,7 @@ pub enum CullMode {
 
 /// CCW | CW
 ///
-/// https://learnopengl.com/Advanced-OpenGL/Face-culling
+/// <https://learnopengl.com/Advanced-OpenGL/Face-culling>
 #[derive(Copy, Clone, Debug)]
 #[repr(u32)]
 pub enum FaceWinding {

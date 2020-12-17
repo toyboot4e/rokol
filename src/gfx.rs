@@ -845,12 +845,10 @@ pub fn viewport(x: u32, y: u32, w: u32, h: u32) {
 ///
 /// Requires [`ResourceUsage::Dynamic`] or [`ResourceUsage::Stream`].
 ///
-/// This can only be called once per frame.
-pub fn update_buffer<T>(buf: Buffer, data: &[T]) {
+/// WARNING: can be called only once a frame
+pub unsafe fn update_buffer<T>(buf: Buffer, data: &[T]) {
     let size = size_of::<T>() * data.len();
-    unsafe {
-        ffi::sg_update_buffer(buf, data.as_ptr() as *const _, size as i32);
-    }
+    ffi::sg_update_buffer(buf, data.as_ptr() as *const _, size as i32);
 }
 
 /// Appends vertices/indices to vertex/index buffer
@@ -858,8 +856,8 @@ pub fn update_buffer<T>(buf: Buffer, data: &[T]) {
 /// Requires [`ResourceUsage::Dynamic`] or [`ResourceUsage::Stream`].
 ///
 /// This can be called multiple times per frame. Returns a byte offset to the start of the written
-/// data. The offset can be assgined to [`Bindings::vertex_offsets`] or [`Bindings::
-/// index_buffer_offset`].
+/// data. The offset can be assgined to [`Bindings::vertex_offsets`] or
+/// [`Bindings::index_buffer_offset`].
 pub fn append_buffer<T>(buf: Buffer, data: &[T]) -> i32 {
     let n_bytes = size_of::<T>() * data.len();
     unsafe { ffi::sg_append_buffer(buf, data.as_ptr() as *const _, n_bytes as i32) }
@@ -932,6 +930,7 @@ pub fn vbuf_desc_dyn(size: i32, usage: ResourceUsage, label: &str) -> BufferDesc
     unsafe { buf_desc(std::ptr::null_mut(), size, BufferType::Vertex, usage, label) }
 }
 
+/// [Non-Sokol] Helper for creating dynamic vertex buffer
 pub unsafe fn buf_desc(
     ptr: *const c_void,
     size: i32,
@@ -953,4 +952,13 @@ pub unsafe fn buf_desc(
         },
         ..Default::default()
     }
+}
+
+/// [Non-Sokol] Helper for setting shader uniform
+///
+/// Casts given data as `&[u8]` and then applies it.
+pub unsafe fn apply_uniforms_as_bytes<T>(stage: ShaderStage, ub_index: u32, data: &T) {
+    let bytes: &[u8] =
+        std::slice::from_raw_parts(data as *const _ as *const _, std::mem::size_of::<T>());
+    self::apply_uniforms(stage, ub_index, bytes);
 }

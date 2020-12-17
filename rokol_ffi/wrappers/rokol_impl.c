@@ -16,8 +16,3 @@
 #include "sokol_gfx.h"
 #include "sokol_glue.h"
 
-// // TODO: ImGUI
-// #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
-// #include "cimgui.h"
-// #include "sokol_imgui.h"
-// #include "sokol_gfx_imgui.h"

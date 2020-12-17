@@ -2,8 +2,6 @@
 
 // NOTE: in Crates.io, the file system is read-only and writing to `src/ffi` can fail.
 
-// TODO: consider read-only file system (crates.io)
-
 use std::{
     env,
     path::{Path, PathBuf},
@@ -41,24 +39,6 @@ fn main() {
         &gen_dir.join("sokol_gfx.rs"),
         &renderer,
     );
-
-    // TODO imgui
-    // {
-    //     let gen = self::new_bindgen("wrappers/rokol_imgui.h", &renderer);
-    //     // Do not whitelist dependent items of whitelisted items
-    //     let gen = gen.whitelist_recursively(false);
-    //     // Only generate bindings to `sokol_imgui` and `sokol_gfx_imgui` items
-    //     let gen = gen.whitelist_type("simgui.*");
-    //     let gen = gen.whitelist_function("simgui.*");
-    //     let gen = gen.whitelist_type("sg_imgui.*");
-    //     let gen = gen.whitelist_function("sg_imgui.*");
-    //     // NOTE: Now, `sokol_imgui.rs` does not compile. Instead, we'll import `sokol_gfx`
-    //     //       items in `lib.rs`.)
-    //     gen.generate()
-    //         .expect("failed to generate FFI to Sokol ImGUI")
-    //         .write_to_file(&gen_dir.join("sokol_imgui.rs"))
-    //         .unwrap();
-    // }
 
     // compile and link to them
     self::compile(
@@ -131,13 +111,6 @@ fn new_bindgen(wrapper_str: &str, renderer: &Renderer) -> bindgen::Builder {
     let b = b.clang_arg(format!("-I{}", root.join("sokol").display()));
     let b = b.clang_arg(format!("-I{}", root.join("sokol/util").display()));
 
-    // TODO: ImGUI
-    {
-        // `imgui-sys` contains `cimgui`, which is exported with their `build.rs`
-        // let cimgui = PathBuf::from(env::var("DEP_IMGUI_THIRD_PARTY").unwrap());
-        // let b = b.clang_arg(format!("-I{}", cimgui.display()));
-    }
-
     let b = b.header(format!("{}", wrapper_str));
     let b = b.clang_arg(format!("-D{}", renderer.sokol_flag_name()));
 
@@ -170,14 +143,6 @@ fn compile(
     // -Isokol/util
     build.include(&root.join("sokol/util"));
 
-    // TODO: ImGUI (`#include "cimgui.h"`)
-    // {
-    //     // https://github.com/imgui-rs/imgui-rs/blob/master/imgui-sys/build.rs#L30
-    //     // https://doc.rust-lang.org/cargo/reference/build-scripts.html#-sys-packages
-    //     let cimgui = PathBuf::from(env::var("DEP_IMGUI_THIRD_PARTY").unwrap());
-    //     build.include(&cimgui);
-    // }
-
     build.file(PathBuf::from(src_path_str));
 
     // #define SOKOL_<RENDERER>
@@ -204,9 +169,6 @@ fn compile(
 
     // ----------------------------------------
     // Compile
-
-    // println!("cargo:rustc-link-lib=static=cimgui");
-    // println!("cargo:rustc-link-lib=static=imgui");
 
     // libsokol.a
     build.compile("sokol");
@@ -237,14 +199,11 @@ fn compile(
             }
             Renderer::D3D11 => panic!("Trying to use D3D11 on macOS"),
         }
-
-        // println!("cargo:rustc-link-lib=framework=AudioToolbox");
     }
 
     // Linux: libs
     if cfg!(target_os = "linux") {
         println!("cargo:rustc-link-lib=dylib=GL");
         println!("cargo:rustc-link-lib=dylib=X11");
-        // println!("cargo:rustc-link-lib=dylib=asound");
     }
 }

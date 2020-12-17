@@ -18,10 +18,6 @@ glcore33 = []
 metal = []
 d3d11 = []
 
-[dependencies]
-# TODO: ImGUI
-# imgui-sys = "0.6.0"
-
 [build-dependencies]
 cc = "1.0.62"
 bindgen = "0.55.1"

@@ -3,7 +3,7 @@
 Wrapper of [Sokol](https://github.com/floooh/sokol) for personal use
 
 * [Rokol API documentation](https://docs.rs/rokol/latest/rokol/)
-* [Examples code explaind](https://toyboot4e.github.io/rokol) (conteins screenshots)
+* [Examples code explaind](https://toyboot4e.github.io/rokol) (contains screenshots)
 
 Very early in progress..
 

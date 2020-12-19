@@ -356,12 +356,19 @@ pub fn is_valid() -> bool {
 }
 
 /// Width of the current frame buffer in pixels
+///
+/// It returns actual pixels, not scaled size (e.g. 2560x1440 on macbook pro 15.6 inch, where scaled
+/// screen size is 1280x720). Divided it with [`dpi_scale`] to get size for e.g.
+/// [`crate::gfx::ImageDesc`].
 pub fn width() -> u32 {
     // it's always bigger than zero, so this is safe
     unsafe { ffi::sapp_width() as u32 }
 }
 
 /// Height of the current frame buffer in pixels
+///
+/// screen size is 1280x720). Divided it with [`dpi_scale`] to get size for e.g.
+/// [`crate::gfx::ImageDesc`].
 pub fn height() -> u32 {
     // it's always bigger than zero, so this is safe
     unsafe { ffi::sapp_height() as u32 }
@@ -372,6 +379,13 @@ pub fn height() -> u32 {
 /// This function is Rokol-only and Sokol doesn't have a corresponding function.
 pub fn size() -> [u32; 2] {
     [self::width(), self::height()]
+}
+
+pub fn size_scaled() -> [f32; 2] {
+    [
+        (self::width() as f32 / self::dpi_scale()),
+        (self::height() as f32 / self::dpi_scale()),
+    ]
 }
 
 /// TODO: use [`crate::gfx::PixelFormat`]

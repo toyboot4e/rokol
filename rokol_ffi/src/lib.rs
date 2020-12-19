@@ -2,23 +2,27 @@
 
 Rust FFI to [Sokol] headers for [Rokol]
 
+Last update: Dec 3, 2020 ([commit]). Sokol header declaration diffs can be seen on [GitHub][Rokol].
+
 [Sokol]: https://github.com/floooh/sokol
 [Rokol]: https://github.com/toyboot4e/rokol
+[commit]: https://github.com/floooh/sokol/commit/64a6f2e2fac607ddcd4ccc5bd8bcd25946293550
 
-TODO: ImGUI support
-TODO: Do not use `include!` so that we get editor support in Emacs
+# impl Default
 
 Generated with [`bindgen`], implementing [`Default`] trait
 ([`Bindgen::derive_default(true)`][derive]).
 
+NOTE: Sokol [considers] zero-initizialized structures to be in default state. It means
+[`Default::default`] is ensured to make sense!
+
 [`bindgen`]: https://docs.rs/bindgen/latest/bindgen
 [derive]: https://docs.rs/bindgen/0.56.0/bindgen/struct.Builder.html#method.derive_default
 
-Last update: Dec 3, 2020 ([commit]). Sokol header declaration diffs can be seen on [GitHub][Rokol].
-
-[commit]: https://github.com/floooh/sokol/commit/64a6f2e2fac607ddcd4ccc5bd8bcd25946293550
-
 */
+
+// TODO: Do not use `include!` so that we get goto support in Emacs
+// https://docs.rs/bindgen/0.56.0/bindgen/struct.Builder.html#method.module_raw_lines
 
 pub mod app {
     //! FFI to [`sokol_app.h`](https://github.com/floooh/sokol/blob/master/sokol_app.h)

@@ -62,8 +62,6 @@ pub type SetupDesc = ffi::sg_desc;
 
 /// Actions to be performed at the start of a rendering pass in [`begin_pass`] or [`begin_default_pass`]
 ///
-/// `sg_action` in `sokol_gfx.h`.
-///
 /// A separate action and clear values can be defined for each
 /// color attachment, and for the depth-stencil attachment.
 ///
@@ -375,30 +373,70 @@ pub enum Wrap {
 #[repr(u32)]
 #[derive(Copy, Clone, Debug)]
 pub enum PixelFormat {
-    _Default,
-    None,
-    Rgba8,
-    Rgb8,
-    Rgba4,
-    Rgb5,
-    Rgb5a1,
-    Rgb10a2,
-    Rgba32f,
-    Rgba16f,
-    R32F,
-    R16F,
-    L8,
-    Dxt1,
-    Dxt3,
-    Dxt5,
-    Depth,
-    DepthStencil,
-    Pvrtc2Rgb,
-    Pvrtc4Rgb,
-    Pvrtc2Rgba,
-    Pvrtc4Rgba,
-    Etc2Rgb8,
-    Etc2SRgb8,
+    _Default = ffi::sg_pixel_format__SG_PIXELFORMAT_DEFAULT as u32,
+    Bc1Rgba = ffi::sg_pixel_format_SG_PIXELFORMAT_BC1_RGBA as u32,
+    Bc2Rgba = ffi::sg_pixel_format_SG_PIXELFORMAT_BC2_RGBA as u32,
+    Bc3Rgba = ffi::sg_pixel_format_SG_PIXELFORMAT_BC3_RGBA as u32,
+    Bc4R = ffi::sg_pixel_format_SG_PIXELFORMAT_BC4_R as u32,
+    Bc4Rsc = ffi::sg_pixel_format_SG_PIXELFORMAT_BC4_RSN as u32,
+    Bc5Rg = ffi::sg_pixel_format_SG_PIXELFORMAT_BC5_RG as u32,
+    Bc5Rgsn = ffi::sg_pixel_format_SG_PIXELFORMAT_BC5_RGSN as u32,
+    Bc6hRgf = ffi::sg_pixel_format_SG_PIXELFORMAT_BC6H_RGBF as u32,
+    Bc6hRgbuf = ffi::sg_pixel_format_SG_PIXELFORMAT_BC6H_RGBUF as u32,
+    Bc7Rgba = ffi::sg_pixel_format_SG_PIXELFORMAT_BC7_RGBA as u32,
+    Bgra8 = ffi::sg_pixel_format_SG_PIXELFORMAT_BGRA8 as u32,
+    Depth = ffi::sg_pixel_format_SG_PIXELFORMAT_DEPTH as u32,
+    DepthStencil = ffi::sg_pixel_format_SG_PIXELFORMAT_DEPTH_STENCIL as u32,
+    Etc2Rg11 = ffi::sg_pixel_format_SG_PIXELFORMAT_ETC2_RG11 as u32,
+    Etc2Rg11Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_ETC2_RG11SN as u32,
+    Etc2Rgb8 = ffi::sg_pixel_format_SG_PIXELFORMAT_ETC2_RGB8 as u32,
+    Etc2Rgb8A1 = ffi::sg_pixel_format_SG_PIXELFORMAT_ETC2_RGB8A1 as u32,
+    Etc2Rgba8 = ffi::sg_pixel_format_SG_PIXELFORMAT_ETC2_RGBA8 as u32,
+    None = ffi::sg_pixel_format_SG_PIXELFORMAT_NONE as u32,
+    PvrtcRgba2Bpp = ffi::sg_pixel_format_SG_PIXELFORMAT_PVRTC_RGBA_2BPP as u32,
+    PvrtcRgba24pp = ffi::sg_pixel_format_SG_PIXELFORMAT_PVRTC_RGBA_4BPP as u32,
+    PvrtcRgb2Bpp = ffi::sg_pixel_format_SG_PIXELFORMAT_PVRTC_RGB_2BPP as u32,
+    PvrtcRgb4Bpp = ffi::sg_pixel_format_SG_PIXELFORMAT_PVRTC_RGB_4BPP as u32,
+    R8 = ffi::sg_pixel_format_SG_PIXELFORMAT_R8 as u32,
+    R8Si = ffi::sg_pixel_format_SG_PIXELFORMAT_R8SI as u32,
+    R8Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_R8SN as u32,
+    R8Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_R8UI as u32,
+    R16 = ffi::sg_pixel_format_SG_PIXELFORMAT_R16 as u32,
+    R16F = ffi::sg_pixel_format_SG_PIXELFORMAT_R16F as u32,
+    R16Si = ffi::sg_pixel_format_SG_PIXELFORMAT_R16SI as u32,
+    R16Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_R16SN as u32,
+    R16Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_R16UI as u32,
+    R32F = ffi::sg_pixel_format_SG_PIXELFORMAT_R32F as u32,
+    R32Si = ffi::sg_pixel_format_SG_PIXELFORMAT_R32SI as u32,
+    R32Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_R32UI as u32,
+    Rg8 = ffi::sg_pixel_format_SG_PIXELFORMAT_RG8 as u32,
+    Rg8Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RG8SI as u32,
+    Rg8Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_RG8SN as u32,
+    Rg8Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RG8UI as u32,
+    Rg11B10F = ffi::sg_pixel_format_SG_PIXELFORMAT_RG11B10F as u32,
+    Rg16 = ffi::sg_pixel_format_SG_PIXELFORMAT_RG16 as u32,
+    Rg16F = ffi::sg_pixel_format_SG_PIXELFORMAT_RG16F as u32,
+    Rg16Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RG16SI as u32,
+    Rg16Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_RG16SN as u32,
+    Rg16Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RG16UI as u32,
+    Rg32F = ffi::sg_pixel_format_SG_PIXELFORMAT_RG32F as u32,
+    Rg32Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RG32SI as u32,
+    Rg32Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RG32UI as u32,
+    Rgb10A2 = ffi::sg_pixel_format_SG_PIXELFORMAT_RGB10A2 as u32,
+    Rgba8 = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA8 as u32,
+    Rgba8Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA8SI as u32,
+    Rgba8Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA8SN as u32,
+    Rgba8Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA8UI as u32,
+    Rgba16 = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA16 as u32,
+    Rgba16F = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA16F as u32,
+    Rgba16Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA16SI as u32,
+    Rgba16Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA16SN as u32,
+    Rgba16Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA16UI as u32,
+    Rgba32F = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA32F as u32,
+    Rgba32Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA32SI as u32,
+    Rgba32Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA32UI as u32,
+    _ForceU32 = ffi::sg_pixel_format__SG_PIXELFORMAT_FORCE_U32 as u32,
+    _Num = ffi::sg_pixel_format__SG_PIXELFORMAT_NUM as u32,
 }
 
 /// The source and destination factors in blending operations.
@@ -430,6 +468,30 @@ pub enum BlendFactor {
     _ForceU32 = ffi::sg_blend_factor__SG_BLENDFACTOR_FORCE_U32 as u32,
 }
 
+/// Defines what action should be performed at the start of a render pass:
+///
+/// This is used in the [`PassAction`] structure.
+///
+/// The default action for all pass attachments is `Clear`, with the
+/// clear color rgba = {0.5f, 0.5f, 0.5f, 1.0f], depth=1.0 and stencil=0.
+///
+/// If you want to override the default behaviour, it is important to not
+/// only set the clear color, but the 'action' field as well (as long as this
+/// is in its _SG_ACTION_DEFAULT, the value fields will be ignored).
+#[repr(u32)]
+#[derive(Copy, Clone, Debug)]
+pub enum Action {
+    _Default = ffi::sg_action__SG_ACTION_DEFAULT as u32,
+    /// Clear the render target image
+    Clear = ffi::sg_action_SG_ACTION_CLEAR as u32,
+    /// Leave the render target image content undefined
+    DontCare = ffi::sg_action_SG_ACTION_DONTCARE as u32,
+    /// Load the previous content of the render target image
+    Load = ffi::sg_action_SG_ACTION_LOAD as u32,
+    _ForceU32 = ffi::sg_action__SG_ACTION_FORCE_U32 as u32,
+    _NUM = ffi::sg_action__SG_ACTION_NUM as u32,
+}
+
 // --------------------------------------------------------------------------------
 // Rendering enums
 
@@ -437,6 +499,7 @@ pub enum BlendFactor {
 #[derive(Copy, Clone, Debug)]
 #[repr(u32)]
 pub enum CompareFunc {
+    _Default = ffi::sg_compare_func__SG_COMPAREFUNC_DEFAULT,
     Always = ffi::sg_compare_func_SG_COMPAREFUNC_ALWAYS,
     Eq = ffi::sg_compare_func_SG_COMPAREFUNC_EQUAL,
     Greater = ffi::sg_compare_func_SG_COMPAREFUNC_GREATER,
@@ -445,7 +508,6 @@ pub enum CompareFunc {
     LessEq = ffi::sg_compare_func_SG_COMPAREFUNC_LESS_EQUAL,
     Never = ffi::sg_compare_func_SG_COMPAREFUNC_NEVER,
     NotEq = ffi::sg_compare_func_SG_COMPAREFUNC_NOT_EQUAL,
-    _Default = ffi::sg_compare_func__SG_COMPAREFUNC_DEFAULT,
     _ForceU32 = ffi::sg_compare_func__SG_COMPAREFUNC_FORCE_U32,
     _Num = ffi::sg_compare_func__SG_COMPAREFUNC_NUM,
 }
@@ -456,10 +518,10 @@ pub enum CompareFunc {
 #[derive(Copy, Clone, Debug)]
 #[repr(u32)]
 pub enum CullMode {
+    _Default = ffi::sg_cull_mode__SG_CULLMODE_DEFAULT,
     Back = ffi::sg_cull_mode_SG_CULLMODE_BACK,
     Front = ffi::sg_cull_mode_SG_CULLMODE_FRONT,
     None = ffi::sg_cull_mode_SG_CULLMODE_NONE,
-    _Default = ffi::sg_cull_mode__SG_CULLMODE_DEFAULT,
     _ForuceU32 = ffi::sg_cull_mode__SG_CULLMODE_FORCE_U32,
     _Num = ffi::sg_cull_mode__SG_CULLMODE_NUM,
 }
@@ -501,6 +563,26 @@ impl PassAction {
     pub fn raw_mut(&mut self) -> &mut ffi::sg_pass_action {
         &mut self.raw
     }
+
+    /// Untouch the last content
+    pub const NONE: Self = Self {
+        raw: ffi::sg_pass_action {
+            _start_canary: 0,
+            colors: [self::ColorAttachmentAction {
+                action: self::Action::Load as u32,
+                val: [0.0; 4],
+            }; 4],
+            depth: self::DepthAttachmentAction {
+                action: self::Action::Load as u32,
+                val: 0.0,
+            },
+            stencil: self::StencilAttachmentAction {
+                action: self::Action::Load as u32,
+                val: 0,
+            },
+            _end_canary: 0,
+        },
+    };
 
     pub fn clear(color: impl Into<[f32; 4]>) -> Self {
         let mut raw = ffi::sg_pass_action::default();
@@ -589,6 +671,8 @@ impl BakedResource for Buffer {
 
 /// (Resource) Handle (ID) of image
 pub type Image = ffi::sg_image;
+/// The width and height are scaled size (e.g. if on 2x DPI monitor display with 2560x1440 pixels,
+/// give scaled size of 1280x720. c.f. [`crate::app::dpi_scale`].
 pub type ImageDesc = ffi::sg_image_desc;
 pub type ImageContent = ffi::sg_image_content;
 pub type ImageInfo = ffi::sg_image_info;
@@ -765,6 +849,7 @@ pub type Context = ffi::sg_context;
 pub type ContextDesc = ffi::sg_context_desc;
 
 pub type DepthAttachmentAction = ffi::sg_depth_attachment_action;
+
 pub type DepthStencilState = ffi::sg_depth_stencil_state;
 pub type RasterizerState = ffi::sg_rasterizer_state;
 
@@ -779,7 +864,7 @@ pub type ShaderUniformBlockDesc = ffi::sg_shader_uniform_block_desc;
 pub type ShaderUniformDesc = ffi::sg_shader_uniform_desc;
 
 pub type SlotInfo = ffi::sg_slot_info;
-pub type AttachmentAction = ffi::sg_stencil_attachment_action;
+pub type StencilAttachmentAction = ffi::sg_stencil_attachment_action;
 pub type StencilState = ffi::sg_stencil_state;
 pub type SubimageContent = ffi::sg_subimage_content;
 pub type TraceHooks = ffi::sg_trace_hooks;
@@ -854,7 +939,11 @@ pub fn draw(base_elem: u32, n_elems: u32, n_instances: u32) {
     }
 }
 
+/// Discard output fragments outside of this rectangle
+///
 /// Must be called inside a rendering pass
+///
+/// The (0, 0) point is at the left-bottom corner of the target. TODO: really?
 pub fn scissor(x: u32, y: u32, w: u32, h: u32) {
     unsafe {
         // origin_top_left: true
@@ -862,7 +951,11 @@ pub fn scissor(x: u32, y: u32, w: u32, h: u32) {
     }
 }
 
+/// Output rectangle space
+///
 /// Must be called inside a rendering pass
+///
+/// The (0, 0) point is at the left-bottom corner of the target. TODO: really?
 pub fn viewport(x: u32, y: u32, w: u32, h: u32) {
     unsafe {
         // origin_top_left: true

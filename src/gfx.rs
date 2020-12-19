@@ -978,7 +978,7 @@ pub unsafe fn update_buffer<T>(buf: Buffer, data: &[T]) {
 /// Requires [`ResourceUsage::Dynamic`] or [`ResourceUsage::Stream`].
 ///
 /// This can be called multiple times per frame. Returns a byte offset to the start of the written
-/// data. The offset can be assgined to [`Bindings::vertex_offsets`] or
+/// data. The offset can be assgined to [`Bindings::vertex_buffer_offsets`] or
 /// [`Bindings::index_buffer_offset`].
 pub fn append_buffer<T>(buf: Buffer, data: &[T]) -> i32 {
     let n_bytes = size_of::<T>() * data.len();

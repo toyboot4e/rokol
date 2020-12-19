@@ -33,6 +33,8 @@ use {
 
 /// [`rokol::app`] callbacks
 ///
+/// [`rokol::app`]: crate::app
+///
 /// All provided function callbacks will be called from the same thread,
 /// but this may be different from the thread where `main` was called.
 pub trait RApp {
@@ -72,7 +74,9 @@ pub trait RApp {
     // C callback functions set to [`RAppDesc`]
 }
 
-/// `rokol::app` callbacks for C
+/// [`rokol::app`] callbacks for C
+///
+/// [`rokol::app`]: crate::app
 ///
 /// It's makes [`RApp`] a normal rusty trait. It's implemented and used under the hood.
 pub trait RAppFfiCallback {
@@ -163,7 +167,9 @@ impl<T: RApp> RAppFfiCallback for T {
 // --------------------------------------------------------------------------------
 // enums
 
-/// `rokol::app` event type
+/// [`rokol::app`] event type
+///
+/// [`rokol::app`]: crate::app
 #[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EventType {
@@ -190,7 +196,9 @@ pub enum EventType {
     QuitRequested,
 }
 
-/// `rokol::app` keycode
+/// [`rokol::app`] keycode
+///
+/// [`rokol::app`]: crate::app
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u32)]
 pub enum Key {
@@ -317,7 +325,9 @@ pub enum Key {
     Menu = ffi::sapp_keycode_SAPP_KEYCODE_MENU,
 }
 
-/// `rokol::app` mouse input
+/// [`rokol::app`] mouse input
+///
+/// [`rokol::app`]: crate::app
 #[repr(i32)]
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Mouse {
@@ -344,10 +354,14 @@ bitflags! {
 // `Debug` and `Default` are implemented by `bindgen`. If we need more, we add methods in the FFI
 // module.
 
-/// `rokol::app` touch input
+/// [`rokol::app`] touch input
+///
+/// [`rokol::app`]: crate::app
 pub type TouchPoint = ffi::sapp_touchpoint;
 
-/// `rokol::app` application event
+/// [`rokol::app`] application event
+///
+/// [`rokol::app`]: crate::app
 pub type RAppEvent = ffi::sapp_event;
 
 /// Returns true after Rokol app is initialized

@@ -61,25 +61,24 @@ enum Renderer {
 impl Renderer {
     pub fn select(is_msvc: bool) -> Self {
         // set renderer defined by feature
-        #[cfg(feature = "glcore33")]
-        return Self::GlCore33;
-
-        #[cfg(feature = "metal")]
-        return Self::Metal;
-
-        #[cfg(feature = "d3d11")]
-        return Self::D3d11;
-
-        // select default renderer
-        // - Windows: D3D11 with MSVC, GLCORE33 otherwise
-        // - MacOS: Metal
-        // - Linux: GLCORE33
-        if cfg!(target_os = "windows") && is_msvc {
-            Self::D3D11
-        } else if cfg!(target_os = "macos") {
-            Self::Metal
-        } else {
+        if cfg!(feature = "glcore33") {
             Self::GlCore33
+        } else if cfg!(feature = "metal") {
+            Self::Metal
+        } else if cfg!(feature = "d3d11") {
+            Self::D3D11
+        } else {
+            // select default renderer
+            // - Windows: D3D11 with MSVC, GLCORE33 otherwise
+            // - MacOS: Metal
+            // - Linux: GLCORE33
+            if cfg!(target_os = "windows") && is_msvc {
+                Self::D3D11
+            } else if cfg!(target_os = "macos") {
+                Self::Metal
+            } else {
+                Self::GlCore33
+            }
         }
     }
 

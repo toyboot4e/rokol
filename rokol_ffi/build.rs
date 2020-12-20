@@ -147,20 +147,23 @@ fn compile(
     // #define SOKOL_<RENDERER>
     build.flag(&format!("-D{}", renderer.sokol_flag_name()));
 
-    // MacOS: need ARC
     if cfg!(target_os = "macos") {
-        build.flag("-fobjc-arc");
+        // compile as Objective-C
+        // build.flag("-fobjc-arc");
         build.flag("-ObjC");
     }
 
-    // x86_64-pc-windows-gnu: additional compile flags
-    if cfg!(target_os = "windows") && !is_msvc {
-        build
-            .flag("-D_WIN32_WINNT=0x0601")
-            .flag_if_supported("-Wno-cast-function-type")
-            .flag_if_supported("-Wno-sign-compare")
-            .flag_if_supported("-Wno-unknown-pragmas");
+    if cfg!(target_os = "linux") {
+        build.flag("-pthread"); // ?
     }
+
+    // if cfg!(target_os = "windows") && !is_msvc {
+    //     build
+    //         .flag("-D_WIN32_WINNT=0x0601")
+    //         .flag_if_supported("-Wno-cast-function-type")
+    //         .flag_if_supported("-Wno-sign-compare")
+    //         .flag_if_supported("-Wno-unknown-pragmas");
+    // }
 
     if will_set_debug_flags {
         build.flag("-D_DEBUG").flag("-DSOKOL_DEBUG");
@@ -175,18 +178,16 @@ fn compile(
     // ----------------------------------------
     // Link platform-dependent libraries
 
-    // x86_64-pc-windows-gnu
     if cfg!(target_os = "windows") && !is_msvc {
-        println!("cargo:rustc-link-lib=static=gdi32");
-        println!("cargo:rustc-link-lib=static=ole32");
+        // println!("cargo:rustc-link-lib=static=gdi32");
+        // println!("cargo:rustc-link-lib=static=ole32");
     }
 
-    // MacOS: frameworks
     if cfg!(target_os = "macos") {
         println!("cargo:rustc-link-lib=framework=Cocoa");
         println!("cargo:rustc-link-lib=framework=QuartzCore");
-        println!("cargo:rustc-link-lib=framework=Quartz");
-        println!("cargo:rustc-link-lib=framework=Foundation");
+        // println!("cargo:rustc-link-lib=framework=Quartz");
+        // println!("cargo:rustc-link-lib=framework=Foundation");
 
         match renderer {
             Renderer::Metal => {
@@ -200,9 +201,13 @@ fn compile(
         }
     }
 
-    // Linux: libs
     if cfg!(target_os = "linux") {
         println!("cargo:rustc-link-lib=dylib=GL");
         println!("cargo:rustc-link-lib=dylib=X11");
+        println!("cargo:rustc-link-lib=dylib=Xi");
+        println!("cargo:rustc-link-lib=dylib=Xcursor");
+        println!("cargo:rustc-link-lib=dylib=dl");
+        println!("cargo:rustc-link-lib=dylib=pthread");
+        // println!("cargo:rustc-link-lib=dylib=m");
     }
 }

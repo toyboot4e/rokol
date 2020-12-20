@@ -75,7 +75,7 @@ impl Default for Rokol {
             title: "Untitled".to_string(),
             msaa_sample_count: 1,
             swap_interval: 1,
-            use_high_dpi: true,
+            use_high_dpi: false,
             is_full_screen: false,
             enable_alpha: true,
             use_user_cursor_image: false,

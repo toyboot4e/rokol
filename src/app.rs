@@ -42,8 +42,7 @@ pub trait RApp {
     /// `sokol_app`
     fn init(&mut self) {}
 
-    /// Called on the same thread as the init callback, but might be on a different thread than the
-    /// `main` function
+    /// Usually called 60 times per second
     fn frame(&mut self) {}
 
     /// Called once after the user quits the application
@@ -66,6 +65,11 @@ pub trait RApp {
     /// sokol-app versions).
     fn event(&mut self, _ev: &RAppEvent) {}
 
+    /// Called when a fatal error is encountered during start which doesn't allow the program to
+    /// continue
+    ///
+    /// Providing a callback here gives you a chance to show an error message
+    /// to the user. The default behaviour is SOKOL_LOG(msg)
     fn fail(&mut self, msg: &str) {
         eprint!("{}", msg);
     }
@@ -170,30 +174,67 @@ impl<T: RApp> RAppFfiCallback for T {
 /// [`rokol::app`] event type
 ///
 /// [`rokol::app`]: crate::app
-#[repr(C)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(u32)]
 pub enum EventType {
-    Invalid,
-    KeyDown,
-    KeyUp,
-    Char,
-    MouseDown,
-    MouseUp,
-    MouseScroll,
-    MouseMove,
-    MouseEnter,
-    MouseLeave,
-    TouchesBegan,
-    TouchesMoved,
-    TouchesEnded,
-    TouchesCancelled,
-    Resized,
-    Iconified,
-    Restored,
-    Suspended,
-    Resumed,
-    UpdateCursor,
-    QuitRequested,
+    Invalid = ffi::sapp_event_type_SAPP_EVENTTYPE_INVALID,
+    KeyDown = ffi::sapp_event_type_SAPP_EVENTTYPE_KEY_DOWN,
+    KeyUp = ffi::sapp_event_type_SAPP_EVENTTYPE_KEY_UP,
+    Char = ffi::sapp_event_type_SAPP_EVENTTYPE_CHAR,
+    MouseDown = ffi::sapp_event_type_SAPP_EVENTTYPE_MOUSE_DOWN,
+    MouseUp = ffi::sapp_event_type_SAPP_EVENTTYPE_MOUSE_UP,
+    MouseScroll = ffi::sapp_event_type_SAPP_EVENTTYPE_MOUSE_SCROLL,
+    MouseMove = ffi::sapp_event_type_SAPP_EVENTTYPE_MOUSE_MOVE,
+    MouseEnter = ffi::sapp_event_type_SAPP_EVENTTYPE_MOUSE_ENTER,
+    MouseLeave = ffi::sapp_event_type_SAPP_EVENTTYPE_MOUSE_LEAVE,
+    TouchesBegin = ffi::sapp_event_type_SAPP_EVENTTYPE_TOUCHES_BEGAN,
+    TouchesMoved = ffi::sapp_event_type_SAPP_EVENTTYPE_TOUCHES_MOVED,
+    TouchesEnded = ffi::sapp_event_type_SAPP_EVENTTYPE_TOUCHES_ENDED,
+    TouchesCancelled = ffi::sapp_event_type_SAPP_EVENTTYPE_TOUCHES_CANCELLED,
+    Resized = ffi::sapp_event_type_SAPP_EVENTTYPE_RESIZED,
+    Iconified = ffi::sapp_event_type_SAPP_EVENTTYPE_ICONIFIED,
+    Restored = ffi::sapp_event_type_SAPP_EVENTTYPE_RESTORED,
+    Suspended = ffi::sapp_event_type_SAPP_EVENTTYPE_SUSPENDED,
+    Resumed = ffi::sapp_event_type_SAPP_EVENTTYPE_RESUMED,
+    UpdateCursor = ffi::sapp_event_type_SAPP_EVENTTYPE_UPDATE_CURSOR,
+    QuitRequested = ffi::sapp_event_type_SAPP_EVENTTYPE_QUIT_REQUESTED,
+    ClipboardPasted = ffi::sapp_event_type_SAPP_EVENTTYPE_CLIPBOARD_PASTED,
+    FilesDropped = ffi::sapp_event_type_SAPP_EVENTTYPE_FILES_DROPPED,
+    _Num = ffi::sapp_event_type__SAPP_EVENTTYPE_NUM,
+    _ForceU32 = ffi::sapp_event_type__SAPP_EVENTTYPE_FORCE_U32,
+}
+
+impl EventType {
+    pub fn from_u32(x: u32) -> Option<Self> {
+        Some(match x {
+            ffi::sapp_event_type_SAPP_EVENTTYPE_INVALID => Self::Invalid,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_KEY_DOWN => Self::KeyDown,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_KEY_UP => Self::KeyUp,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_CHAR => Self::Char,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_MOUSE_DOWN => Self::MouseDown,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_MOUSE_UP => Self::MouseUp,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_MOUSE_SCROLL => Self::MouseScroll,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_MOUSE_MOVE => Self::MouseMove,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_MOUSE_ENTER => Self::MouseEnter,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_MOUSE_LEAVE => Self::MouseLeave,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_TOUCHES_BEGAN => Self::TouchesBegin,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_TOUCHES_MOVED => Self::TouchesMoved,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_TOUCHES_ENDED => Self::TouchesEnded,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_TOUCHES_CANCELLED => Self::TouchesCancelled,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_RESIZED => Self::Resized,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_ICONIFIED => Self::Iconified,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_RESTORED => Self::Restored,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_SUSPENDED => Self::Suspended,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_RESUMED => Self::Resumed,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_UPDATE_CURSOR => Self::UpdateCursor,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_QUIT_REQUESTED => Self::QuitRequested,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_CLIPBOARD_PASTED => Self::ClipboardPasted,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_FILES_DROPPED => Self::FilesDropped,
+            // ffi::sapp_event_type__SAPP_EVENTTYPE_NUM
+            // ffi::sapp_event_type__SAPP_EVENTTYPE_FORCE_U32
+            _ => return None,
+        })
+    }
 }
 
 /// [`rokol::app`] keycode
@@ -325,6 +366,135 @@ pub enum Key {
     Menu = ffi::sapp_keycode_SAPP_KEYCODE_MENU,
 }
 
+impl Key {
+    pub fn from_u32(x: u32) -> Option<Self> {
+        Some(match x {
+            ffi::sapp_keycode_SAPP_KEYCODE_INVALID => Self::Invalid,
+            ffi::sapp_keycode_SAPP_KEYCODE_SPACE => Self::Space,
+            ffi::sapp_keycode_SAPP_KEYCODE_APOSTROPHE => Self::Apostrophe,
+            ffi::sapp_keycode_SAPP_KEYCODE_COMMA => Self::Comma,
+            ffi::sapp_keycode_SAPP_KEYCODE_MINUS => Self::Minus,
+            ffi::sapp_keycode_SAPP_KEYCODE_PERIOD => Self::Period,
+            ffi::sapp_keycode_SAPP_KEYCODE_SLASH => Self::Slash,
+            ffi::sapp_keycode_SAPP_KEYCODE_0 => Self::Kbd0,
+            ffi::sapp_keycode_SAPP_KEYCODE_1 => Self::Kbd1,
+            ffi::sapp_keycode_SAPP_KEYCODE_2 => Self::Kbd2,
+            ffi::sapp_keycode_SAPP_KEYCODE_3 => Self::Kbd3,
+            ffi::sapp_keycode_SAPP_KEYCODE_4 => Self::Kbd4,
+            ffi::sapp_keycode_SAPP_KEYCODE_5 => Self::Kbd5,
+            ffi::sapp_keycode_SAPP_KEYCODE_6 => Self::Kbd6,
+            ffi::sapp_keycode_SAPP_KEYCODE_7 => Self::Kbd7,
+            ffi::sapp_keycode_SAPP_KEYCODE_8 => Self::Kbd8,
+            ffi::sapp_keycode_SAPP_KEYCODE_9 => Self::Kbd9,
+            ffi::sapp_keycode_SAPP_KEYCODE_SEMICOLON => Self::Semicolon,
+            ffi::sapp_keycode_SAPP_KEYCODE_EQUAL => Self::Equal,
+            ffi::sapp_keycode_SAPP_KEYCODE_A => Self::A,
+            ffi::sapp_keycode_SAPP_KEYCODE_B => Self::B,
+            ffi::sapp_keycode_SAPP_KEYCODE_C => Self::C,
+            ffi::sapp_keycode_SAPP_KEYCODE_D => Self::D,
+            ffi::sapp_keycode_SAPP_KEYCODE_E => Self::E,
+            ffi::sapp_keycode_SAPP_KEYCODE_F => Self::F,
+            ffi::sapp_keycode_SAPP_KEYCODE_G => Self::G,
+            ffi::sapp_keycode_SAPP_KEYCODE_H => Self::H,
+            ffi::sapp_keycode_SAPP_KEYCODE_I => Self::I,
+            ffi::sapp_keycode_SAPP_KEYCODE_J => Self::J,
+            ffi::sapp_keycode_SAPP_KEYCODE_K => Self::K,
+            ffi::sapp_keycode_SAPP_KEYCODE_L => Self::L,
+            ffi::sapp_keycode_SAPP_KEYCODE_M => Self::M,
+            ffi::sapp_keycode_SAPP_KEYCODE_N => Self::N,
+            ffi::sapp_keycode_SAPP_KEYCODE_O => Self::O,
+            ffi::sapp_keycode_SAPP_KEYCODE_P => Self::P,
+            ffi::sapp_keycode_SAPP_KEYCODE_Q => Self::Q,
+            ffi::sapp_keycode_SAPP_KEYCODE_R => Self::R,
+            ffi::sapp_keycode_SAPP_KEYCODE_S => Self::S,
+            ffi::sapp_keycode_SAPP_KEYCODE_T => Self::T,
+            ffi::sapp_keycode_SAPP_KEYCODE_U => Self::U,
+            ffi::sapp_keycode_SAPP_KEYCODE_V => Self::V,
+            ffi::sapp_keycode_SAPP_KEYCODE_W => Self::W,
+            ffi::sapp_keycode_SAPP_KEYCODE_X => Self::X,
+            ffi::sapp_keycode_SAPP_KEYCODE_Y => Self::Y,
+            ffi::sapp_keycode_SAPP_KEYCODE_Z => Self::Z,
+            ffi::sapp_keycode_SAPP_KEYCODE_LEFT_BRACKET => Self::LeftBracket,
+            ffi::sapp_keycode_SAPP_KEYCODE_BACKSLASH => Self::Backslash,
+            ffi::sapp_keycode_SAPP_KEYCODE_RIGHT_BRACKET => Self::RightBracket,
+            ffi::sapp_keycode_SAPP_KEYCODE_GRAVE_ACCENT => Self::GraveAccent,
+            ffi::sapp_keycode_SAPP_KEYCODE_WORLD_1 => Self::World1,
+            ffi::sapp_keycode_SAPP_KEYCODE_WORLD_2 => Self::World2,
+            ffi::sapp_keycode_SAPP_KEYCODE_ESCAPE => Self::Escape,
+            ffi::sapp_keycode_SAPP_KEYCODE_ENTER => Self::Enter,
+            ffi::sapp_keycode_SAPP_KEYCODE_TAB => Self::Tab,
+            ffi::sapp_keycode_SAPP_KEYCODE_BACKSPACE => Self::Backspace,
+            ffi::sapp_keycode_SAPP_KEYCODE_INSERT => Self::Insert,
+            ffi::sapp_keycode_SAPP_KEYCODE_DELETE => Self::Delete,
+            ffi::sapp_keycode_SAPP_KEYCODE_RIGHT => Self::Right,
+            ffi::sapp_keycode_SAPP_KEYCODE_LEFT => Self::Left,
+            ffi::sapp_keycode_SAPP_KEYCODE_DOWN => Self::Down,
+            ffi::sapp_keycode_SAPP_KEYCODE_UP => Self::Up,
+            ffi::sapp_keycode_SAPP_KEYCODE_PAGE_UP => Self::PageUp,
+            ffi::sapp_keycode_SAPP_KEYCODE_PAGE_DOWN => Self::PageDown,
+            ffi::sapp_keycode_SAPP_KEYCODE_HOME => Self::Home,
+            ffi::sapp_keycode_SAPP_KEYCODE_END => Self::End,
+            ffi::sapp_keycode_SAPP_KEYCODE_CAPS_LOCK => Self::CapsLock,
+            ffi::sapp_keycode_SAPP_KEYCODE_SCROLL_LOCK => Self::ScrollLock,
+            ffi::sapp_keycode_SAPP_KEYCODE_NUM_LOCK => Self::NumLock,
+            ffi::sapp_keycode_SAPP_KEYCODE_PRINT_SCREEN => Self::PrintScreen,
+            ffi::sapp_keycode_SAPP_KEYCODE_PAUSE => Self::Pause,
+            ffi::sapp_keycode_SAPP_KEYCODE_F1 => Self::F1,
+            ffi::sapp_keycode_SAPP_KEYCODE_F2 => Self::F2,
+            ffi::sapp_keycode_SAPP_KEYCODE_F3 => Self::F3,
+            ffi::sapp_keycode_SAPP_KEYCODE_F4 => Self::F4,
+            ffi::sapp_keycode_SAPP_KEYCODE_F5 => Self::F5,
+            ffi::sapp_keycode_SAPP_KEYCODE_F6 => Self::F6,
+            ffi::sapp_keycode_SAPP_KEYCODE_F7 => Self::F7,
+            ffi::sapp_keycode_SAPP_KEYCODE_F8 => Self::F8,
+            ffi::sapp_keycode_SAPP_KEYCODE_F9 => Self::F9,
+            ffi::sapp_keycode_SAPP_KEYCODE_F10 => Self::F10,
+            ffi::sapp_keycode_SAPP_KEYCODE_F11 => Self::F11,
+            ffi::sapp_keycode_SAPP_KEYCODE_F12 => Self::F12,
+            ffi::sapp_keycode_SAPP_KEYCODE_F13 => Self::F13,
+            ffi::sapp_keycode_SAPP_KEYCODE_F14 => Self::F14,
+            ffi::sapp_keycode_SAPP_KEYCODE_F15 => Self::F15,
+            ffi::sapp_keycode_SAPP_KEYCODE_F16 => Self::F16,
+            ffi::sapp_keycode_SAPP_KEYCODE_F17 => Self::F17,
+            ffi::sapp_keycode_SAPP_KEYCODE_F18 => Self::F18,
+            ffi::sapp_keycode_SAPP_KEYCODE_F19 => Self::F19,
+            ffi::sapp_keycode_SAPP_KEYCODE_F20 => Self::F20,
+            ffi::sapp_keycode_SAPP_KEYCODE_F21 => Self::F21,
+            ffi::sapp_keycode_SAPP_KEYCODE_F22 => Self::F22,
+            ffi::sapp_keycode_SAPP_KEYCODE_F23 => Self::F23,
+            ffi::sapp_keycode_SAPP_KEYCODE_F24 => Self::F24,
+            ffi::sapp_keycode_SAPP_KEYCODE_F25 => Self::F25,
+            ffi::sapp_keycode_SAPP_KEYCODE_KP_0 => Self::KP0,
+            ffi::sapp_keycode_SAPP_KEYCODE_KP_1 => Self::KP1,
+            ffi::sapp_keycode_SAPP_KEYCODE_KP_2 => Self::KP2,
+            ffi::sapp_keycode_SAPP_KEYCODE_KP_3 => Self::KP3,
+            ffi::sapp_keycode_SAPP_KEYCODE_KP_4 => Self::KP4,
+            ffi::sapp_keycode_SAPP_KEYCODE_KP_5 => Self::KP5,
+            ffi::sapp_keycode_SAPP_KEYCODE_KP_6 => Self::KP6,
+            ffi::sapp_keycode_SAPP_KEYCODE_KP_7 => Self::KP7,
+            ffi::sapp_keycode_SAPP_KEYCODE_KP_8 => Self::KP8,
+            ffi::sapp_keycode_SAPP_KEYCODE_KP_9 => Self::KP9,
+            ffi::sapp_keycode_SAPP_KEYCODE_KP_DECIMAL => Self::KPDecimal,
+            ffi::sapp_keycode_SAPP_KEYCODE_KP_DIVIDE => Self::KPDivide,
+            ffi::sapp_keycode_SAPP_KEYCODE_KP_MULTIPLY => Self::KPMultiply,
+            ffi::sapp_keycode_SAPP_KEYCODE_KP_SUBTRACT => Self::KPSubtract,
+            ffi::sapp_keycode_SAPP_KEYCODE_KP_ADD => Self::KPAdd,
+            ffi::sapp_keycode_SAPP_KEYCODE_KP_ENTER => Self::KPEnter,
+            ffi::sapp_keycode_SAPP_KEYCODE_KP_EQUAL => Self::KPEqual,
+            ffi::sapp_keycode_SAPP_KEYCODE_LEFT_SHIFT => Self::LeftShift,
+            ffi::sapp_keycode_SAPP_KEYCODE_LEFT_CONTROL => Self::LeftControl,
+            ffi::sapp_keycode_SAPP_KEYCODE_LEFT_ALT => Self::LeftAlt,
+            ffi::sapp_keycode_SAPP_KEYCODE_LEFT_SUPER => Self::LeftSuper,
+            ffi::sapp_keycode_SAPP_KEYCODE_RIGHT_SHIFT => Self::RightShift,
+            ffi::sapp_keycode_SAPP_KEYCODE_RIGHT_CONTROL => Self::RightControl,
+            ffi::sapp_keycode_SAPP_KEYCODE_RIGHT_ALT => Self::RightAlt,
+            ffi::sapp_keycode_SAPP_KEYCODE_RIGHT_SUPER => Self::RightSuper,
+            ffi::sapp_keycode_SAPP_KEYCODE_MENU => Self::Menu,
+            _ => return None,
+        })
+    }
+}
+
 /// [`rokol::app`] mouse input
 ///
 /// [`rokol::app`]: crate::app
@@ -335,6 +505,18 @@ pub enum Mouse {
     Left = ffi::sapp_mousebutton_SAPP_MOUSEBUTTON_LEFT,
     Right = ffi::sapp_mousebutton_SAPP_MOUSEBUTTON_RIGHT,
     Middle = ffi::sapp_mousebutton_SAPP_MOUSEBUTTON_MIDDLE,
+}
+
+impl Mouse {
+    pub fn from_i32(x: i32) -> Option<Self> {
+        Some(match x {
+            ffi::sapp_mousebutton_SAPP_MOUSEBUTTON_INVALID => Self::Invalid,
+            ffi::sapp_mousebutton_SAPP_MOUSEBUTTON_LEFT => Self::Left,
+            ffi::sapp_mousebutton_SAPP_MOUSEBUTTON_RIGHT => Self::Right,
+            ffi::sapp_mousebutton_SAPP_MOUSEBUTTON_MIDDLE => Self::Middle,
+            _ => return None,
+        })
+    }
 }
 
 bitflags! {
@@ -388,13 +570,14 @@ pub fn height() -> u32 {
     unsafe { ffi::sapp_height() as u32 }
 }
 
-/// (Non-Sokol) Returns `[rokol::width(), rokol::height()]`
+/// (Non-Sokol) size of the current frame buffer in pixels
 ///
 /// This function is Rokol-only and Sokol doesn't have a corresponding function.
 pub fn size() -> [u32; 2] {
     [self::width(), self::height()]
 }
 
+/// (Non-Sokol) size of the window (not the frame buffer)
 pub fn size_scaled() -> [f32; 2] {
     [
         (self::width() as f32 / self::dpi_scale()),
@@ -402,7 +585,7 @@ pub fn size_scaled() -> [f32; 2] {
     ]
 }
 
-/// TODO: use [`crate::gfx::PixelFormat`]
+/// TODO: use [`crate::gfx::PixelFormat`] as return value
 pub fn color_fmt() -> i32 {
     unsafe { ffi::sapp_color_format() }
 }
@@ -502,6 +685,8 @@ pub fn quit() {
 }
 
 /// Call from inside event callback to consume the current event (don't forward to platform)
+///
+/// NOTE: this function is only implemented for HTML5 backend (see `sokol_app.h` ln 352)
 pub fn consume_event() {
     unsafe {
         ffi::sapp_consume_event();

@@ -443,6 +443,9 @@ pub enum PixelFormat {
 ///
 /// Used for fields of [`PipelineDesc::blend`].
 ///
+/// * <https://learnopengl.com/Advanced-OpenGL/Blending>
+/// * result = src * src_factor + dst * dst_factor
+///
 /// The default value is SG_BLENDFACTOR_ONE for source
 /// factors, and SG_BLENDFACTOR_ZERO for destination factors.
 #[repr(u32)]

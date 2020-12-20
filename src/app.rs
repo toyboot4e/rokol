@@ -174,7 +174,7 @@ impl<T: RApp> RAppFfiCallback for T {
 /// [`rokol::app`] event type
 ///
 /// [`rokol::app`]: crate::app
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum EventType {
     Invalid = ffi::sapp_event_type_SAPP_EVENTTYPE_INVALID,
@@ -187,14 +187,20 @@ pub enum EventType {
     MouseMove = ffi::sapp_event_type_SAPP_EVENTTYPE_MOUSE_MOVE,
     MouseEnter = ffi::sapp_event_type_SAPP_EVENTTYPE_MOUSE_ENTER,
     MouseLeave = ffi::sapp_event_type_SAPP_EVENTTYPE_MOUSE_LEAVE,
+    /// (Multi touch)
     TouchesBegin = ffi::sapp_event_type_SAPP_EVENTTYPE_TOUCHES_BEGAN,
+    /// (Multi touch)
     TouchesMoved = ffi::sapp_event_type_SAPP_EVENTTYPE_TOUCHES_MOVED,
+    /// (Multi touch)
     TouchesEnded = ffi::sapp_event_type_SAPP_EVENTTYPE_TOUCHES_ENDED,
+    /// (Multi touch)
     TouchesCancelled = ffi::sapp_event_type_SAPP_EVENTTYPE_TOUCHES_CANCELLED,
     Resized = ffi::sapp_event_type_SAPP_EVENTTYPE_RESIZED,
     Iconified = ffi::sapp_event_type_SAPP_EVENTTYPE_ICONIFIED,
     Restored = ffi::sapp_event_type_SAPP_EVENTTYPE_RESTORED,
+    /// (Mobile)
     Suspended = ffi::sapp_event_type_SAPP_EVENTTYPE_SUSPENDED,
+    /// (Mobile)
     Resumed = ffi::sapp_event_type_SAPP_EVENTTYPE_RESUMED,
     UpdateCursor = ffi::sapp_event_type_SAPP_EVENTTYPE_UPDATE_CURSOR,
     QuitRequested = ffi::sapp_event_type_SAPP_EVENTTYPE_QUIT_REQUESTED,
@@ -240,7 +246,7 @@ impl EventType {
 /// [`rokol::app`] keycode
 ///
 /// [`rokol::app`]: crate::app
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum Key {
     Invalid = ffi::sapp_keycode_SAPP_KEYCODE_INVALID,
@@ -498,8 +504,8 @@ impl Key {
 /// [`rokol::app`] mouse input
 ///
 /// [`rokol::app`]: crate::app
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(i32)]
-#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Mouse {
     Invalid = ffi::sapp_mousebutton_SAPP_MOUSEBUTTON_INVALID,
     Left = ffi::sapp_mousebutton_SAPP_MOUSEBUTTON_LEFT,

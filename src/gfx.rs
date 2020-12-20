@@ -73,7 +73,7 @@ pub type SetupDesc = ffi::sg_desc;
 /// - SG_DEFAULT_CLEAR_ALPHA:   1.0f
 /// - SG_DEFAULT_CLEAR_DEPTH:   1.0f
 /// - SG_DEFAULT_CLEAR_STENCIL: 0
-#[derive(Copy, Clone, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum PassActionKind {
     _Default = ffi::sg_action__SG_ACTION_DEFAULT,
@@ -107,7 +107,7 @@ pub enum PassActionKind {
 /// smaller than the resource size, if only a part of the overall resource
 /// size is used for rendering, you only need to make sure that the data that
 /// *is* used is valid).
-#[derive(Copy, Clone, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum ResourceUsage {
     _Default = ffi::sg_usage__SG_USAGE_DEFAULT,
@@ -119,7 +119,7 @@ pub enum ResourceUsage {
 }
 
 /// Fs | Vs
-#[derive(Copy, Clone, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum ShaderStage {
     /// Fragment shader
@@ -130,7 +130,7 @@ pub enum ShaderStage {
 }
 
 /// Mat4 | Float | Float2 | Float3 | Float4
-#[derive(Copy, Clone, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum UniformType {
     Float = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT,
@@ -144,7 +144,7 @@ pub enum UniformType {
 }
 
 /// Float | SInt | UInt
-#[derive(Copy, Clone, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum SamplerType {
     _Default = ffi::sg_sampler_type__SG_SAMPLERTYPE_DEFAULT,
@@ -167,7 +167,7 @@ pub enum SamplerType {
 /// The reason is that D3D11 cannot convert from non-normalized
 /// formats to floating point inputs (only to integer inputs),
 /// and WebGL2 / GLES2 don't support integer vertex shader inputs.
-#[derive(Copy, Clone, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum VertexFormat {
     Inalid = ffi::sg_vertex_format_SG_VERTEXFORMAT_INVALID,
@@ -191,7 +191,7 @@ pub enum VertexFormat {
 }
 
 /// Index | Vertex
-#[derive(Copy, Clone, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum BufferType {
     _Default = ffi::sg_buffer_type__SG_BUFFERTYPE_DEFAULT,
@@ -202,7 +202,7 @@ pub enum BufferType {
 }
 
 /// UInt16 | UInt32
-#[derive(Copy, Clone, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum IndexType {
     _Default = ffi::sg_index_type__SG_INDEXTYPE_DEFAULT,
@@ -214,7 +214,7 @@ pub enum IndexType {
 }
 
 /// Common subset of 3D primitive types supported across all 3D APIs. Field of [`PipelineDesc`].
-#[derive(Copy, Clone, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum PrimitiveType {
     _Default = ffi::sg_primitive_type__SG_PRIMITIVETYPE_DEFAULT,
@@ -242,7 +242,7 @@ pub enum PrimitiveType {
 /// 3D- and array-textures are not supported on the GLES2/WebGL backend
 /// (use `sg_query_features().imagetype_3d` and `sg_query_features().imagetype_array` to check for
 /// support).
-#[derive(Copy, Clone, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum ImageType {
     _Default = ffi::sg_image_type__SG_IMAGETYPE_DEFAULT,
@@ -262,7 +262,7 @@ pub enum ImageType {
 /// members when creating an image object.
 ///
 /// The default filter mode is SG_FILTER_NEAREST.
-#[derive(Copy, Clone, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum Filter {
     Linear = ffi::sg_filter_SG_FILTER_LINEAR,
@@ -301,7 +301,7 @@ pub enum Filter {
 ///
 ///     - GLES2/3 and WebGL/WebGL2
 ///     - Metal on iOS
-#[derive(Copy, Clone, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum Wrap {
     _Default = ffi::sg_wrap__SG_WRAP_DEFAULT,
@@ -370,8 +370,8 @@ pub enum Wrap {
 /// of `sokol_gfx.h`. On some backends, using BGRA for the default frame buffer
 /// allows more efficient frame flips. For your own offscreen-render-targets,
 /// use whatever renderable pixel format is convenient for you.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
-#[derive(Copy, Clone, Debug)]
 pub enum PixelFormat {
     _Default = ffi::sg_pixel_format__SG_PIXELFORMAT_DEFAULT as u32,
     Bc1Rgba = ffi::sg_pixel_format_SG_PIXELFORMAT_BC1_RGBA as u32,
@@ -448,8 +448,8 @@ pub enum PixelFormat {
 ///
 /// The default value is SG_BLENDFACTOR_ONE for source
 /// factors, and SG_BLENDFACTOR_ZERO for destination factors.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
-#[derive(Copy, Clone, Debug)]
 pub enum BlendFactor {
     _Default = ffi::sg_blend_factor__SG_BLENDFACTOR_DEFAULT as u32,
     Zero = ffi::sg_blend_factor_SG_BLENDFACTOR_ZERO as u32,
@@ -481,8 +481,8 @@ pub enum BlendFactor {
 /// If you want to override the default behaviour, it is important to not
 /// only set the clear color, but the 'action' field as well (as long as this
 /// is in its _SG_ACTION_DEFAULT, the value fields will be ignored).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
-#[derive(Copy, Clone, Debug)]
 pub enum Action {
     _Default = ffi::sg_action__SG_ACTION_DEFAULT as u32,
     /// Clear the render target image
@@ -499,7 +499,7 @@ pub enum Action {
 // Rendering enums
 
 /// `"`, `!=`, `>`, `>=`, `<`, `<=`, `true`, `false`
-#[derive(Copy, Clone, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum CompareFunc {
     _Default = ffi::sg_compare_func__SG_COMPAREFUNC_DEFAULT,
@@ -518,7 +518,7 @@ pub enum CompareFunc {
 /// Front | Back | None
 ///
 /// <https://learnopengl.com/Advanced-OpenGL/Face-culling>
-#[derive(Copy, Clone, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum CullMode {
     _Default = ffi::sg_cull_mode__SG_CULLMODE_DEFAULT,
@@ -532,7 +532,7 @@ pub enum CullMode {
 /// CCW | CW
 ///
 /// <https://learnopengl.com/Advanced-OpenGL/Face-culling>
-#[derive(Copy, Clone, Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum FaceWinding {
     _Default = ffi::sg_face_winding__SG_FACEWINDING_DEFAULT,

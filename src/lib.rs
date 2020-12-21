@@ -27,8 +27,8 @@ pub mod app;
 pub mod gfx;
 pub mod glue;
 
-#[cfg(feature = "debug-ui")]
-pub mod imgui;
+// #[cfg(feature = "debug-ui")]
+// pub mod imgui;
 
 /// Any error upcasted to [`Box`]
 pub type Error = Box<dyn std::error::Error>;

@@ -173,7 +173,7 @@ impl<T: RApp> RAppFfiCallback for T {
 
 /// Type of [`rokol::app::Event`]
 ///
-/// [`rokol::app`]: crate::app
+/// [`rokol::app::Event`]: crate::app::Event
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum EventType {

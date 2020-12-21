@@ -505,7 +505,7 @@ impl Key {
 ///
 /// [`rokol::app`]: crate::app
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-#[repr(i32)]
+#[repr(u32)]
 pub enum Mouse {
     Invalid = ffi::sapp_mousebutton_SAPP_MOUSEBUTTON_INVALID,
     Left = ffi::sapp_mousebutton_SAPP_MOUSEBUTTON_LEFT,
@@ -514,7 +514,7 @@ pub enum Mouse {
 }
 
 impl Mouse {
-    pub fn from_i32(x: i32) -> Option<Self> {
+    pub fn from_u32(x: u32) -> Option<Self> {
         Some(match x {
             ffi::sapp_mousebutton_SAPP_MOUSEBUTTON_INVALID => Self::Invalid,
             ffi::sapp_mousebutton_SAPP_MOUSEBUTTON_LEFT => Self::Left,

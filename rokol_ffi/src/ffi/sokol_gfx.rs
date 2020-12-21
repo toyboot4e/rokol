@@ -1938,14 +1938,14 @@ impl Default for sg_image_content {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct sg_image_desc {
     pub _start_canary: u32,
     pub type_: sg_image_type,
     pub render_target: bool,
     pub width: ::std::os::raw::c_int,
     pub height: ::std::os::raw::c_int,
-    pub __bindgen_anon_1: sg_image_desc__bindgen_ty_1,
+    pub num_slices: ::std::os::raw::c_int,
     pub num_mipmaps: ::std::os::raw::c_int,
     pub usage: sg_usage,
     pub pixel_format: sg_pixel_format,
@@ -1968,55 +1968,6 @@ pub struct sg_image_desc {
     pub d3d11_shader_resource_view: *const ::std::os::raw::c_void,
     pub wgpu_texture: *const ::std::os::raw::c_void,
     pub _end_canary: u32,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union sg_image_desc__bindgen_ty_1 {
-    pub depth: ::std::os::raw::c_int,
-    pub layers: ::std::os::raw::c_int,
-    _bindgen_union_align: u32,
-}
-#[test]
-fn bindgen_test_layout_sg_image_desc__bindgen_ty_1() {
-    assert_eq!(
-        ::std::mem::size_of::<sg_image_desc__bindgen_ty_1>(),
-        4usize,
-        concat!("Size of: ", stringify!(sg_image_desc__bindgen_ty_1))
-    );
-    assert_eq!(
-        ::std::mem::align_of::<sg_image_desc__bindgen_ty_1>(),
-        4usize,
-        concat!("Alignment of ", stringify!(sg_image_desc__bindgen_ty_1))
-    );
-    assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<sg_image_desc__bindgen_ty_1>())).depth as *const _ as usize
-        },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_image_desc__bindgen_ty_1),
-            "::",
-            stringify!(depth)
-        )
-    );
-    assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<sg_image_desc__bindgen_ty_1>())).layers as *const _ as usize
-        },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_image_desc__bindgen_ty_1),
-            "::",
-            stringify!(layers)
-        )
-    );
-}
-impl Default for sg_image_desc__bindgen_ty_1 {
-    fn default() -> Self {
-        unsafe { ::std::mem::zeroed() }
-    }
 }
 #[test]
 fn bindgen_test_layout_sg_image_desc() {
@@ -2078,6 +2029,16 @@ fn bindgen_test_layout_sg_image_desc() {
             stringify!(sg_image_desc),
             "::",
             stringify!(height)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_image_desc>())).num_slices as *const _ as usize },
+        20usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_image_desc),
+            "::",
+            stringify!(num_slices)
         )
     );
     assert_eq!(
@@ -3471,76 +3432,11 @@ impl Default for sg_pipeline_desc {
     }
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct sg_attachment_desc {
     pub image: sg_image,
     pub mip_level: ::std::os::raw::c_int,
-    pub __bindgen_anon_1: sg_attachment_desc__bindgen_ty_1,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union sg_attachment_desc__bindgen_ty_1 {
-    pub face: ::std::os::raw::c_int,
-    pub layer: ::std::os::raw::c_int,
     pub slice: ::std::os::raw::c_int,
-    _bindgen_union_align: u32,
-}
-#[test]
-fn bindgen_test_layout_sg_attachment_desc__bindgen_ty_1() {
-    assert_eq!(
-        ::std::mem::size_of::<sg_attachment_desc__bindgen_ty_1>(),
-        4usize,
-        concat!("Size of: ", stringify!(sg_attachment_desc__bindgen_ty_1))
-    );
-    assert_eq!(
-        ::std::mem::align_of::<sg_attachment_desc__bindgen_ty_1>(),
-        4usize,
-        concat!(
-            "Alignment of ",
-            stringify!(sg_attachment_desc__bindgen_ty_1)
-        )
-    );
-    assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<sg_attachment_desc__bindgen_ty_1>())).face as *const _ as usize
-        },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_attachment_desc__bindgen_ty_1),
-            "::",
-            stringify!(face)
-        )
-    );
-    assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<sg_attachment_desc__bindgen_ty_1>())).layer as *const _ as usize
-        },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_attachment_desc__bindgen_ty_1),
-            "::",
-            stringify!(layer)
-        )
-    );
-    assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<sg_attachment_desc__bindgen_ty_1>())).slice as *const _ as usize
-        },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_attachment_desc__bindgen_ty_1),
-            "::",
-            stringify!(slice)
-        )
-    );
-}
-impl Default for sg_attachment_desc__bindgen_ty_1 {
-    fn default() -> Self {
-        unsafe { ::std::mem::zeroed() }
-    }
 }
 #[test]
 fn bindgen_test_layout_sg_attachment_desc() {
@@ -3574,14 +3470,19 @@ fn bindgen_test_layout_sg_attachment_desc() {
             stringify!(mip_level)
         )
     );
-}
-impl Default for sg_attachment_desc {
-    fn default() -> Self {
-        unsafe { ::std::mem::zeroed() }
-    }
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_attachment_desc>())).slice as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_attachment_desc),
+            "::",
+            stringify!(slice)
+        )
+    );
 }
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct sg_pass_desc {
     pub _start_canary: u32,
     pub color_attachments: [sg_attachment_desc; 4usize],
@@ -4948,7 +4849,7 @@ fn bindgen_test_layout_sg_gl_context_desc() {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct sg_mtl_context_desc {
+pub struct sg_metal_context_desc {
     pub device: *const ::std::os::raw::c_void,
     pub renderpass_descriptor_cb:
         ::std::option::Option<unsafe extern "C" fn() -> *const ::std::os::raw::c_void>,
@@ -4962,93 +4863,94 @@ pub struct sg_mtl_context_desc {
     pub user_data: *mut ::std::os::raw::c_void,
 }
 #[test]
-fn bindgen_test_layout_sg_mtl_context_desc() {
+fn bindgen_test_layout_sg_metal_context_desc() {
     assert_eq!(
-        ::std::mem::size_of::<sg_mtl_context_desc>(),
+        ::std::mem::size_of::<sg_metal_context_desc>(),
         48usize,
-        concat!("Size of: ", stringify!(sg_mtl_context_desc))
+        concat!("Size of: ", stringify!(sg_metal_context_desc))
     );
     assert_eq!(
-        ::std::mem::align_of::<sg_mtl_context_desc>(),
+        ::std::mem::align_of::<sg_metal_context_desc>(),
         8usize,
-        concat!("Alignment of ", stringify!(sg_mtl_context_desc))
+        concat!("Alignment of ", stringify!(sg_metal_context_desc))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_mtl_context_desc>())).device as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<sg_metal_context_desc>())).device as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(sg_mtl_context_desc),
+            stringify!(sg_metal_context_desc),
             "::",
             stringify!(device)
         )
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<sg_mtl_context_desc>())).renderpass_descriptor_cb as *const _
+            &(*(::std::ptr::null::<sg_metal_context_desc>())).renderpass_descriptor_cb as *const _
                 as usize
         },
         8usize,
         concat!(
             "Offset of field: ",
-            stringify!(sg_mtl_context_desc),
+            stringify!(sg_metal_context_desc),
             "::",
             stringify!(renderpass_descriptor_cb)
         )
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<sg_mtl_context_desc>())).renderpass_descriptor_userdata_cb
+            &(*(::std::ptr::null::<sg_metal_context_desc>())).renderpass_descriptor_userdata_cb
                 as *const _ as usize
         },
         16usize,
         concat!(
             "Offset of field: ",
-            stringify!(sg_mtl_context_desc),
+            stringify!(sg_metal_context_desc),
             "::",
             stringify!(renderpass_descriptor_userdata_cb)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_mtl_context_desc>())).drawable_cb as *const _ as usize },
+        unsafe {
+            &(*(::std::ptr::null::<sg_metal_context_desc>())).drawable_cb as *const _ as usize
+        },
         24usize,
         concat!(
             "Offset of field: ",
-            stringify!(sg_mtl_context_desc),
+            stringify!(sg_metal_context_desc),
             "::",
             stringify!(drawable_cb)
         )
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<sg_mtl_context_desc>())).drawable_userdata_cb as *const _
+            &(*(::std::ptr::null::<sg_metal_context_desc>())).drawable_userdata_cb as *const _
                 as usize
         },
         32usize,
         concat!(
             "Offset of field: ",
-            stringify!(sg_mtl_context_desc),
+            stringify!(sg_metal_context_desc),
             "::",
             stringify!(drawable_userdata_cb)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_mtl_context_desc>())).user_data as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<sg_metal_context_desc>())).user_data as *const _ as usize },
         40usize,
         concat!(
             "Offset of field: ",
-            stringify!(sg_mtl_context_desc),
+            stringify!(sg_metal_context_desc),
             "::",
             stringify!(user_data)
         )
     );
 }
-impl Default for sg_mtl_context_desc {
+impl Default for sg_metal_context_desc {
     fn default() -> Self {
         unsafe { ::std::mem::zeroed() }
     }
 }
-pub type sg_metal_context_desc = sg_mtl_context_desc;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct sg_d3d11_context_desc {

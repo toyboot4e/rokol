@@ -884,11 +884,11 @@ fn bindgen_test_layout_sapp_touchpoint() {
         )
     );
 }
-pub const sapp_mousebutton_SAPP_MOUSEBUTTON_INVALID: sapp_mousebutton = -1;
 pub const sapp_mousebutton_SAPP_MOUSEBUTTON_LEFT: sapp_mousebutton = 0;
 pub const sapp_mousebutton_SAPP_MOUSEBUTTON_RIGHT: sapp_mousebutton = 1;
 pub const sapp_mousebutton_SAPP_MOUSEBUTTON_MIDDLE: sapp_mousebutton = 2;
-pub type sapp_mousebutton = ::std::os::raw::c_int;
+pub const sapp_mousebutton_SAPP_MOUSEBUTTON_INVALID: sapp_mousebutton = 256;
+pub type sapp_mousebutton = ::std::os::raw::c_uint;
 pub const SAPP_MODIFIER_SHIFT: ::std::os::raw::c_uint = 1;
 pub const SAPP_MODIFIER_CTRL: ::std::os::raw::c_uint = 2;
 pub const SAPP_MODIFIER_ALT: ::std::os::raw::c_uint = 4;
@@ -1818,7 +1818,7 @@ extern "C" {
     ) -> *const ::std::os::raw::c_char;
 }
 extern "C" {
-    pub fn sapp_run(desc: *const sapp_desc) -> ::std::os::raw::c_int;
+    pub fn sapp_run(desc: *const sapp_desc);
 }
 extern "C" {
     pub fn sapp_gles2() -> bool;

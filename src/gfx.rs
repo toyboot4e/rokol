@@ -875,7 +875,7 @@ pub type VertexAttrDesc = ffi::sg_vertex_attr_desc;
 
 pub type GlContextDesc = ffi::sg_gl_context_desc;
 pub type D3D11ContextDesc = ffi::sg_d3d11_context_desc;
-pub type MtlContextDesc = ffi::sg_mtl_context_desc;
+pub type MetalContextDesc = ffi::sg_metal_context_desc;
 pub type WgpuContextDesc = ffi::sg_wgpu_context_desc;
 
 // --------------------------------------------------------------------------------

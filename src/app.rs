@@ -63,7 +63,7 @@ pub trait RApp {
     /// event callback is called (it may work on some platforms and 3D APIs,
     /// but not others, and the exact behaviour may change between
     /// sokol-app versions).
-    fn event(&mut self, _ev: &RAppEvent) {}
+    fn event(&mut self, _ev: &Event) {}
 
     /// Called when a fatal error is encountered during start which doesn't allow the program to
     /// continue
@@ -130,7 +130,7 @@ impl<T: RApp> RAppFfiCallback for T {
     extern "C" fn event_userdata_cb(event: *const ffi::sapp_event, user_data: *mut c_void) {
         let me: &mut Self = unsafe { &mut *(user_data as *mut Self) };
         // note that `RAppEvent` is just an alias of `sapp_event`
-        let ev: &RAppEvent = unsafe { &*(event as *const _) };
+        let ev: &Event = unsafe { &*(event as *const _) };
 
         me.event(ev);
     }
@@ -171,7 +171,7 @@ impl<T: RApp> RAppFfiCallback for T {
 // --------------------------------------------------------------------------------
 // enums
 
-/// [`rokol::app`] event type
+/// Type of [`rokol::app::Event`]
 ///
 /// [`rokol::app`]: crate::app
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -550,7 +550,7 @@ pub type TouchPoint = ffi::sapp_touchpoint;
 /// [`rokol::app`] application event
 ///
 /// [`rokol::app`]: crate::app
-pub type RAppEvent = ffi::sapp_event;
+pub type Event = ffi::sapp_event;
 
 /// Returns true after Rokol app is initialized
 pub fn is_valid() -> bool {

@@ -1,4 +1,4 @@
-//! Rokol renderer for fontstash
+//! Rokol fontstash renderer
 
 pub use fontstash::{self, FontStash};
 
@@ -131,7 +131,7 @@ unsafe impl fontstash::Renderer for FontBookInternal {
 
         let me = &mut *(uptr as *const _ as *mut Self);
 
-        if me.img.id == 0 {
+        if me.img.id != 0 {
             log::trace!("fontbook: create -- dispose old image");
             rg::Image::destroy(me.img);
         }

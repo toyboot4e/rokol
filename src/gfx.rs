@@ -869,7 +869,17 @@ pub type ShaderUniformDesc = ffi::sg_shader_uniform_desc;
 pub type SlotInfo = ffi::sg_slot_info;
 pub type StencilAttachmentAction = ffi::sg_stencil_attachment_action;
 pub type StencilState = ffi::sg_stencil_state;
-pub type SubimageContent = ffi::sg_subimage_content;
+
+/// Pointer to and size of a subimage-surface data, this is
+/// used to describe the initial content of immutable-usage images,
+/// or for updating a dynamic- or stream-usage images.
+///
+/// For 3D- or array-textures, one sg_subimage_content item
+/// describes an entire mipmap level consisting of all array- or
+/// 3D-slices of the mipmap level. It is only possible to update
+/// an entire mipmap level, not parts of it.
+pub type SubImageContent = ffi::sg_subimage_content;
+
 pub type TraceHooks = ffi::sg_trace_hooks;
 pub type VertexAttrDesc = ffi::sg_vertex_attr_desc;
 
@@ -988,7 +998,11 @@ pub fn append_buffer<T>(buf: Buffer, data: &[T]) -> i32 {
     unsafe { ffi::sg_append_buffer(buf, data.as_ptr() as *const _, n_bytes as i32) }
 }
 
-// sg_update_image(sg_image img, const sg_image_content* content)
+pub fn update_image(img: Image, content: &ImageContent) {
+    unsafe {
+        ffi::sg_update_image(img, content);
+    }
+}
 
 // --------------------------------------------------------------------------------
 // Helper functions

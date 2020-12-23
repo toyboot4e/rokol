@@ -30,6 +30,9 @@ pub mod glue;
 // #[cfg(feature = "debug-ui")]
 // pub mod imgui;
 
+#[cfg(feature = "use-fontstash")]
+pub mod fons;
+
 /// Any error upcasted to [`Box`]
 pub type Error = Box<dyn std::error::Error>;
 

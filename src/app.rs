@@ -177,7 +177,7 @@ impl<T: RApp> RAppFfiCallback for T {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum EventType {
-    Invalid = ffi::sapp_event_type_SAPP_EVENTTYPE_INVALID,
+    InvalidEvent = ffi::sapp_event_type_SAPP_EVENTTYPE_INVALID,
     KeyDown = ffi::sapp_event_type_SAPP_EVENTTYPE_KEY_DOWN,
     KeyUp = ffi::sapp_event_type_SAPP_EVENTTYPE_KEY_UP,
     Char = ffi::sapp_event_type_SAPP_EVENTTYPE_CHAR,
@@ -213,7 +213,7 @@ pub enum EventType {
 impl EventType {
     pub fn from_u32(x: u32) -> Option<Self> {
         Some(match x {
-            ffi::sapp_event_type_SAPP_EVENTTYPE_INVALID => Self::Invalid,
+            ffi::sapp_event_type_SAPP_EVENTTYPE_INVALID => Self::InvalidEvent,
             ffi::sapp_event_type_SAPP_EVENTTYPE_KEY_DOWN => Self::KeyDown,
             ffi::sapp_event_type_SAPP_EVENTTYPE_KEY_UP => Self::KeyUp,
             ffi::sapp_event_type_SAPP_EVENTTYPE_CHAR => Self::Char,
@@ -249,7 +249,7 @@ impl EventType {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum Key {
-    Invalid = ffi::sapp_keycode_SAPP_KEYCODE_INVALID,
+    InvalidKey = ffi::sapp_keycode_SAPP_KEYCODE_INVALID,
     Space = ffi::sapp_keycode_SAPP_KEYCODE_SPACE,
     Apostrophe = ffi::sapp_keycode_SAPP_KEYCODE_APOSTROPHE,
     Comma = ffi::sapp_keycode_SAPP_KEYCODE_COMMA,
@@ -375,7 +375,7 @@ pub enum Key {
 impl Key {
     pub fn from_u32(x: u32) -> Option<Self> {
         Some(match x {
-            ffi::sapp_keycode_SAPP_KEYCODE_INVALID => Self::Invalid,
+            ffi::sapp_keycode_SAPP_KEYCODE_INVALID => Self::InvalidKey,
             ffi::sapp_keycode_SAPP_KEYCODE_SPACE => Self::Space,
             ffi::sapp_keycode_SAPP_KEYCODE_APOSTROPHE => Self::Apostrophe,
             ffi::sapp_keycode_SAPP_KEYCODE_COMMA => Self::Comma,

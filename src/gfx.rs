@@ -998,7 +998,8 @@ pub fn append_buffer<T>(buf: Buffer, data: &[T]) -> i32 {
     unsafe { ffi::sg_append_buffer(buf, data.as_ptr() as *const _, n_bytes as i32) }
 }
 
-pub fn update_image(img: Image, content: &ImageContent) {
+/// Only one update per frame is allowed for buffer and image resources
+pub unsafe fn update_image(img: Image, content: &ImageContent) {
     unsafe {
         ffi::sg_update_image(img, content);
     }

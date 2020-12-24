@@ -11,7 +11,7 @@ use crate::gfx::{self as rg, BakedResource};
 
 /// The shared ownership of [`FontBookInternal`]
 ///
-/// It is required to use the internal variable so that the memory position is fixed.
+/// It is required to use [`Box`] to give fixed memory location.
 #[derive(Debug)]
 pub struct FontBook {
     /// Give fixed memory location
@@ -38,7 +38,8 @@ impl FontBook {
             img: Default::default(),
             w,
             h,
-            is_dirty: true,
+            is_dirty: false,
+            tex_data: Vec::with_capacity((w * h) as usize),
         });
 
         let inner_ptr = inner.as_ref() as *const _ as *mut FontBookInternal;
@@ -81,6 +82,8 @@ pub struct FontBookInternal {
     w: u32,
     /// The texture size is always synced with the fontstash size
     h: u32,
+    /// We store texture data here because be can update our texture only once a frame
+    tex_data: Vec<u8>,
     /// Shall we update the texture data?
     is_dirty: bool,
 }
@@ -92,14 +95,6 @@ impl Drop for FontBookInternal {
         if !self.img.id != 0 {
             rg::Image::destroy(self.img);
         }
-    }
-}
-
-/// Lifecycle
-impl FontBookInternal {
-    /// * TODO: render_update vs update
-    pub fn update(&mut self) {
-        self.is_dirty = true;
     }
 }
 
@@ -127,14 +122,14 @@ impl FontBookInternal {
 unsafe impl fontstash::Renderer for FontBookInternal {
     /// Creates font texture
     unsafe extern "C" fn create(uptr: *mut c_void, width: c_int, height: c_int) -> c_int {
-        log::trace!("fontbook: create [{}, {}]", width, height);
-
         let me = &mut *(uptr as *const _ as *mut Self);
 
         if me.img.id != 0 {
             log::trace!("fontbook: create -- dispose old image");
             rg::Image::destroy(me.img);
         }
+
+        log::trace!("fontbook: create [{}, {}]", width, height);
 
         me.img = rg::Image::create(&rg::ImageDesc {
             type_: rg::ImageType::Dim2 as u32,
@@ -182,49 +177,55 @@ unsafe impl fontstash::Renderer for FontBookInternal {
         _data: *const c_uchar,
     ) -> c_int {
         let me = &mut *(uptr as *const _ as *mut Self);
-        me.maybe_update_img();
+        me.is_dirty = true;
         true as c_int // success
     }
 }
 
 impl FontBookInternal {
     /// Updates GPU texure. Call it whenever drawing text
-    fn maybe_update_img(&mut self) {
+    fn update_cpu_image(&mut self) {
+        let tex_data = &mut self.tex_data;
+        tex_data.clear();
+
+        self.stash.with_pixels(|pixels, w, h| {
+            log::trace!("fontbook: [{}, {}] update CPU texture", w, h);
+
+            let area = (w * h) as usize;
+            // self.tex_data.ensure_capacity(area);
+
+            // four channels (RGBA)
+            for i in 0..area {
+                tex_data.push(255);
+                tex_data.push(255);
+                tex_data.push(255);
+                tex_data.push(pixels[i]);
+            }
+        });
+
+        // self.w = w;
+        // self.h = h;
+    }
+
+    /// Call only once a frame
+    ///
+    /// TODO: we can't always
+    pub unsafe fn update_image(&mut self) {
         if !self.is_dirty {
-            // TODO: this looks very odd but works
-            self.is_dirty = true;
             return;
         }
         self.is_dirty = false;
 
-        self.stash.with_pixels(|pixels, w, h| {
-            let data = {
-                log::trace!("fontbook: [{}, {}] update GPU texture", w, h);
+        log::trace!("fontbook: [{}, {}] >>> update GPU texture", self.w, self.h);
 
-                // FIXME: address boundary error
-                let area = (w * h) as usize;
-
-                // four channels (RGBA)
-                let mut data = Vec::<u8>::with_capacity(4 * area);
-                for i in 0..area {
-                    data.push(255);
-                    data.push(255);
-                    data.push(255);
-                    data.push(pixels[i]);
-                }
-                data
+        self.update_cpu_image();
+        rg::update_image(self.img, &{
+            let mut content = rg::ImageContent::default();
+            content.subimage[0][0] = rg::SubImageContent {
+                ptr: self.tex_data.as_ptr() as *mut _,
+                size: self.tex_data.len() as i32,
             };
-
-            rg::update_image(self.img, &{
-                let mut content = rg::ImageContent::default();
-                content.subimage[0][0] = rg::SubImageContent {
-                    ptr: data.as_ptr() as *mut _,
-                    size: data.len() as i32,
-                };
-                content
-            });
-
-            log::trace!("<after upload>");
+            content
         });
     }
 }

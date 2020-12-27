@@ -120,3 +120,7 @@ I expected I would get better completions to FFI items on Emacs as bonus. Unfort
 
 I drew textured cubes! Examples code explaind [here](https://toyboot4e.github.io/rokol) (also conteins screenshots).
 
+=== Dec 27, 2020
+
+I've been developing a 2D roguelike game using Rokol. I basically copied https://github.com/prime31/zig-gamekit[zig-gamekit] in my 2D framework. It's built on top of zig-renderkit, which has very similar API to Sokol, so it's straight-forward to copy that framework with Rokol.
+

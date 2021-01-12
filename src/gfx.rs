@@ -278,7 +278,7 @@ pub enum Filter {
 
 /// The texture coordinates wrapping mode when sampling a texture image
 ///
-/// This is used in `sg_image_desc` when creating an image..
+/// This is used in [`rokol_ffi::gfx::sg_image_desc`] when creating an image..
 ///
 /// # Platform
 ///
@@ -305,7 +305,7 @@ pub enum Filter {
 #[repr(u32)]
 pub enum Wrap {
     _Default = ffi::sg_wrap__SG_WRAP_DEFAULT,
-    /// (Platform)
+    /// (Platform) Not supported on all platform
     ClampToBorder = ffi::sg_wrap_SG_WRAP_CLAMP_TO_BORDER,
     ClampToEdge = ffi::sg_wrap_SG_WRAP_CLAMP_TO_EDGE,
     MirroredRepeat = ffi::sg_wrap_SG_WRAP_MIRRORED_REPEAT,
@@ -1095,6 +1095,8 @@ pub unsafe fn buf_desc(
 /// [Non-Sokol] Helper for setting shader uniform
 ///
 /// Casts given data as `&[u8]` and then applies it.
+///
+/// FIXME: it doesn't allow [f32; 2]
 pub unsafe fn apply_uniforms_as_bytes<T>(stage: ShaderStage, ub_index: u32, data: &T) {
     let bytes: &[u8] =
         std::slice::from_raw_parts(data as *const _ as *const _, std::mem::size_of::<T>());

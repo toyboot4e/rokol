@@ -1,6 +1,6 @@
 //! Rokol fontstash renderer
 
-pub use fontstash::{self, FontStash};
+pub use fontstash::{self, Align, FontStash};
 
 use {
     fontstash::FonsTextIter,
@@ -8,6 +8,13 @@ use {
 };
 
 use crate::gfx::{self as rg, BakedResource};
+
+#[derive(Debug, Clone)]
+pub struct FontConfig {
+    pub font: fontstash::FontIx,
+    pub fontsize: f32,
+    pub line_spacing: f32,
+}
 
 /// The shared ownership of [`FontBookInternal`]
 ///
@@ -104,12 +111,56 @@ impl FontBookInternal {
         self.img
     }
 
+    /// Copies the shared ownership of Fontstash
     pub fn stash(&self) -> FontStash {
         self.stash.clone()
     }
 
+    /// TODO: does it affect performance (dramatically)?
+    pub fn apply_cfg(&mut self, cfg: &FontConfig) {
+        self.stash.set_font(cfg.font);
+        self.stash.set_size(cfg.fontsize);
+    }
+
+    /// Be sure to set alignment of the [`FontStash`] to draw text as you want.
     pub fn text_iter(&mut self, text: &str) -> fontstash::Result<FonsTextIter> {
         self.stash.text_iter(text)
+    }
+
+    /// [x, y, w, h]
+    ///
+    /// Be sure to set alignment of the [`FontStash`] to draw text as you want.
+    pub fn text_bounds(
+        &mut self,
+        pos: impl Into<[f32; 2]>,
+        cfg: &FontConfig,
+        text: &str,
+    ) -> [f32; 4] {
+        // TODO: apply `FontConfig` automatially?
+        // self.apply_cfg(cfg);
+        let mut lines = text.lines();
+
+        let [x, y, mut w, mut h] = {
+            let [x1, y1, x2, y2] = self.stash.bounds(pos.into(), lines.next().unwrap());
+            [x1, y1, x2 - x1, y2 - y1]
+        };
+
+        for line in lines {
+            if line.is_empty() {
+                h += cfg.fontsize + cfg.line_spacing;
+                continue;
+            } else {
+                let [x1, y1, x2, y2] = self.stash.bounds([0.0, 0.0], line);
+
+                if x2 - x1 > w {
+                    w = x2 - x1;
+                }
+
+                h += (y2 - y1) + cfg.line_spacing;
+            }
+        }
+
+        [x, y, w, h]
     }
 }
 
@@ -184,6 +235,8 @@ unsafe impl fontstash::Renderer for FontBookInternal {
 
 impl FontBookInternal {
     /// Updates GPU texure. Call it whenever drawing text
+    ///
+    /// TODO: do not update twice a frame?
     fn update_cpu_image(&mut self) {
         let tex_data = &mut self.tex_data;
         tex_data.clear();
@@ -207,10 +260,10 @@ impl FontBookInternal {
         // self.h = h;
     }
 
-    /// Call only once a frame
+    /// Call it every frame but only once
     ///
-    /// TODO: we can't always
-    pub unsafe fn update_image(&mut self) {
+    /// TODO: we may not be ablt to show text on first frame
+    pub unsafe fn maybe_update_image(&mut self) {
         if !self.is_dirty {
             return;
         }

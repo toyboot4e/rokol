@@ -1,4 +1,8 @@
-//! Rokol fontstash renderer
+/*!
+
+Rokol fontstash renderer
+
+*/
 
 pub use fontstash::{self, Align, FontStash};
 
@@ -22,11 +26,11 @@ pub struct FontConfig {
 #[derive(Debug)]
 pub struct FontBook {
     /// Give fixed memory location
-    inner: Box<FontBookInternal>,
+    inner: Box<FontBookImpl>,
 }
 
 impl std::ops::Deref for FontBook {
-    type Target = FontBookInternal;
+    type Target = FontBookImpl;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
@@ -40,7 +44,7 @@ impl std::ops::DerefMut for FontBook {
 
 impl FontBook {
     pub fn new(w: u32, h: u32) -> Self {
-        let mut inner = Box::new(FontBookInternal {
+        let mut inner = Box::new(FontBookImpl {
             stash: FontStash::uninitialized(),
             img: Default::default(),
             w,
@@ -49,7 +53,7 @@ impl FontBook {
             tex_data: Vec::with_capacity((w * h) as usize),
         });
 
-        let inner_ptr = inner.as_ref() as *const _ as *mut FontBookInternal;
+        let inner_ptr = inner.as_ref() as *const _ as *mut FontBookImpl;
         // create internal image with the `create` callback:
         inner.stash.init_mut(w, h, inner_ptr);
 
@@ -82,7 +86,7 @@ impl FontBook {
 ///
 /// It is required to use the internal variable so that the memory position is fixed.
 #[derive(Debug)]
-pub struct FontBookInternal {
+pub struct FontBookImpl {
     stash: fontstash::FontStash,
     img: rg::Image,
     /// The texture size is always synced with the fontstash size
@@ -95,7 +99,7 @@ pub struct FontBookInternal {
     is_dirty: bool,
 }
 
-impl Drop for FontBookInternal {
+impl Drop for FontBookImpl {
     fn drop(&mut self) {
         log::trace!("fontbook: drop");
 
@@ -106,7 +110,7 @@ impl Drop for FontBookInternal {
 }
 
 /// Interface
-impl FontBookInternal {
+impl FontBookImpl {
     pub fn img(&self) -> rg::Image {
         self.img
     }
@@ -130,12 +134,7 @@ impl FontBookInternal {
     /// [x, y, w, h]
     ///
     /// Be sure to set alignment of the [`FontStash`] to draw text as you want.
-    pub fn text_bounds(
-        &mut self,
-        pos: impl Into<[f32; 2]>,
-        cfg: &FontConfig,
-        text: &str,
-    ) -> [f32; 4] {
+    pub fn text_bounds(&self, pos: impl Into<[f32; 2]>, cfg: &FontConfig, text: &str) -> [f32; 4] {
         // TODO: apply `FontConfig` automatially?
         // self.apply_cfg(cfg);
         let mut lines = text.lines();
@@ -170,7 +169,7 @@ impl FontBookInternal {
 /// Renderer implementation
 ///
 /// Return `1` to represent success.
-unsafe impl fontstash::Renderer for FontBookInternal {
+unsafe impl fontstash::Renderer for FontBookImpl {
     /// Creates font texture
     unsafe extern "C" fn create(uptr: *mut c_void, width: c_int, height: c_int) -> c_int {
         let me = &mut *(uptr as *const _ as *mut Self);
@@ -233,7 +232,7 @@ unsafe impl fontstash::Renderer for FontBookInternal {
     }
 }
 
-impl FontBookInternal {
+impl FontBookImpl {
     /// Updates GPU texure. Call it whenever drawing text
     ///
     /// TODO: do not update twice a frame?

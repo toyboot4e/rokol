@@ -1635,13 +1635,12 @@ impl Default for sapp_html5_fetch_response {
         unsafe { ::std::mem::zeroed() }
     }
 }
-pub type sapp_html5_fetch_callback =
-    ::std::option::Option<unsafe extern "C" fn(arg1: *const sapp_html5_fetch_response)>;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct sapp_html5_fetch_request {
     pub dropped_file_index: ::std::os::raw::c_int,
-    pub callback: sapp_html5_fetch_callback,
+    pub callback:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *const sapp_html5_fetch_response)>,
     pub buffer_ptr: *mut ::std::os::raw::c_void,
     pub buffer_size: u32,
     pub user_data: *mut ::std::os::raw::c_void,

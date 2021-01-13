@@ -6,7 +6,7 @@ Last update: Dec 3, 2020 ([commit]). Sokol header declaration diffs can be seen 
 
 [Sokol]: https://github.com/floooh/sokol
 [Rokol]: https://github.com/toyboot4e/rokol
-[commit]: https://github.com/floooh/sokol/commit/64a6f2e2fac607ddcd4ccc5bd8bcd25946293550
+[commit]: https://github.com/floooh/sokol/commit/5fbb6a25501e5478674ca0600a7539033592d749
 
 # impl Default
 

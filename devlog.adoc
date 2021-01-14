@@ -59,7 +59,7 @@ Rokol only considers desktop platforms; WebGPU is not available.
 
 Rokol is only tested on macOS (for now).
 
-Rokol compiles conditionally. User has three options to select their renderer:
+Rokol compiles conditionally. User has two options to select their renderer:
 
 . Let Rokol select default renderer
 . Use feature flag (like `cargo run --feature rokol/glcore33`)
@@ -114,7 +114,7 @@ I started to commit auto-generated bindings to Sokol in this repository. Now I c
 println!("cargo:rerun-if-changed=sokol");
 ----
 
-I expected I would get better completions to FFI items on Emacs as bonus. Unfortunately, I did not; probablly I need to remove `include_file!` from my code to get it (on VSCode, I can goto definitions of FFI items though).
+I expected I would get better completions to FFI items on Emacs as bonus. Unfortunately, I did not; probablly I need to remove `include!` from my code to get it (on VSCode, I can goto definitions of FFI items though).
 
 === Dec 12, 2020
 
@@ -123,4 +123,8 @@ I drew textured cubes! Examples code explaind [here](https://toyboot4e.github.io
 === Dec 27, 2020
 
 I've been developing a 2D roguelike game using Rokol. I basically copied https://github.com/prime31/zig-gamekit[zig-gamekit] in my 2D framework. It's built on top of zig-renderkit, which has very similar API to Sokol, so it's straight-forward to copy that framework with Rokol.
+
+=== Jan 14, 2021
+
+Now `rokol_ffi` doesn't use `include!` and we can easily goto definition of FFI items.
 

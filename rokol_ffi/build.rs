@@ -26,18 +26,21 @@ fn main() {
     // emit `DEP_SOKOL_GFX_<Renderer>`
     renderer.emit_cargo_metadata();
 
-    // generate bindings to `src/ffi`
-    let gen_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap()).join("src/ffi");
+    // generate bindings
+    let root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
+
     self::gen_bindings(
         "wrappers/rokol_app.h",
-        &gen_dir.join("sokol_app.rs"),
+        &root.join("src/app.rs"),
         &renderer,
+        "[sokol_app.h](https://github.com/floooh/sokol/blob/master/sokol_app.h)",
     );
 
     self::gen_bindings(
         "wrappers/rokol_gfx.h",
-        &gen_dir.join("sokol_gfx.rs"),
+        &root.join("src/gfx.rs"),
         &renderer,
+        "[sokol_gfx.h](https://github.com/floooh/sokol/blob/master/sokol_gfx.h)",
     );
 
     // compile and link to them
@@ -102,7 +105,7 @@ impl Renderer {
     }
 }
 
-fn new_bindgen(wrapper_str: &str, renderer: &Renderer) -> bindgen::Builder {
+fn new_bindgen(wrapper_str: &str, renderer: &Renderer, ffi_name: &str) -> bindgen::Builder {
     let root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
 
     let b = bindgen::builder();
@@ -114,11 +117,17 @@ fn new_bindgen(wrapper_str: &str, renderer: &Renderer) -> bindgen::Builder {
     let b = b.clang_arg(format!("-D{}", renderer.sokol_flag_name()));
 
     let b = b.derive_default(true);
+
+    // let b = b.disable_header_comment();
+    let b = b.raw_line(format!("//! Rust FFI to {}", ffi_name));
+    let b = b.raw_line("");
+    let b = b.raw_line("#![allow(warnings)]");
+
     b
 }
 
-fn gen_bindings(wrapper_str: &str, ffi_output: &Path, renderer: &Renderer) {
-    let gen = new_bindgen(wrapper_str, renderer);
+fn gen_bindings(wrapper_str: &str, ffi_output: &Path, renderer: &Renderer, ffi_name: &str) {
+    let gen = new_bindgen(wrapper_str, renderer, ffi_name);
     gen.generate().unwrap().write_to_file(ffi_output).ok();
 }
 

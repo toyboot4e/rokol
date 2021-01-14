@@ -25,24 +25,8 @@ NOTE: Sokol [considers] zero-initizialized structures to be in default state. It
 // TODO: Do not use `include!` so that we get goto support in Emacs
 // https://docs.rs/bindgen/0.56.0/bindgen/struct.Builder.html#method.module_raw_lines
 
-pub mod app {
-    //! FFI to [`sokol_app.h`](https://github.com/floooh/sokol/blob/master/sokol_app.h)
-
-    // suppress all warnings
-    #![allow(warnings)]
-
-    // Include generated bindings
-    include!("ffi/sokol_app.rs");
-}
-
-pub mod gfx {
-    //! FFI to [`sokol_gfx.h`](https://github.com/floooh/sokol/blob/master/sokol_gfx.h)
-
-    // suppress all warnings
-    #![allow(warnings)]
-
-    include!("ffi/sokol_gfx.rs");
-}
+pub mod app;
+pub mod gfx;
 
 pub mod glue {
     //! FFI to [`sokol_glue.h`](https://github.com/floooh/sokol/blob/master/sokol_glue.h)

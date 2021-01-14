@@ -22,7 +22,7 @@ GlCore33, Metal and D3D9. **WebGPU backend is not supported by rokol-ffi** (unti
 
 ## Specifying renderer
 
-To specify the renderer, use feature flag or set `ROKOL_RENDERER`. Changing `ROKOL_RENDERER` results in recompilation, so I'd recommend not changing it frequently (if possible).
+Use feature flag to switch graphics backend: `cargo run --features=glcore33`.
 
 ## Conditional compilation in down stream crates
 

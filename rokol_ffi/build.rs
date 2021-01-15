@@ -16,7 +16,8 @@ fn main() {
 
     let mut build = Build::new();
 
-    let debug = env::var("ROKOL_FORCE_DEBUG").ok().is_some() || env::var("DEBUG").ok().is_some();
+    let is_debug = env::var("ROKOL_FORCE_DEBUG").ok().is_some() || env::var("DEBUG").ok().is_some();
+
     let is_msvc = {
         let tool = build.try_get_compiler().unwrap();
         tool.is_like_msvc()
@@ -28,19 +29,27 @@ fn main() {
 
     // generate bindings
     let root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
+    let args = &[
+        format!("-I{}", root.join("sokol").display()),
+        format!("-I{}", root.join("sokol/util").display()),
+        format!("-D{}", renderer.sokol_flag_name()),
+    ];
+    let derive_default = true;
 
     self::gen_bindings(
-        "wrappers/rokol_app.h",
-        &root.join("src/app.rs"),
-        &renderer,
-        "[sokol_app.h](https://github.com/floooh/sokol/blob/master/sokol_app.h)",
+        root.join("wrappers/rokol_app.h"),
+        root.join("src/app.rs"),
+        args,
+        derive_default,
+        "//! Rust FFI to [sokol_app.h](https://github.com/floooh/sokol/blob/master/sokol_app.h)",
     );
 
     self::gen_bindings(
-        "wrappers/rokol_gfx.h",
-        &root.join("src/gfx.rs"),
-        &renderer,
-        "[sokol_gfx.h](https://github.com/floooh/sokol/blob/master/sokol_gfx.h)",
+        root.join("wrappers/rokol_gfx.h"),
+        root.join("src/gfx.rs"),
+        args,
+        derive_default,
+        "//! Rust FFI to [sokol_gfx.h](https://github.com/floooh/sokol/blob/master/sokol_gfx.h)",
     );
 
     // compile and link to them
@@ -49,7 +58,7 @@ fn main() {
         is_msvc,
         &renderer,
         "wrappers/rokol_impl.c",
-        debug,
+        is_debug,
     );
 }
 
@@ -105,30 +114,35 @@ impl Renderer {
     }
 }
 
-fn new_bindgen(wrapper_str: &str, renderer: &Renderer, ffi_name: &str) -> bindgen::Builder {
-    let root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
+/// Generates Rust FFI using a wrapper header file
+fn gen_bindings(
+    wrapper: impl AsRef<Path>,
+    dst: impl AsRef<Path>,
+    args: impl IntoIterator<Item = impl AsRef<str>>,
+    derive_default: bool,
+    docstring: &str,
+) {
+    let gen = bindgen::Builder::default()
+        .header(format!("{}", wrapper.as_ref().display()))
+        .derive_default(true)
+        .clang_args(args)
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks));
 
-    let b = bindgen::builder();
+    let gen = gen.raw_line(docstring);
+    let gen = gen.raw_line("");
+    let gen = gen.raw_line(r"#![allow(warnings)]");
+    let gen = gen.derive_default(derive_default);
 
-    let b = b.clang_arg(format!("-I{}", root.join("sokol").display()));
-    let b = b.clang_arg(format!("-I{}", root.join("sokol/util").display()));
+    let gen = gen.generate().unwrap_or_else(|err| {
+        panic!(
+            "Unable to generate bindings for `{}`. Original error {:?}",
+            dst.as_ref().display(),
+            err
+        )
+    });
 
-    let b = b.header(format!("{}", wrapper_str));
-    let b = b.clang_arg(format!("-D{}", renderer.sokol_flag_name()));
-
-    let b = b.derive_default(true);
-
-    // let b = b.disable_header_comment();
-    let b = b.raw_line(format!("//! Rust FFI to {}", ffi_name));
-    let b = b.raw_line("");
-    let b = b.raw_line("#![allow(warnings)]");
-
-    b
-}
-
-fn gen_bindings(wrapper_str: &str, ffi_output: &Path, renderer: &Renderer, ffi_name: &str) {
-    let gen = new_bindgen(wrapper_str, renderer, ffi_name);
-    gen.generate().unwrap().write_to_file(ffi_output).ok();
+    // it's `ok` to fail on crates.io
+    gen.write_to_file(dst).ok();
 }
 
 /// Compiles the given `wrapper` file and create FFI to it

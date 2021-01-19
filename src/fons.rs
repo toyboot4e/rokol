@@ -20,7 +20,7 @@ pub struct FontConfig {
     pub line_spacing: f32,
 }
 
-/// The shared ownership of [`FontBookInternal`]
+/// The shared ownership of [`FontBookImpl`]
 ///
 /// It is required to use [`Box`] to give fixed memory location.
 #[derive(Debug)]

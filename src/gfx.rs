@@ -10,7 +10,7 @@ Graphics ([`FFI`])
 
 * [`Buffer`]: index or vertex buffer
 * [`Image`]: 2D or 3D image
-* [`Pass`]: screen or offscreen rendering pass
+* [`Pass`]: offscreen rendering pass
 * [`Pipeline`]: vertex-layouts, shader and render states
 * [`Shader`]: vertex and fragment shaders with shader-parameter declarations
 

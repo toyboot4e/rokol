@@ -124,14 +124,14 @@ fn gen_bindings(
 ) {
     let gen = bindgen::Builder::default()
         .header(format!("{}", wrapper.as_ref().display()))
-        .derive_default(true)
         .clang_args(args)
         .parse_callbacks(Box::new(bindgen::CargoCallbacks));
 
-    let gen = gen.raw_line(docstring);
-    let gen = gen.raw_line("");
-    let gen = gen.raw_line(r"#![allow(warnings)]");
     let gen = gen.derive_default(derive_default);
+    let gen = gen
+        .raw_line(docstring)
+        .raw_line("")
+        .raw_line(r"#![allow(warnings)]");
 
     let gen = gen.generate().unwrap_or_else(|err| {
         panic!(

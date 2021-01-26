@@ -71,7 +71,7 @@ fn load_img(path: &Path) -> rg::Image {
             ..Default::default()
         };
 
-        desc.content.subimage[0][0] = rg::SubimageContent {
+        desc.content.subimage[0][0] = rg::SubImageContent {
             ptr: pixels.as_ptr() as *const _,
             size: pixels.len() as i32,
         };

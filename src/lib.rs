@@ -42,7 +42,7 @@ pub type Result = std::result::Result<(), Error>;
 /// Entry point of Rokol applications
 ///
 /// Basically a wrapper of [`rokol_ffi::app::sapp_desc`].
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Rokol {
     /// Preferred width of the window / canvas
     pub w: u32,

@@ -1,6 +1,6 @@
 /*!
 
-Rokol fontstash renderer
+FontStash integration for Rokol
 
 */
 
@@ -260,8 +260,6 @@ impl FontBookImpl {
     }
 
     /// Call it every frame but only once
-    ///
-    /// TODO: we may not be ablt to show text on first frame
     pub unsafe fn maybe_update_image(&mut self) {
         if !self.is_dirty {
             return;

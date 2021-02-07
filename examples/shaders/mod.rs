@@ -1,8 +1,11 @@
-//! Shaders
-//!
-//! Shader files are conditionally embedded to the source code.
-//!
-//! Set `build.rs` for the conditional compiltion information.
+/*!
+
+Shaders
+
+Shader files are conditionally embedded to the source code.
+
+See `rokol/build.rs` for the conditional compiltion information.
+*/
 
 // NOTE: Be sure to set uniform names (or maybe fail).
 // TODO: compile while allowing non-existing shader file
@@ -16,39 +19,60 @@ macro_rules! c_str {
     };
 }
 
-fn gen(vs_fs: &[&str; 2], f: impl Fn(&mut rg::ShaderDesc)) -> rg::Shader {
-    let mut desc = unsafe { rokol::gfx::shader_desc(vs_fs[0], vs_fs[1]) };
+fn gen(vs_fs: &[impl AsRef<str>; 2], f: impl Fn(&mut rg::ShaderDesc)) -> rg::Shader {
+    let mut desc = unsafe { rokol::gfx::shader_desc(vs_fs[0].as_ref(), vs_fs[1].as_ref()) };
     f(&mut desc);
     Shader::create(&desc)
+}
+
+macro_rules! embed_shd {
+    ($vs:expr, $fs:expr,) => {
+        if cfg!(debug_assertions) {
+            // debug: dynamically load the shader files
+            let dir = std::path::PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap())
+                .join("examples/shaders");
+            let mut v = std::fs::read_to_string(dir.join($vs)).unwrap();
+            v.push('\0');
+            let mut f = std::fs::read_to_string(dir.join($fs)).unwrap();
+            f.push('\0');
+            [v, f]
+        } else {
+            // release: statically load the shader files
+            [
+                concat!(include_str!($vs), "\0").to_string(),
+                concat!(include_str!($fs), "\0").to_string(),
+            ]
+        }
+    };
 }
 
 #[cfg(rokol_gfx = "glcore33")]
 macro_rules! def_shd {
     ($file:expr) => {
-        [
-            concat!(include_str!(concat!("glsl/", $file, ".vert")), "\0"),
-            concat!(include_str!(concat!("glsl/", $file, ".frag")), "\0"),
-        ];
+        embed_shd!(
+            concat!("glsl/", $file, ".vs"),
+            concat!("glsl/", $file, ".fs"),
+        )
     };
 }
 
 #[cfg(rokol_gfx = "metal")]
 macro_rules! def_shd {
     ($file:expr) => {
-        [
-            concat!(include_str!(concat!("metal/", $file, "_vs.metal")), "\0"),
-            concat!(include_str!(concat!("metal/", $file, "_fs.metal")), "\0"),
-        ]
+        embed_shd!(
+            concat!("metal/", $file, "_vs.metal"),
+            concat!("metal/", $file, "_fs.metal"),
+        )
     };
 }
 
 #[cfg(rokol_gfx = "d3d11")]
 macro_rules! def_shd {
     ($file:expr) => {
-        [
-            concat!(include_str!(concat!("d3d11/", $file, "_vs.hlsl")), "\0"),
-            concat!(include_str!(concat!("d3d11/", $file, "_fs.hlsl")), "\0"),
-        ]
+        embed_shd!(
+            concat!("d3d11/", $file, "_vs.hlsl"),
+            concat!("d3d11/", $file, "_fs.hlsl"),
+        )
     };
 }
 

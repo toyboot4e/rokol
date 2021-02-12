@@ -460,8 +460,6 @@ pub enum PixelFormat {
 
 /// The source and destination factors in blending operations.
 ///
-/// Used for fields of [`PipelineDesc::blend`].
-///
 /// * <https://learnopengl.com/Advanced-OpenGL/Blending>
 /// * result = src * src_factor + dst * dst_factor
 ///

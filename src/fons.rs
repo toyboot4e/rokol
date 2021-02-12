@@ -270,12 +270,9 @@ impl FontBookImpl {
 
         self.update_cpu_image();
         rg::update_image(self.img, &{
-            let mut content = rg::ImageContent::default();
-            content.subimage[0][0] = rg::SubImageContent {
-                ptr: self.tex_data.as_ptr() as *mut _,
-                size: self.tex_data.len() as i32,
-            };
-            content
+            let mut data = rg::ImageData::default();
+            data.subimage[0][0] = self.tex_data.as_slice().into();
+            data
         });
     }
 }

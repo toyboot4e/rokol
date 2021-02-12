@@ -81,6 +81,9 @@ pub const SIG_ATOMIC_MAX: u32 = 2147483647;
 pub const true_: u32 = 1;
 pub const false_: u32 = 0;
 pub const __bool_true_false_are_defined: u32 = 1;
+pub type size_t = ::std::os::raw::c_ulong;
+pub type wchar_t = ::std::os::raw::c_int;
+pub type max_align_t = u128;
 pub type int_least8_t = i8;
 pub type int_least16_t = i16;
 pub type int_least32_t = i32;
@@ -843,6 +846,50 @@ fn bindgen_test_layout_sg_context() {
         )
     );
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct sg_range {
+    pub ptr: *const ::std::os::raw::c_void,
+    pub size: size_t,
+}
+#[test]
+fn bindgen_test_layout_sg_range() {
+    assert_eq!(
+        ::std::mem::size_of::<sg_range>(),
+        16usize,
+        concat!("Size of: ", stringify!(sg_range))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<sg_range>(),
+        8usize,
+        concat!("Alignment of ", stringify!(sg_range))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_range>())).ptr as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_range),
+            "::",
+            stringify!(ptr)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_range>())).size as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_range),
+            "::",
+            stringify!(size)
+        )
+    );
+}
+impl Default for sg_range {
+    fn default() -> Self {
+        unsafe { ::std::mem::zeroed() }
+    }
+}
 pub const SG_INVALID_ID: ::std::os::raw::c_uint = 0;
 pub const SG_NUM_SHADER_STAGES: ::std::os::raw::c_uint = 2;
 pub const SG_NUM_INFLIGHT_FRAMES: ::std::os::raw::c_uint = 2;
@@ -855,6 +902,67 @@ pub const SG_MAX_VERTEX_ATTRIBUTES: ::std::os::raw::c_uint = 16;
 pub const SG_MAX_MIPMAPS: ::std::os::raw::c_uint = 16;
 pub const SG_MAX_TEXTUREARRAY_LAYERS: ::std::os::raw::c_uint = 128;
 pub type _bindgen_ty_1 = ::std::os::raw::c_uint;
+#[repr(C)]
+#[derive(Debug, Default, Copy, Clone)]
+pub struct sg_color {
+    pub r: f32,
+    pub g: f32,
+    pub b: f32,
+    pub a: f32,
+}
+#[test]
+fn bindgen_test_layout_sg_color() {
+    assert_eq!(
+        ::std::mem::size_of::<sg_color>(),
+        16usize,
+        concat!("Size of: ", stringify!(sg_color))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<sg_color>(),
+        4usize,
+        concat!("Alignment of ", stringify!(sg_color))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_color>())).r as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_color),
+            "::",
+            stringify!(r)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_color>())).g as *const _ as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_color),
+            "::",
+            stringify!(g)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_color>())).b as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_color),
+            "::",
+            stringify!(b)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_color>())).a as *const _ as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_color),
+            "::",
+            stringify!(a)
+        )
+    );
+}
 pub const sg_backend_SG_BACKEND_GLCORE33: sg_backend = 0;
 pub const sg_backend_SG_BACKEND_GLES2: sg_backend = 1;
 pub const sg_backend_SG_BACKEND_GLES3: sg_backend = 2;
@@ -1023,12 +1131,14 @@ pub struct sg_features {
     pub imagetype_3d: bool,
     pub imagetype_array: bool,
     pub image_clamp_to_border: bool,
+    pub mrt_independent_blend_state: bool,
+    pub mrt_independent_write_mask: bool,
 }
 #[test]
 fn bindgen_test_layout_sg_features() {
     assert_eq!(
         ::std::mem::size_of::<sg_features>(),
-        7usize,
+        9usize,
         concat!("Size of: ", stringify!(sg_features))
     );
     assert_eq!(
@@ -1110,16 +1220,40 @@ fn bindgen_test_layout_sg_features() {
             stringify!(image_clamp_to_border)
         )
     );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<sg_features>())).mrt_independent_blend_state as *const _ as usize
+        },
+        7usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_features),
+            "::",
+            stringify!(mrt_independent_blend_state)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<sg_features>())).mrt_independent_write_mask as *const _ as usize
+        },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_features),
+            "::",
+            stringify!(mrt_independent_write_mask)
+        )
+    );
 }
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct sg_limits {
-    pub max_image_size_2d: u32,
-    pub max_image_size_cube: u32,
-    pub max_image_size_3d: u32,
-    pub max_image_size_array: u32,
-    pub max_image_array_layers: u32,
-    pub max_vertex_attrs: u32,
+    pub max_image_size_2d: ::std::os::raw::c_int,
+    pub max_image_size_cube: ::std::os::raw::c_int,
+    pub max_image_size_3d: ::std::os::raw::c_int,
+    pub max_image_size_array: ::std::os::raw::c_int,
+    pub max_image_array_layers: ::std::os::raw::c_int,
+    pub max_vertex_attrs: ::std::os::raw::c_int,
 }
 #[test]
 fn bindgen_test_layout_sg_limits() {
@@ -1384,9 +1518,18 @@ pub const sg_color_mask__SG_COLORMASK_DEFAULT: sg_color_mask = 0;
 pub const sg_color_mask_SG_COLORMASK_NONE: sg_color_mask = 16;
 pub const sg_color_mask_SG_COLORMASK_R: sg_color_mask = 1;
 pub const sg_color_mask_SG_COLORMASK_G: sg_color_mask = 2;
+pub const sg_color_mask_SG_COLORMASK_RG: sg_color_mask = 3;
 pub const sg_color_mask_SG_COLORMASK_B: sg_color_mask = 4;
-pub const sg_color_mask_SG_COLORMASK_A: sg_color_mask = 8;
+pub const sg_color_mask_SG_COLORMASK_RB: sg_color_mask = 5;
+pub const sg_color_mask_SG_COLORMASK_GB: sg_color_mask = 6;
 pub const sg_color_mask_SG_COLORMASK_RGB: sg_color_mask = 7;
+pub const sg_color_mask_SG_COLORMASK_A: sg_color_mask = 8;
+pub const sg_color_mask_SG_COLORMASK_RA: sg_color_mask = 9;
+pub const sg_color_mask_SG_COLORMASK_GA: sg_color_mask = 10;
+pub const sg_color_mask_SG_COLORMASK_RGA: sg_color_mask = 11;
+pub const sg_color_mask_SG_COLORMASK_BA: sg_color_mask = 12;
+pub const sg_color_mask_SG_COLORMASK_RBA: sg_color_mask = 13;
+pub const sg_color_mask_SG_COLORMASK_GBA: sg_color_mask = 14;
 pub const sg_color_mask_SG_COLORMASK_RGBA: sg_color_mask = 15;
 pub const sg_color_mask__SG_COLORMASK_FORCE_U32: sg_color_mask = 2147483647;
 pub type sg_color_mask = ::std::os::raw::c_uint;
@@ -1401,7 +1544,7 @@ pub type sg_action = ::std::os::raw::c_uint;
 #[derive(Debug, Copy, Clone)]
 pub struct sg_color_attachment_action {
     pub action: sg_action,
-    pub val: [f32; 4usize],
+    pub value: sg_color,
 }
 #[test]
 fn bindgen_test_layout_sg_color_attachment_action() {
@@ -1428,13 +1571,15 @@ fn bindgen_test_layout_sg_color_attachment_action() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_color_attachment_action>())).val as *const _ as usize },
+        unsafe {
+            &(*(::std::ptr::null::<sg_color_attachment_action>())).value as *const _ as usize
+        },
         4usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_color_attachment_action),
             "::",
-            stringify!(val)
+            stringify!(value)
         )
     );
 }
@@ -1447,7 +1592,7 @@ impl Default for sg_color_attachment_action {
 #[derive(Debug, Copy, Clone)]
 pub struct sg_depth_attachment_action {
     pub action: sg_action,
-    pub val: f32,
+    pub value: f32,
 }
 #[test]
 fn bindgen_test_layout_sg_depth_attachment_action() {
@@ -1474,13 +1619,15 @@ fn bindgen_test_layout_sg_depth_attachment_action() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_depth_attachment_action>())).val as *const _ as usize },
+        unsafe {
+            &(*(::std::ptr::null::<sg_depth_attachment_action>())).value as *const _ as usize
+        },
         4usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_depth_attachment_action),
             "::",
-            stringify!(val)
+            stringify!(value)
         )
     );
 }
@@ -1493,7 +1640,7 @@ impl Default for sg_depth_attachment_action {
 #[derive(Debug, Copy, Clone)]
 pub struct sg_stencil_attachment_action {
     pub action: sg_action,
-    pub val: u8,
+    pub value: u8,
 }
 #[test]
 fn bindgen_test_layout_sg_stencil_attachment_action() {
@@ -1521,14 +1668,14 @@ fn bindgen_test_layout_sg_stencil_attachment_action() {
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<sg_stencil_attachment_action>())).val as *const _ as usize
+            &(*(::std::ptr::null::<sg_stencil_attachment_action>())).value as *const _ as usize
         },
         4usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_stencil_attachment_action),
             "::",
-            stringify!(val)
+            stringify!(value)
         )
     );
 }
@@ -1725,10 +1872,10 @@ fn bindgen_test_layout_sg_bindings() {
 #[derive(Debug, Copy, Clone)]
 pub struct sg_buffer_desc {
     pub _start_canary: u32,
-    pub size: ::std::os::raw::c_int,
+    pub size: size_t,
     pub type_: sg_buffer_type,
     pub usage: sg_usage,
-    pub content: *const ::std::os::raw::c_void,
+    pub data: sg_range,
     pub label: *const ::std::os::raw::c_char,
     pub gl_buffers: [u32; 2usize],
     pub mtl_buffers: [*const ::std::os::raw::c_void; 2usize],
@@ -1740,7 +1887,7 @@ pub struct sg_buffer_desc {
 fn bindgen_test_layout_sg_buffer_desc() {
     assert_eq!(
         ::std::mem::size_of::<sg_buffer_desc>(),
-        80usize,
+        96usize,
         concat!("Size of: ", stringify!(sg_buffer_desc))
     );
     assert_eq!(
@@ -1760,7 +1907,7 @@ fn bindgen_test_layout_sg_buffer_desc() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_buffer_desc>())).size as *const _ as usize },
-        4usize,
+        8usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_buffer_desc),
@@ -1770,7 +1917,7 @@ fn bindgen_test_layout_sg_buffer_desc() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_buffer_desc>())).type_ as *const _ as usize },
-        8usize,
+        16usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_buffer_desc),
@@ -1780,7 +1927,7 @@ fn bindgen_test_layout_sg_buffer_desc() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_buffer_desc>())).usage as *const _ as usize },
-        12usize,
+        20usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_buffer_desc),
@@ -1789,18 +1936,18 @@ fn bindgen_test_layout_sg_buffer_desc() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_buffer_desc>())).content as *const _ as usize },
-        16usize,
+        unsafe { &(*(::std::ptr::null::<sg_buffer_desc>())).data as *const _ as usize },
+        24usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_buffer_desc),
             "::",
-            stringify!(content)
+            stringify!(data)
         )
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_buffer_desc>())).label as *const _ as usize },
-        24usize,
+        40usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_buffer_desc),
@@ -1810,7 +1957,7 @@ fn bindgen_test_layout_sg_buffer_desc() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_buffer_desc>())).gl_buffers as *const _ as usize },
-        32usize,
+        48usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_buffer_desc),
@@ -1820,7 +1967,7 @@ fn bindgen_test_layout_sg_buffer_desc() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_buffer_desc>())).mtl_buffers as *const _ as usize },
-        40usize,
+        56usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_buffer_desc),
@@ -1830,7 +1977,7 @@ fn bindgen_test_layout_sg_buffer_desc() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_buffer_desc>())).d3d11_buffer as *const _ as usize },
-        56usize,
+        72usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_buffer_desc),
@@ -1840,7 +1987,7 @@ fn bindgen_test_layout_sg_buffer_desc() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_buffer_desc>())).wgpu_buffer as *const _ as usize },
-        64usize,
+        80usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_buffer_desc),
@@ -1850,7 +1997,7 @@ fn bindgen_test_layout_sg_buffer_desc() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_buffer_desc>()))._end_canary as *const _ as usize },
-        72usize,
+        88usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_buffer_desc),
@@ -1866,77 +2013,33 @@ impl Default for sg_buffer_desc {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct sg_subimage_content {
-    pub ptr: *const ::std::os::raw::c_void,
-    pub size: ::std::os::raw::c_int,
+pub struct sg_image_data {
+    pub subimage: [[sg_range; 16usize]; 6usize],
 }
 #[test]
-fn bindgen_test_layout_sg_subimage_content() {
+fn bindgen_test_layout_sg_image_data() {
     assert_eq!(
-        ::std::mem::size_of::<sg_subimage_content>(),
-        16usize,
-        concat!("Size of: ", stringify!(sg_subimage_content))
-    );
-    assert_eq!(
-        ::std::mem::align_of::<sg_subimage_content>(),
-        8usize,
-        concat!("Alignment of ", stringify!(sg_subimage_content))
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_subimage_content>())).ptr as *const _ as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_subimage_content),
-            "::",
-            stringify!(ptr)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_subimage_content>())).size as *const _ as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_subimage_content),
-            "::",
-            stringify!(size)
-        )
-    );
-}
-impl Default for sg_subimage_content {
-    fn default() -> Self {
-        unsafe { ::std::mem::zeroed() }
-    }
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct sg_image_content {
-    pub subimage: [[sg_subimage_content; 16usize]; 6usize],
-}
-#[test]
-fn bindgen_test_layout_sg_image_content() {
-    assert_eq!(
-        ::std::mem::size_of::<sg_image_content>(),
+        ::std::mem::size_of::<sg_image_data>(),
         1536usize,
-        concat!("Size of: ", stringify!(sg_image_content))
+        concat!("Size of: ", stringify!(sg_image_data))
     );
     assert_eq!(
-        ::std::mem::align_of::<sg_image_content>(),
+        ::std::mem::align_of::<sg_image_data>(),
         8usize,
-        concat!("Alignment of ", stringify!(sg_image_content))
+        concat!("Alignment of ", stringify!(sg_image_data))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_image_content>())).subimage as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<sg_image_data>())).subimage as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(sg_image_content),
+            stringify!(sg_image_data),
             "::",
             stringify!(subimage)
         )
     );
 }
-impl Default for sg_image_content {
+impl Default for sg_image_data {
     fn default() -> Self {
         unsafe { ::std::mem::zeroed() }
     }
@@ -1963,7 +2066,7 @@ pub struct sg_image_desc {
     pub max_anisotropy: u32,
     pub min_lod: f32,
     pub max_lod: f32,
-    pub content: sg_image_content,
+    pub data: sg_image_data,
     pub label: *const ::std::os::raw::c_char,
     pub gl_textures: [u32; 2usize],
     pub gl_texture_target: u32,
@@ -2176,13 +2279,13 @@ fn bindgen_test_layout_sg_image_desc() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_image_desc>())).content as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<sg_image_desc>())).data as *const _ as usize },
         80usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_image_desc),
             "::",
-            stringify!(content)
+            stringify!(data)
         )
     );
     assert_eq!(
@@ -2389,7 +2492,7 @@ impl Default for sg_shader_uniform_desc {
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct sg_shader_uniform_block_desc {
-    pub size: ::std::os::raw::c_int,
+    pub size: size_t,
     pub uniforms: [sg_shader_uniform_desc; 16usize],
 }
 #[test]
@@ -2438,7 +2541,7 @@ impl Default for sg_shader_uniform_block_desc {
 #[derive(Debug, Copy, Clone)]
 pub struct sg_shader_image_desc {
     pub name: *const ::std::os::raw::c_char,
-    pub type_: sg_image_type,
+    pub image_type: sg_image_type,
     pub sampler_type: sg_sampler_type,
 }
 #[test]
@@ -2464,13 +2567,13 @@ fn bindgen_test_layout_sg_shader_image_desc() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_shader_image_desc>())).type_ as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<sg_shader_image_desc>())).image_type as *const _ as usize },
         8usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_shader_image_desc),
             "::",
-            stringify!(type_)
+            stringify!(image_type)
         )
     );
     assert_eq!(
@@ -2495,8 +2598,7 @@ impl Default for sg_shader_image_desc {
 #[derive(Debug, Copy, Clone)]
 pub struct sg_shader_stage_desc {
     pub source: *const ::std::os::raw::c_char,
-    pub byte_code: *const u8,
-    pub byte_code_size: ::std::os::raw::c_int,
+    pub bytecode: sg_range,
     pub entry: *const ::std::os::raw::c_char,
     pub d3d11_target: *const ::std::os::raw::c_char,
     pub uniform_blocks: [sg_shader_uniform_block_desc; 4usize],
@@ -2525,25 +2627,13 @@ fn bindgen_test_layout_sg_shader_stage_desc() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_shader_stage_desc>())).byte_code as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<sg_shader_stage_desc>())).bytecode as *const _ as usize },
         8usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_shader_stage_desc),
             "::",
-            stringify!(byte_code)
-        )
-    );
-    assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<sg_shader_stage_desc>())).byte_code_size as *const _ as usize
-        },
-        16usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_shader_stage_desc),
-            "::",
-            stringify!(byte_code_size)
+            stringify!(bytecode)
         )
     );
     assert_eq!(
@@ -2842,17 +2932,87 @@ impl Default for sg_layout_desc {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct sg_stencil_state {
+pub struct sg_stencil_face_state {
+    pub compare: sg_compare_func,
     pub fail_op: sg_stencil_op,
     pub depth_fail_op: sg_stencil_op,
     pub pass_op: sg_stencil_op,
-    pub compare_func: sg_compare_func,
+}
+#[test]
+fn bindgen_test_layout_sg_stencil_face_state() {
+    assert_eq!(
+        ::std::mem::size_of::<sg_stencil_face_state>(),
+        16usize,
+        concat!("Size of: ", stringify!(sg_stencil_face_state))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<sg_stencil_face_state>(),
+        4usize,
+        concat!("Alignment of ", stringify!(sg_stencil_face_state))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_stencil_face_state>())).compare as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_stencil_face_state),
+            "::",
+            stringify!(compare)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_stencil_face_state>())).fail_op as *const _ as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_stencil_face_state),
+            "::",
+            stringify!(fail_op)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<sg_stencil_face_state>())).depth_fail_op as *const _ as usize
+        },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_stencil_face_state),
+            "::",
+            stringify!(depth_fail_op)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_stencil_face_state>())).pass_op as *const _ as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_stencil_face_state),
+            "::",
+            stringify!(pass_op)
+        )
+    );
+}
+impl Default for sg_stencil_face_state {
+    fn default() -> Self {
+        unsafe { ::std::mem::zeroed() }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct sg_stencil_state {
+    pub enabled: bool,
+    pub front: sg_stencil_face_state,
+    pub back: sg_stencil_face_state,
+    pub read_mask: u8,
+    pub write_mask: u8,
+    pub ref_: u8,
 }
 #[test]
 fn bindgen_test_layout_sg_stencil_state() {
     assert_eq!(
         ::std::mem::size_of::<sg_stencil_state>(),
-        16usize,
+        40usize,
         concat!("Size of: ", stringify!(sg_stencil_state))
     );
     assert_eq!(
@@ -2861,43 +3021,63 @@ fn bindgen_test_layout_sg_stencil_state() {
         concat!("Alignment of ", stringify!(sg_stencil_state))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_stencil_state>())).fail_op as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<sg_stencil_state>())).enabled as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_stencil_state),
             "::",
-            stringify!(fail_op)
+            stringify!(enabled)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_stencil_state>())).depth_fail_op as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<sg_stencil_state>())).front as *const _ as usize },
         4usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_stencil_state),
             "::",
-            stringify!(depth_fail_op)
+            stringify!(front)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_stencil_state>())).pass_op as *const _ as usize },
-        8usize,
+        unsafe { &(*(::std::ptr::null::<sg_stencil_state>())).back as *const _ as usize },
+        20usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_stencil_state),
             "::",
-            stringify!(pass_op)
+            stringify!(back)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_stencil_state>())).compare_func as *const _ as usize },
-        12usize,
+        unsafe { &(*(::std::ptr::null::<sg_stencil_state>())).read_mask as *const _ as usize },
+        36usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_stencil_state),
             "::",
-            stringify!(compare_func)
+            stringify!(read_mask)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_stencil_state>())).write_mask as *const _ as usize },
+        37usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_stencil_state),
+            "::",
+            stringify!(write_mask)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_stencil_state>())).ref_ as *const _ as usize },
+        38usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_stencil_state),
+            "::",
+            stringify!(ref_)
         )
     );
 }
@@ -2908,130 +3088,88 @@ impl Default for sg_stencil_state {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct sg_depth_stencil_state {
-    pub stencil_front: sg_stencil_state,
-    pub stencil_back: sg_stencil_state,
-    pub depth_compare_func: sg_compare_func,
-    pub depth_write_enabled: bool,
-    pub stencil_enabled: bool,
-    pub stencil_read_mask: u8,
-    pub stencil_write_mask: u8,
-    pub stencil_ref: u8,
+pub struct sg_depth_state {
+    pub pixel_format: sg_pixel_format,
+    pub compare: sg_compare_func,
+    pub write_enabled: bool,
+    pub bias: f32,
+    pub bias_slope_scale: f32,
+    pub bias_clamp: f32,
 }
 #[test]
-fn bindgen_test_layout_sg_depth_stencil_state() {
+fn bindgen_test_layout_sg_depth_state() {
     assert_eq!(
-        ::std::mem::size_of::<sg_depth_stencil_state>(),
-        44usize,
-        concat!("Size of: ", stringify!(sg_depth_stencil_state))
+        ::std::mem::size_of::<sg_depth_state>(),
+        24usize,
+        concat!("Size of: ", stringify!(sg_depth_state))
     );
     assert_eq!(
-        ::std::mem::align_of::<sg_depth_stencil_state>(),
+        ::std::mem::align_of::<sg_depth_state>(),
         4usize,
-        concat!("Alignment of ", stringify!(sg_depth_stencil_state))
+        concat!("Alignment of ", stringify!(sg_depth_state))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<sg_depth_stencil_state>())).stencil_front as *const _ as usize
-        },
+        unsafe { &(*(::std::ptr::null::<sg_depth_state>())).pixel_format as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(sg_depth_stencil_state),
+            stringify!(sg_depth_state),
             "::",
-            stringify!(stencil_front)
+            stringify!(pixel_format)
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<sg_depth_stencil_state>())).stencil_back as *const _ as usize
-        },
+        unsafe { &(*(::std::ptr::null::<sg_depth_state>())).compare as *const _ as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_depth_state),
+            "::",
+            stringify!(compare)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_depth_state>())).write_enabled as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_depth_state),
+            "::",
+            stringify!(write_enabled)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_depth_state>())).bias as *const _ as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_depth_state),
+            "::",
+            stringify!(bias)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_depth_state>())).bias_slope_scale as *const _ as usize },
         16usize,
         concat!(
             "Offset of field: ",
-            stringify!(sg_depth_stencil_state),
+            stringify!(sg_depth_state),
             "::",
-            stringify!(stencil_back)
+            stringify!(bias_slope_scale)
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<sg_depth_stencil_state>())).depth_compare_func as *const _
-                as usize
-        },
-        32usize,
+        unsafe { &(*(::std::ptr::null::<sg_depth_state>())).bias_clamp as *const _ as usize },
+        20usize,
         concat!(
             "Offset of field: ",
-            stringify!(sg_depth_stencil_state),
+            stringify!(sg_depth_state),
             "::",
-            stringify!(depth_compare_func)
-        )
-    );
-    assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<sg_depth_stencil_state>())).depth_write_enabled as *const _
-                as usize
-        },
-        36usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_depth_stencil_state),
-            "::",
-            stringify!(depth_write_enabled)
-        )
-    );
-    assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<sg_depth_stencil_state>())).stencil_enabled as *const _ as usize
-        },
-        37usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_depth_stencil_state),
-            "::",
-            stringify!(stencil_enabled)
-        )
-    );
-    assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<sg_depth_stencil_state>())).stencil_read_mask as *const _
-                as usize
-        },
-        38usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_depth_stencil_state),
-            "::",
-            stringify!(stencil_read_mask)
-        )
-    );
-    assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<sg_depth_stencil_state>())).stencil_write_mask as *const _
-                as usize
-        },
-        39usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_depth_stencil_state),
-            "::",
-            stringify!(stencil_write_mask)
-        )
-    );
-    assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<sg_depth_stencil_state>())).stencil_ref as *const _ as usize
-        },
-        40usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_depth_stencil_state),
-            "::",
-            stringify!(stencil_ref)
+            stringify!(bias_clamp)
         )
     );
 }
-impl Default for sg_depth_stencil_state {
+impl Default for sg_depth_state {
     fn default() -> Self {
         unsafe { ::std::mem::zeroed() }
     }
@@ -3046,17 +3184,12 @@ pub struct sg_blend_state {
     pub src_factor_alpha: sg_blend_factor,
     pub dst_factor_alpha: sg_blend_factor,
     pub op_alpha: sg_blend_op,
-    pub color_write_mask: u8,
-    pub color_attachment_count: ::std::os::raw::c_int,
-    pub color_format: sg_pixel_format,
-    pub depth_format: sg_pixel_format,
-    pub blend_color: [f32; 4usize],
 }
 #[test]
 fn bindgen_test_layout_sg_blend_state() {
     assert_eq!(
         ::std::mem::size_of::<sg_blend_state>(),
-        60usize,
+        28usize,
         concat!("Size of: ", stringify!(sg_blend_state))
     );
     assert_eq!(
@@ -3134,58 +3267,6 @@ fn bindgen_test_layout_sg_blend_state() {
             stringify!(op_alpha)
         )
     );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_blend_state>())).color_write_mask as *const _ as usize },
-        28usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_blend_state),
-            "::",
-            stringify!(color_write_mask)
-        )
-    );
-    assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<sg_blend_state>())).color_attachment_count as *const _ as usize
-        },
-        32usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_blend_state),
-            "::",
-            stringify!(color_attachment_count)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_blend_state>())).color_format as *const _ as usize },
-        36usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_blend_state),
-            "::",
-            stringify!(color_format)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_blend_state>())).depth_format as *const _ as usize },
-        40usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_blend_state),
-            "::",
-            stringify!(depth_format)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_blend_state>())).blend_color as *const _ as usize },
-        44usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_blend_state),
-            "::",
-            stringify!(blend_color)
-        )
-    );
 }
 impl Default for sg_blend_state {
     fn default() -> Self {
@@ -3194,111 +3275,55 @@ impl Default for sg_blend_state {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct sg_rasterizer_state {
-    pub alpha_to_coverage_enabled: bool,
-    pub cull_mode: sg_cull_mode,
-    pub face_winding: sg_face_winding,
-    pub sample_count: ::std::os::raw::c_int,
-    pub depth_bias: f32,
-    pub depth_bias_slope_scale: f32,
-    pub depth_bias_clamp: f32,
+pub struct sg_color_state {
+    pub pixel_format: sg_pixel_format,
+    pub write_mask: sg_color_mask,
+    pub blend: sg_blend_state,
 }
 #[test]
-fn bindgen_test_layout_sg_rasterizer_state() {
+fn bindgen_test_layout_sg_color_state() {
     assert_eq!(
-        ::std::mem::size_of::<sg_rasterizer_state>(),
-        28usize,
-        concat!("Size of: ", stringify!(sg_rasterizer_state))
+        ::std::mem::size_of::<sg_color_state>(),
+        36usize,
+        concat!("Size of: ", stringify!(sg_color_state))
     );
     assert_eq!(
-        ::std::mem::align_of::<sg_rasterizer_state>(),
+        ::std::mem::align_of::<sg_color_state>(),
         4usize,
-        concat!("Alignment of ", stringify!(sg_rasterizer_state))
+        concat!("Alignment of ", stringify!(sg_color_state))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<sg_rasterizer_state>())).alpha_to_coverage_enabled as *const _
-                as usize
-        },
+        unsafe { &(*(::std::ptr::null::<sg_color_state>())).pixel_format as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(sg_rasterizer_state),
+            stringify!(sg_color_state),
             "::",
-            stringify!(alpha_to_coverage_enabled)
+            stringify!(pixel_format)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_rasterizer_state>())).cull_mode as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<sg_color_state>())).write_mask as *const _ as usize },
         4usize,
         concat!(
             "Offset of field: ",
-            stringify!(sg_rasterizer_state),
+            stringify!(sg_color_state),
             "::",
-            stringify!(cull_mode)
+            stringify!(write_mask)
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<sg_rasterizer_state>())).face_winding as *const _ as usize
-        },
+        unsafe { &(*(::std::ptr::null::<sg_color_state>())).blend as *const _ as usize },
         8usize,
         concat!(
             "Offset of field: ",
-            stringify!(sg_rasterizer_state),
+            stringify!(sg_color_state),
             "::",
-            stringify!(face_winding)
-        )
-    );
-    assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<sg_rasterizer_state>())).sample_count as *const _ as usize
-        },
-        12usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_rasterizer_state),
-            "::",
-            stringify!(sample_count)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_rasterizer_state>())).depth_bias as *const _ as usize },
-        16usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_rasterizer_state),
-            "::",
-            stringify!(depth_bias)
-        )
-    );
-    assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<sg_rasterizer_state>())).depth_bias_slope_scale as *const _
-                as usize
-        },
-        20usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_rasterizer_state),
-            "::",
-            stringify!(depth_bias_slope_scale)
-        )
-    );
-    assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<sg_rasterizer_state>())).depth_bias_clamp as *const _ as usize
-        },
-        24usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_rasterizer_state),
-            "::",
-            stringify!(depth_bias_clamp)
+            stringify!(blend)
         )
     );
 }
-impl Default for sg_rasterizer_state {
+impl Default for sg_color_state {
     fn default() -> Self {
         unsafe { ::std::mem::zeroed() }
     }
@@ -3307,13 +3332,19 @@ impl Default for sg_rasterizer_state {
 #[derive(Debug, Copy, Clone)]
 pub struct sg_pipeline_desc {
     pub _start_canary: u32,
-    pub layout: sg_layout_desc,
     pub shader: sg_shader,
+    pub layout: sg_layout_desc,
+    pub depth: sg_depth_state,
+    pub stencil: sg_stencil_state,
+    pub color_count: ::std::os::raw::c_int,
+    pub colors: [sg_color_state; 4usize],
     pub primitive_type: sg_primitive_type,
     pub index_type: sg_index_type,
-    pub depth_stencil: sg_depth_stencil_state,
-    pub blend: sg_blend_state,
-    pub rasterizer: sg_rasterizer_state,
+    pub cull_mode: sg_cull_mode,
+    pub face_winding: sg_face_winding,
+    pub sample_count: ::std::os::raw::c_int,
+    pub blend_color: sg_color,
+    pub alpha_to_coverage_enabled: bool,
     pub label: *const ::std::os::raw::c_char,
     pub _end_canary: u32,
 }
@@ -3321,7 +3352,7 @@ pub struct sg_pipeline_desc {
 fn bindgen_test_layout_sg_pipeline_desc() {
     assert_eq!(
         ::std::mem::size_of::<sg_pipeline_desc>(),
-        456usize,
+        568usize,
         concat!("Size of: ", stringify!(sg_pipeline_desc))
     );
     assert_eq!(
@@ -3340,18 +3371,8 @@ fn bindgen_test_layout_sg_pipeline_desc() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_pipeline_desc>())).layout as *const _ as usize },
-        4usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sg_pipeline_desc),
-            "::",
-            stringify!(layout)
-        )
-    );
-    assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_pipeline_desc>())).shader as *const _ as usize },
-        292usize,
+        4usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_pipeline_desc),
@@ -3360,8 +3381,58 @@ fn bindgen_test_layout_sg_pipeline_desc() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_pipeline_desc>())).primitive_type as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<sg_pipeline_desc>())).layout as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_pipeline_desc),
+            "::",
+            stringify!(layout)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_pipeline_desc>())).depth as *const _ as usize },
         296usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_pipeline_desc),
+            "::",
+            stringify!(depth)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_pipeline_desc>())).stencil as *const _ as usize },
+        320usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_pipeline_desc),
+            "::",
+            stringify!(stencil)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_pipeline_desc>())).color_count as *const _ as usize },
+        360usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_pipeline_desc),
+            "::",
+            stringify!(color_count)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_pipeline_desc>())).colors as *const _ as usize },
+        364usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_pipeline_desc),
+            "::",
+            stringify!(colors)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_pipeline_desc>())).primitive_type as *const _ as usize },
+        508usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_pipeline_desc),
@@ -3371,7 +3442,7 @@ fn bindgen_test_layout_sg_pipeline_desc() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_pipeline_desc>())).index_type as *const _ as usize },
-        300usize,
+        512usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_pipeline_desc),
@@ -3380,38 +3451,61 @@ fn bindgen_test_layout_sg_pipeline_desc() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_pipeline_desc>())).depth_stencil as *const _ as usize },
-        304usize,
+        unsafe { &(*(::std::ptr::null::<sg_pipeline_desc>())).cull_mode as *const _ as usize },
+        516usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_pipeline_desc),
             "::",
-            stringify!(depth_stencil)
+            stringify!(cull_mode)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_pipeline_desc>())).blend as *const _ as usize },
-        348usize,
+        unsafe { &(*(::std::ptr::null::<sg_pipeline_desc>())).face_winding as *const _ as usize },
+        520usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_pipeline_desc),
             "::",
-            stringify!(blend)
+            stringify!(face_winding)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_pipeline_desc>())).rasterizer as *const _ as usize },
-        408usize,
+        unsafe { &(*(::std::ptr::null::<sg_pipeline_desc>())).sample_count as *const _ as usize },
+        524usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_pipeline_desc),
             "::",
-            stringify!(rasterizer)
+            stringify!(sample_count)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sg_pipeline_desc>())).blend_color as *const _ as usize },
+        528usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_pipeline_desc),
+            "::",
+            stringify!(blend_color)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<sg_pipeline_desc>())).alpha_to_coverage_enabled as *const _
+                as usize
+        },
+        544usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_pipeline_desc),
+            "::",
+            stringify!(alpha_to_coverage_enabled)
         )
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_pipeline_desc>())).label as *const _ as usize },
-        440usize,
+        552usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_pipeline_desc),
@@ -3421,7 +3515,7 @@ fn bindgen_test_layout_sg_pipeline_desc() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sg_pipeline_desc>()))._end_canary as *const _ as usize },
-        448usize,
+        560usize,
         concat!(
             "Offset of field: ",
             stringify!(sg_pipeline_desc),
@@ -3437,49 +3531,51 @@ impl Default for sg_pipeline_desc {
 }
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
-pub struct sg_attachment_desc {
+pub struct sg_pass_attachment_desc {
     pub image: sg_image,
     pub mip_level: ::std::os::raw::c_int,
     pub slice: ::std::os::raw::c_int,
 }
 #[test]
-fn bindgen_test_layout_sg_attachment_desc() {
+fn bindgen_test_layout_sg_pass_attachment_desc() {
     assert_eq!(
-        ::std::mem::size_of::<sg_attachment_desc>(),
+        ::std::mem::size_of::<sg_pass_attachment_desc>(),
         12usize,
-        concat!("Size of: ", stringify!(sg_attachment_desc))
+        concat!("Size of: ", stringify!(sg_pass_attachment_desc))
     );
     assert_eq!(
-        ::std::mem::align_of::<sg_attachment_desc>(),
+        ::std::mem::align_of::<sg_pass_attachment_desc>(),
         4usize,
-        concat!("Alignment of ", stringify!(sg_attachment_desc))
+        concat!("Alignment of ", stringify!(sg_pass_attachment_desc))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_attachment_desc>())).image as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<sg_pass_attachment_desc>())).image as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(sg_attachment_desc),
+            stringify!(sg_pass_attachment_desc),
             "::",
             stringify!(image)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_attachment_desc>())).mip_level as *const _ as usize },
+        unsafe {
+            &(*(::std::ptr::null::<sg_pass_attachment_desc>())).mip_level as *const _ as usize
+        },
         4usize,
         concat!(
             "Offset of field: ",
-            stringify!(sg_attachment_desc),
+            stringify!(sg_pass_attachment_desc),
             "::",
             stringify!(mip_level)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sg_attachment_desc>())).slice as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<sg_pass_attachment_desc>())).slice as *const _ as usize },
         8usize,
         concat!(
             "Offset of field: ",
-            stringify!(sg_attachment_desc),
+            stringify!(sg_pass_attachment_desc),
             "::",
             stringify!(slice)
         )
@@ -3489,8 +3585,8 @@ fn bindgen_test_layout_sg_attachment_desc() {
 #[derive(Debug, Copy, Clone)]
 pub struct sg_pass_desc {
     pub _start_canary: u32,
-    pub color_attachments: [sg_attachment_desc; 4usize],
-    pub depth_stencil_attachment: sg_attachment_desc,
+    pub color_attachments: [sg_pass_attachment_desc; 4usize],
+    pub depth_stencil_attachment: sg_pass_attachment_desc,
     pub label: *const ::std::os::raw::c_char,
     pub _end_canary: u32,
 }
@@ -3623,23 +3719,21 @@ pub struct sg_trace_hooks {
     pub update_buffer: ::std::option::Option<
         unsafe extern "C" fn(
             buf: sg_buffer,
-            data_ptr: *const ::std::os::raw::c_void,
-            data_size: ::std::os::raw::c_int,
+            data: *const sg_range,
             user_data: *mut ::std::os::raw::c_void,
         ),
     >,
     pub update_image: ::std::option::Option<
         unsafe extern "C" fn(
             img: sg_image,
-            data: *const sg_image_content,
+            data: *const sg_image_data,
             user_data: *mut ::std::os::raw::c_void,
         ),
     >,
     pub append_buffer: ::std::option::Option<
         unsafe extern "C" fn(
             buf: sg_buffer,
-            data_ptr: *const ::std::os::raw::c_void,
-            data_size: ::std::os::raw::c_int,
+            data: *const sg_range,
             result: ::std::os::raw::c_int,
             user_data: *mut ::std::os::raw::c_void,
         ),
@@ -3689,8 +3783,7 @@ pub struct sg_trace_hooks {
         unsafe extern "C" fn(
             stage: sg_shader_stage,
             ub_index: ::std::os::raw::c_int,
-            data: *const ::std::os::raw::c_void,
-            num_bytes: ::std::os::raw::c_int,
+            data: *const sg_range,
             user_data: *mut ::std::os::raw::c_void,
         ),
     >,
@@ -5514,21 +5607,13 @@ extern "C" {
     pub fn sg_destroy_pass(pass: sg_pass);
 }
 extern "C" {
-    pub fn sg_update_buffer(
-        buf: sg_buffer,
-        data_ptr: *const ::std::os::raw::c_void,
-        data_size: ::std::os::raw::c_int,
-    );
+    pub fn sg_update_buffer(buf: sg_buffer, data: *const sg_range);
 }
 extern "C" {
-    pub fn sg_update_image(img: sg_image, data: *const sg_image_content);
+    pub fn sg_update_image(img: sg_image, data: *const sg_image_data);
 }
 extern "C" {
-    pub fn sg_append_buffer(
-        buf: sg_buffer,
-        data_ptr: *const ::std::os::raw::c_void,
-        data_size: ::std::os::raw::c_int,
-    ) -> ::std::os::raw::c_int;
+    pub fn sg_append_buffer(buf: sg_buffer, data: *const sg_range) -> ::std::os::raw::c_int;
 }
 extern "C" {
     pub fn sg_query_buffer_overflow(buf: sg_buffer) -> bool;
@@ -5539,6 +5624,9 @@ extern "C" {
         width: ::std::os::raw::c_int,
         height: ::std::os::raw::c_int,
     );
+}
+extern "C" {
+    pub fn sg_begin_default_passf(pass_action: *const sg_pass_action, width: f32, height: f32);
 }
 extern "C" {
     pub fn sg_begin_pass(pass: sg_pass, pass_action: *const sg_pass_action);
@@ -5553,6 +5641,9 @@ extern "C" {
     );
 }
 extern "C" {
+    pub fn sg_apply_viewportf(x: f32, y: f32, width: f32, height: f32, origin_top_left: bool);
+}
+extern "C" {
     pub fn sg_apply_scissor_rect(
         x: ::std::os::raw::c_int,
         y: ::std::os::raw::c_int,
@@ -5560,6 +5651,9 @@ extern "C" {
         height: ::std::os::raw::c_int,
         origin_top_left: bool,
     );
+}
+extern "C" {
+    pub fn sg_apply_scissor_rectf(x: f32, y: f32, width: f32, height: f32, origin_top_left: bool);
 }
 extern "C" {
     pub fn sg_apply_pipeline(pip: sg_pipeline);
@@ -5571,8 +5665,7 @@ extern "C" {
     pub fn sg_apply_uniforms(
         stage: sg_shader_stage,
         ub_index: ::std::os::raw::c_int,
-        data: *const ::std::os::raw::c_void,
-        num_bytes: ::std::os::raw::c_int,
+        data: *const sg_range,
     );
 }
 extern "C" {

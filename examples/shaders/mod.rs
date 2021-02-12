@@ -87,7 +87,7 @@ pub fn quad() -> rokol::gfx::Shader {
 pub fn texture() -> rokol::gfx::Shader {
     gen(&def_shd!("texture"), |desc| {
         desc.fs.images[0] = rg::ShaderImageDesc {
-            type_: rg::ImageType::Dim2 as u32,
+            image_type: rg::ImageType::Dim2 as u32,
             ..Default::default()
         };
     })
@@ -96,12 +96,12 @@ pub fn texture() -> rokol::gfx::Shader {
 pub fn texture_multi() -> rokol::gfx::Shader {
     gen(&def_shd!("texture_multi"), |desc| {
         desc.fs.images[0] = rg::ShaderImageDesc {
-            type_: rg::ImageType::Dim2 as u32,
+            image_type: rg::ImageType::Dim2 as u32,
             name: c_str!("tex1").as_ptr() as *const _,
             ..Default::default()
         };
         desc.fs.images[1] = rg::ShaderImageDesc {
-            type_: rg::ImageType::Dim2 as u32,
+            image_type: rg::ImageType::Dim2 as u32,
             name: c_str!("tex2").as_ptr() as *const _,
             ..Default::default()
         };
@@ -112,7 +112,7 @@ pub fn cube() -> rokol::gfx::Shader {
     gen(&def_shd!("cube"), |desc| {
         desc.vs.uniform_blocks[0] = {
             let mut block = rg::ShaderUniformBlockDesc::default();
-            block.size = std::mem::size_of::<glam::Mat4>() as i32;
+            block.size = std::mem::size_of::<glam::Mat4>() as _;
             block.uniforms[0] = rg::ShaderUniformDesc {
                 type_: rg::UniformType::Mat4 as u32,
                 name: c_str!("mvp").as_ptr() as *const _,
@@ -122,7 +122,7 @@ pub fn cube() -> rokol::gfx::Shader {
         };
 
         desc.fs.images[0] = rg::ShaderImageDesc {
-            type_: rg::ImageType::Dim2 as u32,
+            image_type: rg::ImageType::Dim2 as u32,
             name: c_str!("tex").as_ptr() as *const _,
             ..Default::default()
         };
@@ -133,7 +133,7 @@ pub fn cube_multi() -> rokol::gfx::Shader {
     gen(&def_shd!("cube_multi"), |desc| {
         desc.vs.uniform_blocks[0] = {
             let mut block = rg::ShaderUniformBlockDesc::default();
-            block.size = std::mem::size_of::<glam::Mat4>() as i32;
+            block.size = std::mem::size_of::<glam::Mat4>() as _;
             block.uniforms[0] = rg::ShaderUniformDesc {
                 type_: rg::UniformType::Mat4 as u32,
                 name: c_str!("mvp").as_ptr() as *const _,
@@ -143,13 +143,13 @@ pub fn cube_multi() -> rokol::gfx::Shader {
         };
 
         desc.fs.images[0] = rg::ShaderImageDesc {
-            type_: rg::ImageType::Dim2 as u32,
+            image_type: rg::ImageType::Dim2 as u32,
             name: c_str!("tex1").as_ptr() as *const _,
             ..Default::default()
         };
 
         desc.fs.images[1] = rg::ShaderImageDesc {
-            type_: rg::ImageType::Dim2 as u32,
+            image_type: rg::ImageType::Dim2 as u32,
             name: c_str!("tex2").as_ptr() as *const _,
             ..Default::default()
         };
@@ -160,7 +160,7 @@ pub fn more_cubes() -> rokol::gfx::Shader {
     gen(&def_shd!("more_cubes"), |desc| {
         desc.vs.uniform_blocks[0] = {
             let mut block = rg::ShaderUniformBlockDesc::default();
-            block.size = std::mem::size_of::<glam::Mat4>() as i32;
+            block.size = std::mem::size_of::<glam::Mat4>() as _;
             block.uniforms[0] = rg::ShaderUniformDesc {
                 type_: rg::UniformType::Mat4 as u32,
                 name: c_str!("mvp").as_ptr() as *const _,
@@ -170,13 +170,13 @@ pub fn more_cubes() -> rokol::gfx::Shader {
         };
 
         desc.fs.images[0] = rg::ShaderImageDesc {
-            type_: rg::ImageType::Dim2 as u32,
+            image_type: rg::ImageType::Dim2 as u32,
             name: c_str!("tex1").as_ptr() as *const _,
             ..Default::default()
         };
 
         desc.fs.images[1] = rg::ShaderImageDesc {
-            type_: rg::ImageType::Dim2 as u32,
+            image_type: rg::ImageType::Dim2 as u32,
             name: c_str!("tex2").as_ptr() as *const _,
             ..Default::default()
         };

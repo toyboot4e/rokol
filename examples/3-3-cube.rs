@@ -71,11 +71,7 @@ fn load_img(path: &Path) -> rg::Image {
             ..Default::default()
         };
 
-        desc.content.subimage[0][0] = rg::SubImageContent {
-            ptr: pixels.as_ptr() as *const _,
-            size: pixels.len() as i32,
-        };
-
+        desc.data.subimage[0][0] = pixels.into();
         desc
     })
 }
@@ -173,16 +169,12 @@ impl rokol::app::RApp for AppData {
             },
             shader: shaders::cube(),
             index_type: rg::IndexType::UInt16 as u32,
-            depth_stencil: rg::DepthStencilState {
-                depth_compare_func: rg::CompareFunc::LessEq as u32,
-                depth_write_enabled: true,
+            depth: rg::DepthState {
+                compare: rg::CompareFunc::LessEq as u32,
+                write_enabled: true,
                 ..Default::default()
             },
-            rasterizer: rg::RasterizerState {
-                // FIXME:
-                cull_mode: rg::CullMode::Back as u32,
-                ..Default::default()
-            },
+            cull_mode: rg::CullMode::Back as u32,
             ..Default::default()
         });
     }

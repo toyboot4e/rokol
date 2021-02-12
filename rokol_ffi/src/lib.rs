@@ -48,3 +48,36 @@ mod test {
         }
     }
 }
+
+use gfx::sg_color;
+
+impl From<[f32; 4]> for sg_color {
+    fn from(xs: [f32; 4]) -> sg_color {
+        sg_color {
+            r: xs[0],
+            g: xs[1],
+            b: xs[2],
+            a: xs[3],
+        }
+    }
+}
+
+impl From<[&f32; 4]> for sg_color {
+    fn from(xs: [&f32; 4]) -> sg_color {
+        sg_color {
+            r: *xs[0],
+            g: *xs[1],
+            b: *xs[2],
+            a: *xs[3],
+        }
+    }
+}
+
+impl From<&[u8]> for gfx::sg_range {
+    fn from(x: &[u8]) -> gfx::sg_range {
+        gfx::sg_range {
+            ptr: x.as_ptr() as *const _,
+            size: x.len() as _,
+        }
+    }
+}

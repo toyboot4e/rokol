@@ -57,6 +57,18 @@ pub fn setup(desc: &mut SetupDesc) {
 /// [`setup`] parameter, which is created from [`crate::glue::app_desc`]
 pub type SetupDesc = ffi::sg_desc;
 
+/// Can be created from `&[u8]`
+///
+/// Pointer-size-pair struct used to pass memory blobs into
+/// sokol-gfx. When initialized from a value type (array or struct), you can
+/// use the SG_RANGE() macro to build an sg_range struct. For functions which
+/// take either a sg_range pointer, or a (C++) sg_range reference, use the
+/// SG_RANGE_REF macro as a solution which compiles both in C and C++.
+pub type Range = ffi::sg_range;
+
+/// An RGBA color value (f32)
+pub type Color = ffi::sg_color;
+
 // --------------------------------------------------------------------------------
 // Resource enums
 
@@ -144,6 +156,13 @@ pub enum UniformType {
 }
 
 /// Float | SInt | UInt
+///
+/// Indicates the basic data type of a shader's texture sampler which
+/// can be float , unsigned integer or signed integer. The sampler
+/// type is used in the sg_shader_image_desc to describe the
+/// sampler type of a shader's texture sampler binding.
+///
+/// The default sampler type is SG_SAMPLERTYPE_FLOAT.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum SamplerType {
@@ -544,6 +563,29 @@ pub enum FaceWinding {
     _ForceU32 = ffi::sg_face_winding__SG_FACEWINDING_FORCE_U32,
 }
 
+bitflags::bitflags! {
+    pub struct ColorMask: u32 {
+        const DEFAULT = ffi::sg_color_mask__SG_COLORMASK_DEFAULT;
+        const NONE = ffi::sg_color_mask_SG_COLORMASK_NONE;
+        const R = ffi::sg_color_mask_SG_COLORMASK_R;
+        const G = ffi::sg_color_mask_SG_COLORMASK_G;
+        const RG = ffi::sg_color_mask_SG_COLORMASK_RG;
+        const B = ffi::sg_color_mask_SG_COLORMASK_B;
+        const RB = ffi::sg_color_mask_SG_COLORMASK_RB;
+        const GB = ffi::sg_color_mask_SG_COLORMASK_GB;
+        const RGB = ffi::sg_color_mask_SG_COLORMASK_RGB;
+        const A = ffi::sg_color_mask_SG_COLORMASK_A;
+        const RA = ffi::sg_color_mask_SG_COLORMASK_RA;
+        const GA = ffi::sg_color_mask_SG_COLORMASK_GA;
+        const RGA = ffi::sg_color_mask_SG_COLORMASK_RGA;
+        const BA = ffi::sg_color_mask_SG_COLORMASK_BA;
+        const RBA = ffi::sg_color_mask_SG_COLORMASK_RBA;
+        const GBA = ffi::sg_color_mask_SG_COLORMASK_GBA;
+        const RGBA = ffi::sg_color_mask_SG_COLORMASK_RGBA;
+        const FORCE_U32 = ffi::sg_color_mask__SG_COLORMASK_FORCE_U32;
+    }
+}
+
 /// Pass action
 ///
 /// Wraps [`ffi::sg_pass_action`] just to add methods without trait.
@@ -573,25 +615,30 @@ impl PassAction {
             _start_canary: 0,
             colors: [self::ColorAttachmentAction {
                 action: self::Action::Load as u32,
-                val: [0.0; 4],
+                value: ffi::sg_color {
+                    r: 0.0,
+                    g: 0.0,
+                    b: 0.0,
+                    a: 0.0,
+                },
             }; 4],
             depth: self::DepthAttachmentAction {
                 action: self::Action::Load as u32,
-                val: 0.0,
+                value: 0.0,
             },
             stencil: self::StencilAttachmentAction {
                 action: self::Action::Load as u32,
-                val: 0,
+                value: 0,
             },
             _end_canary: 0,
         },
     };
 
-    pub fn clear(color: impl Into<[f32; 4]>) -> Self {
+    pub fn clear(color: impl Into<Color>) -> Self {
         let mut raw = ffi::sg_pass_action::default();
         raw.colors[0] = ColorAttachmentAction {
             action: PassActionKind::Clear as u32,
-            val: color.into(),
+            value: color.into(),
         };
         Self { raw }
     }
@@ -600,7 +647,7 @@ impl PassAction {
 // --------------------------------------------------------------------------------
 // Re-exports from the FFI
 
-pub type AttachmentDesc = ffi::sg_attachment_desc;
+pub type PassAttachmentDesc = ffi::sg_pass_attachment_desc;
 
 /// Vertex/index buffer and image slots
 pub type Bindings = ffi::sg_bindings;
@@ -677,7 +724,7 @@ pub type Image = ffi::sg_image;
 /// The width and height are scaled size (e.g. if on 2x DPI monitor display with 2560x1440 pixels,
 /// give scaled size of 1280x720. c.f. [`crate::app::dpi_scale`].
 pub type ImageDesc = ffi::sg_image_desc;
-pub type ImageContent = ffi::sg_image_content;
+pub type ImageData = ffi::sg_image_data;
 pub type ImageInfo = ffi::sg_image_info;
 
 impl BakedResource for Image {
@@ -852,9 +899,7 @@ pub type Context = ffi::sg_context;
 pub type ContextDesc = ffi::sg_context_desc;
 
 pub type DepthAttachmentAction = ffi::sg_depth_attachment_action;
-
-pub type DepthStencilState = ffi::sg_depth_stencil_state;
-pub type RasterizerState = ffi::sg_rasterizer_state;
+pub type DepthState = ffi::sg_depth_state;
 
 pub type Features = ffi::sg_features;
 
@@ -869,16 +914,6 @@ pub type ShaderUniformDesc = ffi::sg_shader_uniform_desc;
 pub type SlotInfo = ffi::sg_slot_info;
 pub type StencilAttachmentAction = ffi::sg_stencil_attachment_action;
 pub type StencilState = ffi::sg_stencil_state;
-
-/// Pointer to and size of a subimage-surface data, this is
-/// used to describe the initial content of immutable-usage images,
-/// or for updating a dynamic- or stream-usage images.
-///
-/// For 3D- or array-textures, one sg_subimage_content item
-/// describes an entire mipmap level consisting of all array- or
-/// 3D-slices of the mipmap level. It is only possible to update
-/// an entire mipmap level, not parts of it.
-pub type SubImageContent = ffi::sg_subimage_content;
 
 pub type TraceHooks = ffi::sg_trace_hooks;
 pub type VertexAttrDesc = ffi::sg_vertex_attr_desc;
@@ -895,6 +930,12 @@ pub type WgpuContextDesc = ffi::sg_wgpu_context_desc;
 pub fn begin_default_pass(pa: &impl AsRef<ffi::sg_pass_action>, w: u32, h: u32) {
     unsafe {
         ffi::sg_begin_default_pass(pa.as_ref(), w as i32, h as i32);
+    }
+}
+
+pub fn begin_default_pass_f(pa: &impl AsRef<ffi::sg_pass_action>, w: f32, h: f32) {
+    unsafe {
+        ffi::sg_begin_default_passf(pa.as_ref(), w, h);
     }
 }
 
@@ -935,13 +976,12 @@ pub fn apply_bindings(bind: &Bindings) {
 ///
 /// * `ub-index`: uniform block index
 pub fn apply_uniforms<T>(stage: ShaderStage, ub_index: u32, data: &[T]) {
+    let data = Range {
+        ptr: data.as_ptr() as *mut _,
+        size: (size_of::<T>() * data.len()) as _,
+    };
     unsafe {
-        ffi::sg_apply_uniforms(
-            stage as u32,
-            ub_index as i32,
-            data.as_ptr() as *mut _,
-            (size_of::<T>() * data.len()) as i32,
-        );
+        ffi::sg_apply_uniforms(stage as u32, ub_index as i32, &data);
     }
 }
 
@@ -964,6 +1004,13 @@ pub fn scissor(x: u32, y: u32, w: u32, h: u32) {
     }
 }
 
+pub fn scissor_f(x: f32, y: f32, w: f32, h: f32) {
+    unsafe {
+        // origin_top_left: true
+        ffi::sg_apply_scissor_rectf(x, y, w, h, true);
+    }
+}
+
 /// Output rectangle space
 ///
 /// Must be called inside a rendering pass
@@ -976,6 +1023,12 @@ pub fn viewport(x: u32, y: u32, w: u32, h: u32) {
     }
 }
 
+pub fn viewport_f(x: f32, y: f32, w: f32, h: f32) {
+    unsafe {
+        // origin_top_left: true
+        ffi::sg_apply_viewportf(x, y, w, h, true);
+    }
+}
 /// Uploads vertices/indices to vertex/index buffer
 ///
 /// Requires [`ResourceUsage::Dynamic`] or [`ResourceUsage::Stream`].
@@ -983,7 +1036,11 @@ pub fn viewport(x: u32, y: u32, w: u32, h: u32) {
 /// WARNING: can be called only once a frame
 pub unsafe fn update_buffer<T>(buf: Buffer, data: &[T]) {
     let size = size_of::<T>() * data.len();
-    ffi::sg_update_buffer(buf, data.as_ptr() as *const _, size as i32);
+    let data = Range {
+        ptr: data.as_ptr() as *const _,
+        size: size as _,
+    };
+    ffi::sg_update_buffer(buf, &data);
 }
 
 /// Appends vertices/indices to vertex/index buffer
@@ -995,11 +1052,15 @@ pub unsafe fn update_buffer<T>(buf: Buffer, data: &[T]) {
 /// [`Bindings::index_buffer_offset`].
 pub fn append_buffer<T>(buf: Buffer, data: &[T]) -> i32 {
     let n_bytes = size_of::<T>() * data.len();
-    unsafe { ffi::sg_append_buffer(buf, data.as_ptr() as *const _, n_bytes as i32) }
+    let data = Range {
+        ptr: data.as_ptr() as *const _,
+        size: n_bytes as _,
+    };
+    unsafe { ffi::sg_append_buffer(buf, &data) }
 }
 
 /// Only one update per frame is allowed for buffer and image resources
-pub unsafe fn update_image(img: Image, content: &ImageContent) {
+pub unsafe fn update_image(img: Image, content: &ImageData) {
     ffi::sg_update_image(img, content);
 }
 
@@ -1031,8 +1092,7 @@ pub unsafe fn shader_desc(vs: &str, fs: &str) -> ShaderDesc {
 
 /// [Non-Sokol] Helper for creating index buffer
 pub fn ibuf_desc_immutable<T>(buf: &[T], label: &str) -> BufferDesc {
-    let size = (std::mem::size_of::<T>() * buf.len()) as i32;
-
+    let size = std::mem::size_of::<T>() * buf.len();
     unsafe {
         buf_desc(
             buf.as_ptr() as *const _,
@@ -1045,13 +1105,13 @@ pub fn ibuf_desc_immutable<T>(buf: &[T], label: &str) -> BufferDesc {
 }
 
 /// [Non-Sokol] Helper for creating index buffer
-pub fn ibuf_desc_dyn<T>(size: i32, usage: ResourceUsage, label: &str) -> BufferDesc {
+pub fn ibuf_desc_dyn<T>(size: usize, usage: ResourceUsage, label: &str) -> BufferDesc {
     unsafe { buf_desc(std::ptr::null_mut(), size, BufferType::Index, usage, label) }
 }
 
 /// [Non-Sokol] Helper for creating immutable vertex buffer
 pub fn vbuf_desc_immutable<T>(buf: &[T], label: &str) -> BufferDesc {
-    let size = (std::mem::size_of::<T>() * buf.len()) as i32;
+    let size = std::mem::size_of::<T>() * buf.len();
     unsafe {
         buf_desc(
             buf.as_ptr() as *const _,
@@ -1064,21 +1124,24 @@ pub fn vbuf_desc_immutable<T>(buf: &[T], label: &str) -> BufferDesc {
 }
 
 /// [Non-Sokol] Helper for creating dynamic vertex buffer
-pub fn vbuf_desc_dyn(size: i32, usage: ResourceUsage, label: &str) -> BufferDesc {
+pub fn vbuf_desc_dyn(size: usize, usage: ResourceUsage, label: &str) -> BufferDesc {
     unsafe { buf_desc(std::ptr::null_mut(), size, BufferType::Vertex, usage, label) }
 }
 
 /// [Non-Sokol] Helper for creating dynamic vertex buffer
 pub unsafe fn buf_desc(
     ptr: *const c_void,
-    size: i32,
+    size: usize,
     buffer_type: BufferType,
     usage: ResourceUsage,
     label: &str,
 ) -> BufferDesc {
     ffi::sg_buffer_desc {
-        size,
-        content: ptr,
+        size: size as _,
+        data: Range {
+            ptr,
+            size: size as _,
+        },
         type_: buffer_type as u32,
         usage: usage as u32,
         label: if label.is_empty() {

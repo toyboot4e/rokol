@@ -1741,7 +1741,13 @@ extern "C" {
     pub fn sapp_width() -> ::std::os::raw::c_int;
 }
 extern "C" {
+    pub fn sapp_widthf() -> f32;
+}
+extern "C" {
     pub fn sapp_height() -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn sapp_heightf() -> f32;
 }
 extern "C" {
     pub fn sapp_color_format() -> ::std::os::raw::c_int;

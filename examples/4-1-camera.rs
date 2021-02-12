@@ -3,13 +3,16 @@
 mod shaders;
 
 use {
-    glam::{Mat4, Vec3},
+    glam::{Mat4, Vec2, Vec3},
     image::{io::Reader as ImageReader, GenericImageView},
     rokol::{
         app as ra,
         gfx::{self as rg, BakedResource, Buffer, Pipeline},
     },
-    std::path::{Path, PathBuf},
+    std::{
+        f32::consts::PI,
+        path::{Path, PathBuf},
+    },
 };
 
 fn main() -> rokol::Result {
@@ -71,11 +74,7 @@ fn load_img(path: &Path) -> rg::Image {
             ..Default::default()
         };
 
-        desc.content.subimage[0][0] = rg::SubImageContent {
-            ptr: pixels.as_ptr() as *const _,
-            size: pixels.len() as i32,
-        };
-
+        desc.data.subimage[0][0] = pixels.into();
         desc
     })
 }
@@ -83,9 +82,11 @@ fn load_img(path: &Path) -> rg::Image {
 #[derive(Debug, Default)]
 pub struct FlyCamera {
     pub pos: glam::Vec3,
-    pub front: glam::Vec3,
     pub up: glam::Vec3,
     pub fov_radian: f32,
+    pub yaw: f32,
+    pub pitch: f32,
+    pub front: glam::Vec3,
 }
 
 #[derive(Debug, Default)]
@@ -100,6 +101,8 @@ struct AppData {
     cubes: [Vec3; 10],
     cam: FlyCamera,
     cam_speed: f32,
+    is_first_mouse_move: bool,
+    last_mouse_pos: Vec2,
 }
 
 impl AppData {
@@ -126,9 +129,12 @@ impl AppData {
                 pos: [0.0, 0.0, 5.0].into(),
                 front: [0.0, 0.0, -1.0].into(),
                 up: [0.0, 1.0, 0.0].into(),
-                fov_radian: 3.14 / 4.0,
+                fov_radian: PI / 4.0,
+                yaw: -PI / 2.0,
+                pitch: 0.0,
             },
             cam_speed: 1.0,
+            is_first_mouse_move: true,
             ..Default::default()
         }
     }
@@ -204,34 +210,60 @@ impl rokol::app::RApp for AppData {
             },
             shader: shaders::more_cubes(),
             index_type: rg::IndexType::UInt16 as u32,
-            depth_stencil: rg::DepthStencilState {
-                depth_compare_func: rg::CompareFunc::LessEq as u32,
-                depth_write_enabled: true,
+            depth: rg::DepthState {
+                compare: rg::CompareFunc::LessEq as u32,
+                write_enabled: true,
                 ..Default::default()
             },
-            rasterizer: rg::RasterizerState {
-                // FIXME:
-                cull_mode: rg::CullMode::Back as u32,
-                ..Default::default()
-            },
+            cull_mode: rg::CullMode::Back as u32,
             ..Default::default()
         });
     }
 
     fn event(&mut self, ev: &ra::Event) {
-        if ev.type_ != ra::EventType::KeyDown as u32 {
-            return;
+        if ev.type_ == ra::EventType::KeyDown as u32 {
+            let key = ra::Key::from_u32(ev.key_code).unwrap();
+            let offset = match key {
+                ra::Key::W => self.cam.front * self.cam_speed,
+                ra::Key::S => -self.cam.front * self.cam_speed,
+                ra::Key::A => -self.cam.front.cross(self.cam.up) * self.cam_speed,
+                ra::Key::D => self.cam.front.cross(self.cam.up) * self.cam_speed,
+                _ => return,
+            };
+            self.cam.pos += offset;
         }
 
-        let key = ra::Key::from_u32(ev.key_code).unwrap();
-        let offset = match key {
-            ra::Key::W => self.cam.front * self.cam_speed,
-            ra::Key::S => -self.cam.front * self.cam_speed,
-            ra::Key::A => -self.cam.front.cross(self.cam.up) * self.cam_speed,
-            ra::Key::D => self.cam.front.cross(self.cam.up) * self.cam_speed,
-            _ => return,
-        };
-        self.cam.pos += offset;
+        if ev.type_ == ra::EventType::MouseScroll as u32 {
+            // TODO: update FoV
+        }
+
+        if ev.type_ == ra::EventType::MouseMove as u32 {
+            if self.is_first_mouse_move {
+                self.last_mouse_pos = Vec2::new(ev.mouse_x, ev.mouse_y);
+            }
+
+            let sensitivity = 0.5;
+            let delta = Vec2::new(
+                ev.mouse_x - self.last_mouse_pos.x,
+                ev.mouse_y - self.last_mouse_pos.y,
+            ) * sensitivity;
+
+            self.cam.yaw += delta.x;
+            self.cam.pitch += delta.y;
+
+            if self.cam.pitch >= PI / 2.0 - 1.0 / PI {
+                self.cam.pitch = 89.0;
+            }
+            if self.cam.pitch <= -(PI / 2.0 - 1.0 / PI) {
+                self.cam.pitch = -89.0;
+            }
+
+            self.cam.front = Vec3::new(
+                self.cam.yaw.cos() * self.cam.pitch.cos(),
+                self.cam.pitch.sin(),
+                self.cam.yaw.sin() * self.cam.pitch.cos(),
+            );
+        }
     }
 
     fn frame(&mut self) {

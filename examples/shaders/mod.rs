@@ -7,6 +7,8 @@ Shader files are conditionally embedded to the source code.
 See `rokol/build.rs` for the conditional compiltion information.
 */
 
+#![allow(unused)]
+
 // NOTE: Be sure to set uniform names (or maybe fail).
 // TODO: compile while allowing non-existing shader file
 
@@ -76,6 +78,32 @@ macro_rules! def_shd {
     };
 }
 
+macro_rules! img_type {
+    ($name:expr,$ty:expr) => {
+        rg::ShaderImageDesc {
+            name: c_str!($name).as_ptr() as *const _,
+            image_type: $ty as u32,
+            ..Default::default()
+        }
+    };
+}
+
+/// Single-value uniform block
+macro_rules! ub {
+    ($name:expr, $uniform_ty:expr, $size_ty:ty) => {{
+        let mut block = rg::ShaderUniformBlockDesc::default();
+
+        block.uniforms[0] = rg::ShaderUniformDesc {
+            name: concat!($name, "\0").as_ptr() as *const _,
+            type_: $uniform_ty as u32,
+            ..Default::default()
+        };
+        block.size += std::mem::size_of::<$size_ty>() as u64;
+
+        block
+    }};
+}
+
 pub fn triangle() -> rokol::gfx::Shader {
     gen(&def_shd!("triangle"), |_desc| {})
 }
@@ -86,99 +114,36 @@ pub fn quad() -> rokol::gfx::Shader {
 
 pub fn texture() -> rokol::gfx::Shader {
     gen(&def_shd!("texture"), |desc| {
-        desc.fs.images[0] = rg::ShaderImageDesc {
-            image_type: rg::ImageType::Dim2 as u32,
-            ..Default::default()
-        };
+        desc.fs.images[0] = img_type!("tex", rg::ImageType::Dim2);
     })
 }
 
 pub fn texture_multi() -> rokol::gfx::Shader {
     gen(&def_shd!("texture_multi"), |desc| {
-        desc.fs.images[0] = rg::ShaderImageDesc {
-            image_type: rg::ImageType::Dim2 as u32,
-            name: c_str!("tex1").as_ptr() as *const _,
-            ..Default::default()
-        };
-        desc.fs.images[1] = rg::ShaderImageDesc {
-            image_type: rg::ImageType::Dim2 as u32,
-            name: c_str!("tex2").as_ptr() as *const _,
-            ..Default::default()
-        };
+        desc.fs.images[0] = img_type!("tex1", rg::ImageType::Dim2);
+        desc.fs.images[1] = img_type!("tex2", rg::ImageType::Dim2);
     })
 }
 
 pub fn cube() -> rokol::gfx::Shader {
     gen(&def_shd!("cube"), |desc| {
-        desc.vs.uniform_blocks[0] = {
-            let mut block = rg::ShaderUniformBlockDesc::default();
-            block.size = std::mem::size_of::<glam::Mat4>() as _;
-            block.uniforms[0] = rg::ShaderUniformDesc {
-                type_: rg::UniformType::Mat4 as u32,
-                name: c_str!("mvp").as_ptr() as *const _,
-                ..Default::default()
-            };
-            block
-        };
-
-        desc.fs.images[0] = rg::ShaderImageDesc {
-            image_type: rg::ImageType::Dim2 as u32,
-            name: c_str!("tex").as_ptr() as *const _,
-            ..Default::default()
-        };
+        desc.fs.images[0] = img_type!("tex", rg::ImageType::Dim2);
+        desc.vs.uniform_blocks[0] = ub!("mvp", rg::UniformType::Mat4, glam::Mat4);
     })
 }
 
 pub fn cube_multi() -> rokol::gfx::Shader {
     gen(&def_shd!("cube_multi"), |desc| {
-        desc.vs.uniform_blocks[0] = {
-            let mut block = rg::ShaderUniformBlockDesc::default();
-            block.size = std::mem::size_of::<glam::Mat4>() as _;
-            block.uniforms[0] = rg::ShaderUniformDesc {
-                type_: rg::UniformType::Mat4 as u32,
-                name: c_str!("mvp").as_ptr() as *const _,
-                ..Default::default()
-            };
-            block
-        };
-
-        desc.fs.images[0] = rg::ShaderImageDesc {
-            image_type: rg::ImageType::Dim2 as u32,
-            name: c_str!("tex1").as_ptr() as *const _,
-            ..Default::default()
-        };
-
-        desc.fs.images[1] = rg::ShaderImageDesc {
-            image_type: rg::ImageType::Dim2 as u32,
-            name: c_str!("tex2").as_ptr() as *const _,
-            ..Default::default()
-        };
+        desc.fs.images[0] = img_type!("tex1", rg::ImageType::Dim2);
+        desc.fs.images[1] = img_type!("tex2", rg::ImageType::Dim2);
+        desc.vs.uniform_blocks[0] = ub!("mvp", rg::UniformType::Mat4, glam::Mat4);
     })
 }
 
 pub fn more_cubes() -> rokol::gfx::Shader {
     gen(&def_shd!("more_cubes"), |desc| {
-        desc.vs.uniform_blocks[0] = {
-            let mut block = rg::ShaderUniformBlockDesc::default();
-            block.size = std::mem::size_of::<glam::Mat4>() as _;
-            block.uniforms[0] = rg::ShaderUniformDesc {
-                type_: rg::UniformType::Mat4 as u32,
-                name: c_str!("mvp").as_ptr() as *const _,
-                ..Default::default()
-            };
-            block
-        };
-
-        desc.fs.images[0] = rg::ShaderImageDesc {
-            image_type: rg::ImageType::Dim2 as u32,
-            name: c_str!("tex1").as_ptr() as *const _,
-            ..Default::default()
-        };
-
-        desc.fs.images[1] = rg::ShaderImageDesc {
-            image_type: rg::ImageType::Dim2 as u32,
-            name: c_str!("tex2").as_ptr() as *const _,
-            ..Default::default()
-        };
+        desc.fs.images[0] = img_type!("tex1", rg::ImageType::Dim2);
+        desc.fs.images[1] = img_type!("tex2", rg::ImageType::Dim2);
+        desc.vs.uniform_blocks[0] = ub!("mvp", rg::UniformType::Mat4, glam::Mat4);
     })
 }

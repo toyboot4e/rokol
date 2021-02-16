@@ -74,6 +74,7 @@ impl From<[&f32; 4]> for sg_color {
 }
 
 impl From<&[u8]> for gfx::sg_range {
+    // WARNING: This is VERY UNSAFE since the slice may be a temporary value
     fn from(x: &[u8]) -> gfx::sg_range {
         gfx::sg_range {
             ptr: x.as_ptr() as *const _,

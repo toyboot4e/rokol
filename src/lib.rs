@@ -92,6 +92,8 @@ impl Default for Rokol {
 }
 
 impl Rokol {
+    /// Runs rokol application. WARNING: you can't use `rokol::gfx` until you setup `rokol::gfx`
+    /// (see [`crate::run`]).
     pub fn run<T: app::RApp>(&self, app: &mut T) -> Result {
         #[cfg(rokol_gfx = "glcore33")]
         log::info!("Rokol renderer: glcore33");
@@ -146,5 +148,34 @@ impl Rokol {
         }
 
         Ok(())
+    }
+}
+
+/// Runs a rokol application. It will postpone generation of our application until we setup
+/// `rokol::gfx` so that we can use `rokol::gfx` when we create our application.
+pub fn run<A: app::RApp, G: FnOnce(&Rokol) -> A>(desc: Rokol, gen: G) -> Result {
+    let mut runner = DelayedApp {
+        desc: desc.clone(),
+        app: None,
+        gen: Some(gen),
+    };
+    desc.run(&mut runner)
+}
+
+#[derive(Debug)]
+struct DelayedApp<A: app::RApp, G: FnOnce(&Rokol) -> A> {
+    desc: Rokol,
+    app: Option<A>,
+    gen: Option<G>,
+}
+
+impl<A: app::RApp, G: FnOnce(&Rokol) -> A> app::RApp for DelayedApp<A, G> {
+    fn init(&mut self) {
+        gfx::setup(&mut glue::app_desc());
+        self.app = Some(self.gen.take().unwrap()(&self.desc));
+    }
+
+    fn frame(&mut self) {
+        self.app.as_mut().unwrap().frame();
     }
 }

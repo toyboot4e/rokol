@@ -1,4 +1,8 @@
-//! Textured cube with multiple instances
+/*!
+Textured cube with multiple instances
+
+In OpenGL, we use school math (column-major matrices and right-handed coordinate system)
+*/
 
 mod shaders;
 
@@ -79,14 +83,66 @@ fn load_img(path: &Path) -> rg::Image {
     })
 }
 
+/// From degree to radians
+#[inline]
+fn rad(degree: f32) -> f32 {
+    degree / (2.0 * PI)
+}
+
+/// Eular angle
+#[derive(Debug, Default, PartialEq)]
+pub struct Euler {
+    /// Rotation around x axis
+    pub yaw: f32,
+    /// Rotation around y axis
+    pub pitch: f32,
+    // /// Rotation around z axis
+    // pub roll: f32,
+}
+
+impl Euler {
+    pub fn to_vec3(&self) -> Vec3 {
+        Vec3 {
+            x: self.yaw.cos() * self.pitch.cos(),
+            y: self.pitch.sin(),
+            z: self.yaw.sin() * self.pitch.cos(),
+        }
+    }
+
+    pub fn add_pitch(&mut self, pitch: f32) {
+        let min = rad(1.0);
+        let max = rad(89.0);
+        self.pitch = match self.pitch + pitch {
+            x if x < min => min,
+            x if x > max => max,
+            x => x,
+        };
+    }
+}
+
 #[derive(Debug, Default)]
 pub struct FlyCamera {
     pub pos: glam::Vec3,
     pub up: glam::Vec3,
-    pub fov_radian: f32,
-    pub yaw: f32,
-    pub pitch: f32,
+    pub fov: f32,
+    pub euler: Euler,
     pub front: glam::Vec3,
+}
+
+impl FlyCamera {
+    pub fn add_fov(&mut self, fov: f32) {
+        // FIXME: we can zoom out too much
+        let min = rad(1.0);
+        let max = rad(89.0);
+
+        self.fov = match self.fov + fov {
+            x if x < min => min,
+            x if x > max => max,
+            x => x,
+        };
+
+        log::trace!("FoV = {:?} rad {:?} deg", self.fov, self.fov * 2.0 * PI);
+    }
 }
 
 #[derive(Debug, Default)]
@@ -100,8 +156,6 @@ struct AppData {
     /// Positions of cubes
     cubes: [Vec3; 10],
     cam: FlyCamera,
-    cam_speed: f32,
-    is_first_mouse_move: bool,
     last_mouse_pos: Vec2,
 }
 
@@ -129,12 +183,12 @@ impl AppData {
                 pos: [0.0, 0.0, 5.0].into(),
                 front: [0.0, 0.0, -1.0].into(),
                 up: [0.0, 1.0, 0.0].into(),
-                fov_radian: PI / 4.0,
-                yaw: -PI / 2.0,
-                pitch: 0.0,
+                fov: PI / 4.0,
+                euler: Euler {
+                    yaw: -rad(1.0),
+                    pitch: 0.0,
+                },
             },
-            cam_speed: 1.0,
-            is_first_mouse_move: true,
             ..Default::default()
         }
     }
@@ -221,48 +275,47 @@ impl rokol::app::RApp for AppData {
     }
 
     fn event(&mut self, ev: &ra::Event) {
+        let move_speed = 1.0;
+        let zx_zoom_sensitivity = 1.0;
+        let mouse_zoom_sensitivity = 0.25;
+        let rot_sensitivity = 0.001;
+
         if ev.type_ == ra::EventType::KeyDown as u32 {
             let key = ra::Key::from_u32(ev.key_code).unwrap();
-            let offset = match key {
-                ra::Key::W => self.cam.front * self.cam_speed,
-                ra::Key::S => -self.cam.front * self.cam_speed,
-                ra::Key::A => -self.cam.front.cross(self.cam.up) * self.cam_speed,
-                ra::Key::D => self.cam.front.cross(self.cam.up) * self.cam_speed,
-                _ => return,
-            };
-            self.cam.pos += offset;
-        }
 
-        if ev.type_ == ra::EventType::MouseScroll as u32 {
-            // TODO: update FoV
-        }
+            // move
+            self.cam.pos += match key {
+                ra::Key::W => self.cam.front,
+                ra::Key::S => -self.cam.front,
+                ra::Key::A => -self.cam.front.cross(self.cam.up),
+                ra::Key::D => self.cam.front.cross(self.cam.up),
+                _ => Vec3::new(0.0, 0.0, 0.0),
+            } * move_speed;
 
-        if ev.type_ == ra::EventType::MouseMove as u32 {
-            if self.is_first_mouse_move {
-                self.last_mouse_pos = Vec2::new(ev.mouse_x, ev.mouse_y);
-            }
-
-            let sensitivity = 0.5;
-            let delta = Vec2::new(
-                ev.mouse_x - self.last_mouse_pos.x,
-                ev.mouse_y - self.last_mouse_pos.y,
-            ) * sensitivity;
-
-            self.cam.yaw += delta.x;
-            self.cam.pitch += delta.y;
-
-            if self.cam.pitch >= PI / 2.0 - 1.0 / PI {
-                self.cam.pitch = 89.0;
-            }
-            if self.cam.pitch <= -(PI / 2.0 - 1.0 / PI) {
-                self.cam.pitch = -89.0;
-            }
-
-            self.cam.front = Vec3::new(
-                self.cam.yaw.cos() * self.cam.pitch.cos(),
-                self.cam.pitch.sin(),
-                self.cam.yaw.sin() * self.cam.pitch.cos(),
+            // zoom
+            self.cam.add_fov(
+                match key {
+                    // zoom in (increase FoV)
+                    ra::Key::Z => -rad(1.0),
+                    // zoom out (decrease FoV)
+                    ra::Key::X => rad(1.0),
+                    _ => 0.0,
+                } * zx_zoom_sensitivity,
             );
+        }
+
+        // zoom
+        if ev.type_ == ra::EventType::MouseScroll as u32 {
+            self.cam.add_fov(ev.scroll_y * mouse_zoom_sensitivity);
+        }
+
+        // rotate
+        if ev.type_ == ra::EventType::MouseMove as u32 {
+            let delta = Vec2::new(ev.mouse_dx, ev.mouse_dy) * rot_sensitivity;
+
+            self.cam.euler.yaw += delta.x;
+            self.cam.euler.add_pitch(-delta.y);
+            self.cam.front = self.cam.euler.to_vec3();
         }
     }
 
@@ -272,13 +325,6 @@ impl rokol::app::RApp for AppData {
             rg::apply_pipeline(self.pip);
             rg::apply_bindings(&self.bind);
 
-            // TODO: rotate
-            // let spd =
-            // let rot_x = glam::Mat4::rotate(rx, [1.0f, 0.0f, 0.0f]);
-            // let rot_y = glam::Mat4::rotate(ry, [0.0f, 1.0f, 0.0f]);
-            // let model = rot_x * rot_y;
-
-            // left-handed matrices
             let view = Mat4::look_at_rh(
                 // camera position
                 self.cam.pos,
@@ -290,20 +336,21 @@ impl rokol::app::RApp for AppData {
 
             let ratio = ra::width() as f32 / ra::height() as f32;
             let proj = Mat4::perspective_rh(
-                3.14 / 4.0, // fov_y_radian
-                ratio,      // aspect_ratio
-                0.01,       // z_near
-                100.0,      // z_far
+                self.cam.fov, // fov
+                ratio,        // aspect_ratio
+                0.01,         // z_near
+                100.0,        // z_far
             );
 
-            // column-major matrix notation (v' = Mv)
             let vp = proj * view;
 
             // for each cube positions
             for (i, pos) in self.cubes.iter().enumerate() {
-                let m = Mat4::from_translation(pos.clone());
-                let angle = 3.14 / 9.0 * i as f32;
-                let m = m * Mat4::from_axis_angle([1.0, 0.3, 0.5].into(), angle);
+                let m = {
+                    let m = Mat4::from_translation(pos.clone());
+                    let angle = PI / 9.0 * i as f32;
+                    m * Mat4::from_axis_angle([1.0, 0.3, 0.5].into(), angle)
+                };
                 let mvp = vp * m;
                 let bytes: &[u8] = unsafe {
                     std::slice::from_raw_parts(

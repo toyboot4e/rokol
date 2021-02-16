@@ -1,5 +1,4 @@
 /*!
-
 Graphics ([`FFI`])
 
 [`FFI`]: rokol_ffi::gfx
@@ -21,10 +20,10 @@ Be sure to specify uniform names when making [`Shader`].
 For example, for one frame with one screen rendering pass:
 
 * [`begin_default_pass`] (screen rendering pass)
-    * [`viewport`] and [`scissor`]
+    * Optionally [`viewport`] and [`scissor`]
     * [`apply_pipeline`] (vertex-layouts, shader and render states)
-    * [`apply_bindings`] ([`Bindings`]: vertex and index buffer and images)
-    * [`apply_uniforms`] (set shader uniform with an index)
+    * [`apply_uniforms`] (set shader uniform block with index)
+    * [`apply_bindings`] ([`Bindings`]: vertex and index buffer and images, basically a mesh)
     * [`draw`]
 * [`end_pass`]
 * [`commit`]
@@ -35,10 +34,10 @@ For example, for one frame with one screen rendering pass:
     * [A Tour of sokol_gfx.h](https://floooh.github.io/2017/07/29/sokol-gfx-tour.html) (2017)
     * [A small sokol_gfx.h API update](https://floooh.github.io/2019/01/12/sokol-apply-pipeline.html) (2019)
     * [Sokol headers: spring 2020 update](https://floooh.github.io/2020/04/26/sokol-spring-2020-update.html) (2020)
+    * [Upcoming Sokol header API changes (Feb 2021)](https://floooh.github.io/2021/02/07/sokol-api-overhaul.html)
 * [Learn OpenGL](https://learnopengl.com/)
 * [Learn OpenGL Examples (with Sokol in C)](https://www.geertarien.com/learnopengl-examples-html5/)
 * [zig-renderkit](https://github.com/prime31/zig-renderkit)
-
 */
 
 use {

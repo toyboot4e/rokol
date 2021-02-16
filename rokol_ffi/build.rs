@@ -12,7 +12,6 @@ use cc::Build;
 fn main() {
     // update the bindings when we update `sokol` or `wrappers`
     println!("cargo:rerun-if-changed=sokol");
-    println!("cargo:rerun-if-changed=wrappers");
 
     let mut build = Build::new();
 

@@ -95,6 +95,8 @@ pub enum PassActionKind {
 
 /// Update strategy of buffers and images
 ///
+/// Render target image has to have `Immutable` usage.
+///
 /// # Kinds
 ///
 /// * `Immutable`: Never be updated after creation
@@ -1127,17 +1129,18 @@ pub fn vbuf_desc_dyn(size: usize, usage: ResourceUsage, label: &str) -> BufferDe
 
 /// [Non-Sokol] Helper for creating dynamic vertex buffer
 pub unsafe fn buf_desc(
-    ptr: *const c_void,
-    size: usize,
+    // null if dyn, some if immutable
+    data_ptr: *const c_void,
+    data_size: usize,
     buffer_type: BufferType,
     usage: ResourceUsage,
     label: &str,
 ) -> BufferDesc {
     ffi::sg_buffer_desc {
-        size: size as _,
+        size: data_size as _,
         data: Range {
-            ptr,
-            size: size as _,
+            ptr: data_ptr,
+            size: data_size as _,
         },
         type_: buffer_type as u32,
         usage: usage as u32,

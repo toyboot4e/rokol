@@ -583,14 +583,6 @@ pub fn size() -> [u32; 2] {
     [self::width(), self::height()]
 }
 
-/// (Non-Sokol) size of the window (not the frame buffer)
-pub fn size_scaled() -> [f32; 2] {
-    [
-        (self::width_f() as f32 / self::dpi_scale()),
-        (self::height_f() as f32 / self::dpi_scale()),
-    ]
-}
-
 pub fn width_f() -> f32 {
     unsafe { ffi::sapp_widthf() }
 }

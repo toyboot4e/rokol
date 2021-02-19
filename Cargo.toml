@@ -10,6 +10,9 @@ license = "MIT"
 categories = ["game-development", "graphics"]
 keywords = ["graphics", "gamedev"]
 
+[workspace]
+members = ["rokol", "rokol_ffi"]
+
 [features]
 # https://doc.rust-lang.org/cargo/reference/features.html#the-features-section
 default = []

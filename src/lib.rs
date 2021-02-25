@@ -153,11 +153,11 @@ impl Rokol {
 
 /// Runs a rokol application. It will postpone generation of our application until we setup
 /// `rokol::gfx` so that we can use `rokol::gfx` when we create our application.
-pub fn run<A: app::RApp, G: FnOnce(&Rokol) -> A>(desc: Rokol, gen: G) -> Result {
+pub fn run<A: app::RApp, G: FnOnce(&Rokol) -> A>(desc: Rokol, app_gen: G) -> Result {
     let mut runner = DelayedApp {
         desc: desc.clone(),
         app: None,
-        gen: Some(gen),
+        app_gen: Some(app_gen),
     };
     desc.run(&mut runner)
 }
@@ -166,13 +166,13 @@ pub fn run<A: app::RApp, G: FnOnce(&Rokol) -> A>(desc: Rokol, gen: G) -> Result 
 struct DelayedApp<A: app::RApp, G: FnOnce(&Rokol) -> A> {
     desc: Rokol,
     app: Option<A>,
-    gen: Option<G>,
+    app_gen: Option<G>,
 }
 
 impl<A: app::RApp, G: FnOnce(&Rokol) -> A> app::RApp for DelayedApp<A, G> {
     fn init(&mut self) {
         gfx::setup(&mut glue::app_desc());
-        self.app = Some(self.gen.take().unwrap()(&self.desc));
+        self.app = Some(self.app_gen.take().unwrap()(&self.desc));
     }
 
     fn frame(&mut self) {

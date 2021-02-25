@@ -587,7 +587,7 @@ bitflags::bitflags! {
 
 /// Pass action
 ///
-/// Wraps [`ffi::sg_pass_action`] just to add methods without trait.
+/// Internally, it just wraps [`ffi::sg_pass_action`] to add methods without using a trait.
 #[derive(Debug, Default)]
 pub struct PassAction {
     raw: ffi::sg_pass_action,
@@ -608,8 +608,8 @@ impl PassAction {
         &mut self.raw
     }
 
-    /// Untouch the last content
-    pub const NONE: Self = Self {
+    /// Untouch (load) the last content
+    pub const LOAD: Self = Self {
         raw: ffi::sg_pass_action {
             _start_canary: 0,
             colors: [self::ColorAttachmentAction {

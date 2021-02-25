@@ -1,10 +1,8 @@
 /*!
-
 FontStash integration for Rokol
-
 */
 
-pub use fontstash::{self, Align, FontStash};
+pub use fontstash::{self, Align, FonsQuad, FontStash};
 
 use {
     fontstash::FonsTextIter,
@@ -13,16 +11,9 @@ use {
 
 use crate::gfx::{self as rg, BakedResource};
 
-#[derive(Debug, Clone)]
-pub struct FontConfig {
-    pub font: fontstash::FontIx,
-    pub fontsize: f32,
-    pub line_spacing: f32,
-}
-
-/// The shared ownership of [`FontBookImpl`]
+/// Shared ownership of [`FontBookImpl`], which manages font texture
 ///
-/// It is required to use [`Box`] to give fixed memory location.
+/// Be sure to set alignment of the [`FontStash`] to draw text as you want.
 #[derive(Debug)]
 pub struct FontBook {
     /// Give fixed memory location
@@ -82,30 +73,45 @@ impl FontBook {
     }
 }
 
-/// The implementation of [`FontBook`]
+/// Manages font texture
 ///
-/// It is required to use the internal variable so that the memory position is fixed.
+/// We have to give fixed memory location to `FontBookImpl` so that `fontstash` (a C library) can
+/// call callback methods.
 #[derive(Debug)]
 pub struct FontBookImpl {
     stash: fontstash::FontStash,
     img: rg::Image,
-    /// The texture size is always synced with the fontstash size
+    /// The texture size, which is always synced with the fontstash size
     w: u32,
-    /// The texture size is always synced with the fontstash size
+    /// The texture size, which is always synced with the fontstash size
     h: u32,
     /// We store texture data here because be can update our texture only once a frame
     tex_data: Vec<u8>,
-    /// Shall we update the texture data?
+    /// Shall we update the texture data in this frame?
     is_dirty: bool,
 }
 
 impl Drop for FontBookImpl {
     fn drop(&mut self) {
-        log::trace!("fontbook: drop");
+        log::trace!("FontBookImpl::drop");
 
-        if !self.img.id != 0 {
+        if self.img.id != 0 {
+            log::trace!("==> destroy GPU font texture");
             rg::Image::destroy(self.img);
         }
+    }
+}
+
+impl std::ops::Deref for FontBookImpl {
+    type Target = FontStash;
+    fn deref(&self) -> &Self::Target {
+        &self.stash
+    }
+}
+
+impl std::ops::DerefMut for FontBookImpl {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.stash
     }
 }
 
@@ -115,51 +121,70 @@ impl FontBookImpl {
         self.img
     }
 
+    pub fn stash(&self) -> &FontStash {
+        &self.stash
+    }
+
     /// Copies the shared ownership of Fontstash
-    pub fn stash(&self) -> FontStash {
-        self.stash.clone()
-    }
-
-    /// TODO: does it affect performance (dramatically)?
-    pub fn apply_cfg(&mut self, cfg: &FontConfig) {
-        self.stash.set_font(cfg.font);
-        self.stash.set_size(cfg.fontsize);
-    }
-
-    /// Be sure to set alignment of the [`FontStash`] to draw text as you want.
-    pub fn text_iter(&mut self, text: &str) -> fontstash::Result<FonsTextIter> {
-        self.stash.text_iter(text)
-    }
-
-    /// [x, y, w, h]
-    ///
-    /// Be sure to set alignment of the [`FontStash`] to draw text as you want.
-    pub fn text_bounds(&self, pos: impl Into<[f32; 2]>, cfg: &FontConfig, text: &str) -> [f32; 4] {
-        // TODO: apply `FontConfig` automatially?
-        // self.apply_cfg(cfg);
+    /// Returns [x, y, w, h]
+    pub fn text_bounds_multiline(
+        &self,
+        text: &str,
+        pos: impl Into<[f32; 2]>,
+        fontsize: f32,
+        line_spacing: f32,
+    ) -> [f32; 4] {
+        // TODO: apply fontsize automatially?
         let mut lines = text.lines();
 
         let [x, y, mut w, mut h] = {
-            let [x1, y1, x2, y2] = self.stash.bounds(pos.into(), lines.next().unwrap());
+            let [x1, y1, x2, y2] = self
+                .stash
+                .text_bounds_oneline(pos.into(), lines.next().unwrap());
             [x1, y1, x2 - x1, y2 - y1]
         };
 
         for line in lines {
             if line.is_empty() {
-                h += cfg.fontsize + cfg.line_spacing;
+                h += fontsize + line_spacing;
                 continue;
             } else {
-                let [x1, y1, x2, y2] = self.stash.bounds([0.0, 0.0], line);
+                let [x1, y1, x2, y2] = self.stash.text_bounds_oneline([0.0, 0.0], line);
 
                 if x2 - x1 > w {
                     w = x2 - x1;
                 }
 
-                h += (y2 - y1) + cfg.line_spacing;
+                h += (y2 - y1) + line_spacing;
             }
         }
 
         [x, y, w, h]
+    }
+
+    /// Returns [x, y, w, h]
+    pub fn text_size_multiline(&self, text: &str, fontsize: f32, line_spacing: f32) -> [f32; 2] {
+        // TODO: apply fontsize automatially?
+        let mut lines = text.lines();
+
+        let [mut w, mut h] = self.stash.text_size_oneline(lines.next().unwrap());
+
+        for line in lines {
+            if line.is_empty() {
+                h += fontsize + line_spacing;
+                continue;
+            } else {
+                let [w2, h2] = self.stash.text_size_oneline(line);
+
+                if w2 > w {
+                    w = w2
+                }
+
+                h += h2 + line_spacing;
+            }
+        }
+
+        [w, h]
     }
 }
 
@@ -204,7 +229,7 @@ unsafe impl fontstash::Renderer for FontBookImpl {
         true as c_int // success
     }
 
-    /// Try to double the texture size while the atlas is full
+    /// Try to double the texture size when the atlas is full
     unsafe extern "C" fn expand(uptr: *mut c_void) -> c_int {
         log::trace!("fontbook: expand");
 
@@ -233,9 +258,6 @@ unsafe impl fontstash::Renderer for FontBookImpl {
 }
 
 impl FontBookImpl {
-    /// Updates GPU texure. Call it whenever drawing text
-    ///
-    /// TODO: do not update twice a frame?
     fn update_cpu_image(&mut self) {
         let tex_data = &mut self.tex_data;
         tex_data.clear();
@@ -265,8 +287,6 @@ impl FontBookImpl {
             return;
         }
         self.is_dirty = false;
-
-        log::trace!("fontbook: [{}, {}] >>> update GPU texture", self.w, self.h);
 
         self.update_cpu_image();
         rg::update_image(self.img, &{

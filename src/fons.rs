@@ -4,38 +4,33 @@ FontStash integration for Rokol
 
 pub use fontstash::{self, Align, FonsQuad, FontStash};
 
-use {
-    fontstash::FonsTextIter,
-    std::os::raw::{c_int, c_uchar, c_void},
-};
+use std::os::raw::{c_int, c_uchar, c_void};
 
 use crate::gfx::{self as rg, BakedResource};
 
-/// Shared ownership of [`FontBookImpl`], which manages font texture
-///
 /// Be sure to set alignment of the [`FontStash`] to draw text as you want.
 #[derive(Debug)]
-pub struct FontBook {
+pub struct FontTexture {
     /// Give fixed memory location
-    inner: Box<FontBookImpl>,
+    inner: Box<FontTextureImpl>,
 }
 
-impl std::ops::Deref for FontBook {
-    type Target = FontBookImpl;
+impl std::ops::Deref for FontTexture {
+    type Target = FontTextureImpl;
     fn deref(&self) -> &Self::Target {
         &self.inner
     }
 }
 
-impl std::ops::DerefMut for FontBook {
+impl std::ops::DerefMut for FontTexture {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.inner
     }
 }
 
-impl FontBook {
+impl FontTexture {
     pub fn new(w: u32, h: u32) -> Self {
-        let mut inner = Box::new(FontBookImpl {
+        let mut inner = Box::new(FontTextureImpl {
             stash: FontStash::uninitialized(),
             img: Default::default(),
             w,
@@ -44,7 +39,7 @@ impl FontBook {
             tex_data: Vec::with_capacity((w * h) as usize),
         });
 
-        let inner_ptr = inner.as_ref() as *const _ as *mut FontBookImpl;
+        let inner_ptr = inner.as_ref() as *const _ as *mut FontTextureImpl;
         // create internal image with the `create` callback:
         inner.stash.init_mut(w, h, inner_ptr);
 
@@ -54,7 +49,7 @@ impl FontBook {
             inner_ptr as *mut _,
         );
 
-        return FontBook { inner };
+        return FontTexture { inner };
 
         unsafe extern "C" fn fons_error_callback(
             _uptr: *mut c_void,
@@ -73,12 +68,10 @@ impl FontBook {
     }
 }
 
-/// Manages font texture
-///
-/// We have to give fixed memory location to `FontBookImpl` so that `fontstash` (a C library) can
+/// We have to give fixed memory location to `FontTextureImpl` so that `fontstash` (a C library) can
 /// call callback methods.
 #[derive(Debug)]
-pub struct FontBookImpl {
+pub struct FontTextureImpl {
     stash: fontstash::FontStash,
     img: rg::Image,
     /// The texture size, which is always synced with the fontstash size
@@ -91,9 +84,9 @@ pub struct FontBookImpl {
     is_dirty: bool,
 }
 
-impl Drop for FontBookImpl {
+impl Drop for FontTextureImpl {
     fn drop(&mut self) {
-        log::trace!("FontBookImpl::drop");
+        log::trace!("FontTextureImpl::drop");
 
         if self.img.id != 0 {
             log::trace!("==> destroy GPU font texture");
@@ -102,21 +95,21 @@ impl Drop for FontBookImpl {
     }
 }
 
-impl std::ops::Deref for FontBookImpl {
+impl std::ops::Deref for FontTextureImpl {
     type Target = FontStash;
     fn deref(&self) -> &Self::Target {
         &self.stash
     }
 }
 
-impl std::ops::DerefMut for FontBookImpl {
+impl std::ops::DerefMut for FontTextureImpl {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.stash
     }
 }
 
 /// Interface
-impl FontBookImpl {
+impl FontTextureImpl {
     pub fn img(&self) -> rg::Image {
         self.img
     }
@@ -194,17 +187,17 @@ impl FontBookImpl {
 /// Renderer implementation
 ///
 /// Return `1` to represent success.
-unsafe impl fontstash::Renderer for FontBookImpl {
+unsafe impl fontstash::Renderer for FontTextureImpl {
     /// Creates font texture
     unsafe extern "C" fn create(uptr: *mut c_void, width: c_int, height: c_int) -> c_int {
         let me = &mut *(uptr as *const _ as *mut Self);
 
         if me.img.id != 0 {
-            log::trace!("fontbook: create -- dispose old image");
+            log::trace!("FontTextureImpl::create -- dispose old image");
             rg::Image::destroy(me.img);
         }
 
-        log::trace!("fontbook: create [{}, {}]", width, height);
+        log::trace!("FontTextureImpl::create [{}, {}]", width, height);
 
         me.img = rg::Image::create(&rg::ImageDesc {
             type_: rg::ImageType::Dim2 as u32,
@@ -223,7 +216,7 @@ unsafe impl fontstash::Renderer for FontBookImpl {
     }
 
     unsafe extern "C" fn resize(uptr: *mut c_void, width: c_int, height: c_int) -> c_int {
-        log::trace!("fontbook: resize");
+        log::trace!("FontTextureImpl::resize");
 
         Self::create(uptr, width, height);
         true as c_int // success
@@ -231,7 +224,7 @@ unsafe impl fontstash::Renderer for FontBookImpl {
 
     /// Try to double the texture size when the atlas is full
     unsafe extern "C" fn expand(uptr: *mut c_void) -> c_int {
-        log::trace!("fontbook: expand");
+        log::trace!("FontTextureImpl::expand");
 
         let me = &mut *(uptr as *const _ as *mut Self);
 
@@ -257,13 +250,13 @@ unsafe impl fontstash::Renderer for FontBookImpl {
     }
 }
 
-impl FontBookImpl {
+impl FontTextureImpl {
     fn update_cpu_image(&mut self) {
         let tex_data = &mut self.tex_data;
         tex_data.clear();
 
         self.stash.with_pixels(|pixels, w, h| {
-            log::trace!("fontbook: [{}, {}] update CPU texture", w, h);
+            log::trace!("FontTextureImpl: [{}, {}] update CPU texture", w, h);
 
             let area = (w * h) as usize;
             // self.tex_data.ensure_capacity(area);

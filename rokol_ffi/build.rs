@@ -202,8 +202,8 @@ fn compile(
     // Link platform-dependent libraries
 
     if cfg!(target_os = "windows") && !is_msvc {
-        // println!("cargo:rustc-link-lib=static=gdi32");
-        // println!("cargo:rustc-link-lib=static=ole32");
+        println!("cargo:rustc-link-lib=static=gdi32");
+        println!("cargo:rustc-link-lib=static=ole32");
     }
 
     if cfg!(target_os = "macos") {

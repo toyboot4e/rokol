@@ -138,7 +138,7 @@ mod glue_ex {
 
     /// Runs a rokol application. It will postpone generation of our application until we setup
     /// `rokol::gfx` so that we can use `rokol::gfx` when we create our application.
-    pub fn run<A: app::RApp, G: FnOnce(&Rokol) -> A>(desc: Rokol, app_gen: G) -> Result {
+    pub fn run_delayed<A: app::RApp, G: FnOnce(&Rokol) -> A>(desc: Rokol, app_gen: G) -> Result {
         let mut runner = DelayedApp {
             desc: desc.clone(),
             app: None,

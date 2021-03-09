@@ -114,6 +114,10 @@ impl FontTextureImpl {
         self.img
     }
 
+    pub fn cpu_texture(&self) -> (&Vec<u8>, [u32; 2]) {
+        (&self.tex_data, [self.w, self.h])
+    }
+
     pub fn stash(&self) -> &FontStash {
         &self.stash
     }

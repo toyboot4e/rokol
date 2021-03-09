@@ -1,11 +1,9 @@
 /*!
-
 Application ([`FFI`])
 
 [`FFI`]: rokol_ffi::app
 
-[`crate::Rokol::run`] runs an implementation of [`RApp`].
-
+[`Rokol::run`](crate::glue::Rokol:::run) runs an implementation of [`RApp`].
 */
 
 use {

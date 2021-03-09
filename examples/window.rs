@@ -1,11 +1,13 @@
-//! Just open a window with Rokol!
+/*!
+Just open a window with Rokol! See this [repository] for more practical examples.
 
-use rokol::gfx as rg;
+[repository]: https://github.com/toyboot4e/rokol_learn_opengl
+*/
 
-fn main() -> rokol::Result {
-    env_logger::init(); // give implementation to log crate
+use rokol::{app as ra, gfx as rg};
 
-    let rokol = rokol::Rokol {
+fn main() -> ra::glue::Result {
+    let rokol = ra::glue::Rokol {
         w: 1280,
         h: 720,
         title: "Rokol - Window".to_string(),
@@ -19,10 +21,10 @@ fn main() -> rokol::Result {
 
 struct AppData {}
 
-impl rokol::app::RApp for AppData {
+impl ra::RApp for AppData {
     fn init(&mut self) {
         println!("Hello, Rokol! And this is the `init` callback!");
         // NOTE: `Rokol` always discards the graphics so we have to set it up:
-        rg::setup(&mut rokol::glue::app_desc());
+        rg::setup(&mut ra::glue::app_desc());
     }
 }

@@ -15,7 +15,7 @@ members = ["rokol_ffi"]
 
 [features]
 # https://doc.rust-lang.org/cargo/reference/features.html#the-features-section
-default = ["use-sokol-app"]
+default = ["glcore33", "use-sokol-app"]
 
 use-sokol-app = []
 glcore33 = ["rokol_ffi/glcore33"]
@@ -34,8 +34,4 @@ rokol_ffi = { path = "rokol_ffi", version = "0.1.3" }
 fontstash = { git = "https://github.com/toyboot4e/fontstash-rs", branch = "main", version = "0.1.5", optional = true }
 
 [dev-dependencies]
-# examples only dependencies
-env_logger = "0.8.1"
-image = "0.23.11"
-glam = "0.11.0"
 

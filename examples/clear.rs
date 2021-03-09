@@ -1,11 +1,14 @@
-//! Open a window and fill it with corn-flower blue color!
+/*!
+Open a window and fill it with corn-flower blue color! See this [repository] for more practical
+examples.
+
+[repository]: https://github.com/toyboot4e/rokol_learn_opengl
+*/
 
 use rokol::{app as ra, gfx as rg};
 
-fn main() -> rokol::Result {
-    env_logger::init(); // give implementation to log crate
-
-    let rokol = rokol::Rokol {
+fn main() -> ra::glue::Result {
+    let rokol = ra::glue::Rokol {
         w: 1280,
         h: 720,
         title: "Rokol - Clear".to_string(),
@@ -31,9 +34,9 @@ impl AppData {
     }
 }
 
-impl rokol::app::RApp for AppData {
+impl ra::RApp for AppData {
     fn init(&mut self) {
-        rg::setup(&mut rokol::glue::app_desc());
+        rg::setup(&mut ra::glue::app_desc());
     }
 
     fn frame(&mut self) {

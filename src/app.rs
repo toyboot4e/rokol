@@ -3,7 +3,7 @@ Application ([`FFI`])
 
 [`FFI`]: rokol_ffi::app
 
-[`Rokol::run`](crate::glue_sokol_app::Rokol:::run) runs an implementation of [`RApp`].
+[`Rokol::run`](glue::Rokol:::run) runs an implementation of [`RApp`].
 */
 
 pub mod glue;

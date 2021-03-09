@@ -77,7 +77,7 @@ impl Default for Rokol {
 
 impl Rokol {
     /// Runs rokol application. WARNING: you can't use `rokol::gfx` until you setup `rokol::gfx`
-    /// (see [`crate::run`]).
+    /// (c.f. [`delayed_run`]).
     pub fn run<T: app::RApp>(&self, app: &mut T) -> Result {
         #[cfg(rokol_gfx = "glcore33")]
         log::info!("Rokol renderer: glcore33");

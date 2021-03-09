@@ -1,11 +1,10 @@
 /*!
-
 Wrapper of [Sokol] libraries
 
 Check out the [examples] to get more information.
 
 [Sokol]: https://github.com/floooh/sokol
-[examples]: https://github.com/toyboot4e/rokol/blob/master/examples
+[examples]: https://github.com/toyboot4e/rokol_learn_gl
 
 NOTE: Sokol [considers] zero-initizialized structures to be in default state. It means
 [`Default::default`] is ensured to make sense!
@@ -16,8 +15,8 @@ NOTE: Sokol [considers] zero-initizialized structures to be in default state. It
 
 This crate is very early in progress. I'd do Learn OpenGL examples to make it better.
 
-TODO: ImGUI support
-
+* TODO: SDL support
+* TODO: ImGUI support
 */
 
 pub use rokol_ffi as ffi;
@@ -27,8 +26,8 @@ pub mod app;
 
 pub mod gfx;
 
-// #[cfg(feature = "debug-ui")]
-// pub mod imgui;
-
 #[cfg(feature = "use-fontstash")]
 pub mod fons;
+
+// #[cfg(feature = "debug-ui")]
+// pub mod imgui;

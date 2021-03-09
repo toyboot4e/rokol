@@ -53,7 +53,7 @@ pub fn setup(desc: &mut SetupDesc) {
     }
 }
 
-/// [`setup`] parameter, which is created from [`crate::glue::app_desc`]
+/// [`setup`] parameter. For `sokol_app.h`, it's created from [`crate::app::glue::app_desc`]
 pub type SetupDesc = ffi::sg_desc;
 
 /// Can be created from `&[u8]`

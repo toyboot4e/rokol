@@ -21,12 +21,11 @@ TODO: ImGUI support
 */
 
 pub use rokol_ffi as ffi;
-use std::ffi::CString;
 
 #[cfg(feature = "use-sokol-app")]
 pub mod app;
+
 pub mod gfx;
-pub mod glue;
 
 // #[cfg(feature = "debug-ui")]
 // pub mod imgui;

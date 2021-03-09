@@ -15,8 +15,9 @@ members = ["rokol_ffi"]
 
 [features]
 # https://doc.rust-lang.org/cargo/reference/features.html#the-features-section
-default = []
+default = ["use-sokol-app"]
 
+use-sokol-app = []
 glcore33 = ["rokol_ffi/glcore33"]
 metal = ["rokol_ffi/metal"]
 d3d11 = ["rokol_ffi/d3d11"]

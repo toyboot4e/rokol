@@ -1,9 +1,6 @@
 # Rokol
 
-Wrapper of [Sokol](https://github.com/floooh/sokol) for personal use
-
-* [Rokol API documentation](https://docs.rs/rokol/latest/rokol/)
-* [Examples code explaind](https://toyboot4e.github.io/rokol) (contains screenshots)
+Bindings to [Sokol](https://github.com/floooh/sokol) for personal use. [API](https://docs.rs/rokol/latest/rokol/)
 
 Very early in progress..
 

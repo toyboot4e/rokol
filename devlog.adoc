@@ -4,8 +4,12 @@
 :bindgen: https://github.com/rust-lang/rust-bindgen[bindgen]
 :miniquad: https://github.com/not-fl3/miniquad[miniquad]
 :macroquad: https://github.com/not-fl3/macroquad[macroquad]
+:tetra: https://github.com/17cupsofcoffee/tetra[tetra]
 :fna3d: https://github.com/FNA-XNA/FNA3D[FNA3D]
 :rust-fna3d: https://github.com/toyboot4e/rust-fna3d[Rust-FNA3D]
+:imgui: https://github.com/ocornut/imgui[ImGUI]
+:imgui-rs: https://github.com/imgui-rs/imgui-rs[imgui-rs]
+:sdl2: https://docs.rs/sdl2/[rust-sdl2]
 
 == Background
 
@@ -17,9 +21,9 @@ And I made a wrapper of {fna3d}: {rust-fna3d}. It was a lot of work, unfortunate
 
 This time, I'm trying {sokol}. Different from {fna3d}, it is a set of header-only libraries. The only one file does all the jobs? That's awesome!
 
-{sokol-rs} was a pioneer wrapper, and it worked out of the box, but it was a bit outdated. So I'm making another, naming it Rokol.
+{sokol-rs} was a pioneer wrapper, and it worked out of the box, but it was outdated. So I'm making another wrapper, naming it Rokol.
 
-NOTE: I would not recommend Rokol for others. There are native Rust frameworks: {miniquad} and {macroquad}. They're supre nice.
+NOTE: I would not recommend Rokol for others. There are native Rust frameworks: {miniquad}, {macroquad}, {tetra}, etc. They're awesome!
 
 === Nov 15, 2020
 
@@ -52,6 +56,8 @@ use sokol::app::*;
 
 sapp_run( .. );
 ----
+
+..so Rokol is a different library from `sokol-rs`.
 
 === Nov 17, 2020
 
@@ -127,4 +133,16 @@ I've been developing a 2D roguelike game using Rokol. I basically copied https:/
 === Jan 14, 2021
 
 Now `rokol_ffi` doesn't use `include!` and we can easily goto definition of FFI items.
+
+=== Feb 12, 2021
+
+I updated `rokol` for the https://floooh.github.io/2021/02/07/sokol-api-overhaul.html[Feb 2021 update].
+
+=== Mar 9, 2021
+
+I'm going to use SDL instead of `sokol_app.h`. `sokol_app.h` is light, but it lacks some important features such as window resizing with code.
+
+* [x] Make `rokol::app` optional.
+* [x] Add {sdl2} support
+* [ ] Add {imgui} ({imgui-rs}) support
 

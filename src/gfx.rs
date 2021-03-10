@@ -46,15 +46,25 @@ use {
     std::mem::size_of,
 };
 
-/// Should be called from [`crate::app::RApp::init`]
-pub fn setup(desc: &mut SetupDesc) {
+/// Field of [`SetupDesc`]
+pub type SetupContextDesc = ffi::sg_context_desc;
+
+/// [`setup`] parameters
+pub type SetupDesc = ffi::sg_desc;
+
+/// Sets up `sokol_gfx.h`. You'd want to use glue code in this crate.
+pub fn setup(desc: &SetupDesc) {
     unsafe {
-        ffi::sg_setup(desc as *const _ as *mut _);
+        ffi::sg_setup(desc as *const _);
     }
 }
 
-/// [`setup`] parameter. For `sokol_app.h`, it's created from [`crate::app::glue::app_desc`]
-pub type SetupDesc = ffi::sg_desc;
+/// Cleans up `sokol_gfx.h`
+pub fn shutdown() {
+    unsafe {
+        ffi::sg_shutdown();
+    }
+}
 
 /// Can be created from `&[u8]`
 ///
@@ -721,7 +731,7 @@ impl BakedResource for Buffer {
 /// (Resource) Handle (ID) of image
 pub type Image = ffi::sg_image;
 /// The width and height are scaled size (e.g. if on 2x DPI monitor display with 2560x1440 pixels,
-/// give scaled size of 1280x720. c.f. [`crate::app::dpi_scale`].
+/// give scaled size of 1280x720.
 pub type ImageDesc = ffi::sg_image_desc;
 pub type ImageData = ffi::sg_image_data;
 pub type ImageInfo = ffi::sg_image_info;

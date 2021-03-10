@@ -31,3 +31,6 @@ pub mod fons;
 
 // #[cfg(feature = "debug-ui")]
 // pub mod imgui;
+
+#[cfg(feature = "use-sdl2")]
+pub mod sdl;

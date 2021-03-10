@@ -9,6 +9,7 @@
 :rust-fna3d: https://github.com/toyboot4e/rust-fna3d[Rust-FNA3D]
 :imgui: https://github.com/ocornut/imgui[ImGUI]
 :imgui-rs: https://github.com/imgui-rs/imgui-rs[imgui-rs]
+:sdl2: https://docs.rs/sdl2/[rust-sdl2]
 
 == Background
 
@@ -142,5 +143,6 @@ I updated `rokol` for the https://floooh.github.io/2021/02/07/sokol-api-overhaul
 I'm going to use SDL instead of `sokol_app.h`. `sokol_app.h` is light, but it lacks some important features such as window resizing with code.
 
 * [x] Make `rokol::app` optional.
+* [x] Add {sdl2} support
 * [ ] Add {imgui} ({imgui-rs}) support
 

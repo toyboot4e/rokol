@@ -6,6 +6,6 @@ fn main() {
     // For `DEP_<LIB>_<VAR>`, see:
     // https://doc.rust-lang.org/cargo/reference/build-scripts.html#the-links-manifest-key
 
-    // and emit it:
+    // and emit it (glcore33, metal or d3d11):
     println!("cargo:rustc-cfg=rokol_gfx={}", gfx);
 }

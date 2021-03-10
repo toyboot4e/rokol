@@ -1167,13 +1167,16 @@ pub struct sapp_desc {
     pub enable_dragndrop: bool,
     pub max_dropped_files: ::std::os::raw::c_int,
     pub max_dropped_file_path_length: ::std::os::raw::c_int,
+    pub gl_force_gles2: bool,
+    pub win32_console_utf8: bool,
+    pub win32_console_create: bool,
+    pub win32_console_attach: bool,
     pub html5_canvas_name: *const ::std::os::raw::c_char,
     pub html5_canvas_resize: bool,
     pub html5_preserve_drawing_buffer: bool,
     pub html5_premultiplied_alpha: bool,
     pub html5_ask_leave_site: bool,
     pub ios_keyboard_resizes_canvas: bool,
-    pub gl_force_gles2: bool,
 }
 #[test]
 fn bindgen_test_layout_sapp_desc() {
@@ -1440,6 +1443,46 @@ fn bindgen_test_layout_sapp_desc() {
         )
     );
     assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sapp_desc>())).gl_force_gles2 as *const _ as usize },
+        140usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sapp_desc),
+            "::",
+            stringify!(gl_force_gles2)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sapp_desc>())).win32_console_utf8 as *const _ as usize },
+        141usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sapp_desc),
+            "::",
+            stringify!(win32_console_utf8)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sapp_desc>())).win32_console_create as *const _ as usize },
+        142usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sapp_desc),
+            "::",
+            stringify!(win32_console_create)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sapp_desc>())).win32_console_attach as *const _ as usize },
+        143usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sapp_desc),
+            "::",
+            stringify!(win32_console_attach)
+        )
+    );
+    assert_eq!(
         unsafe { &(*(::std::ptr::null::<sapp_desc>())).html5_canvas_name as *const _ as usize },
         144usize,
         concat!(
@@ -1503,16 +1546,6 @@ fn bindgen_test_layout_sapp_desc() {
             stringify!(sapp_desc),
             "::",
             stringify!(ios_keyboard_resizes_canvas)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<sapp_desc>())).gl_force_gles2 as *const _ as usize },
-        157usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(sapp_desc),
-            "::",
-            stringify!(gl_force_gles2)
         )
     );
 }

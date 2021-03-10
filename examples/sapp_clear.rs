@@ -1,14 +1,11 @@
 /*!
-Open a window and fill it with corn-flower blue color! See this [repository] for more practical
-examples.
-
-[repository]: https://github.com/toyboot4e/rokol_learn_opengl
+$ cargo run --features glcore33,use-sokol-app --example sapp-clear
 */
 
-use rokol::{app as ra, gfx as rg};
+use rokol::{app as ra, gfx as rg, glue::sapp as glue};
 
-fn main() -> ra::glue::Result {
-    let rokol = ra::glue::Rokol {
+fn main() -> glue::Result {
+    let rokol = glue::Rokol {
         w: 1280,
         h: 720,
         title: "Rokol - Clear".to_string(),
@@ -36,7 +33,7 @@ impl AppData {
 
 impl ra::RApp for AppData {
     fn init(&mut self) {
-        rg::setup(&mut ra::glue::app_desc());
+        rg::setup(&mut glue::app_desc());
     }
 
     fn frame(&mut self) {

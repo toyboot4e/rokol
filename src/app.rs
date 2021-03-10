@@ -3,10 +3,8 @@ Application ([`FFI`])
 
 [`FFI`]: rokol_ffi::app
 
-[`Rokol::run`](crate::app::glue::Rokol::run) runs an implementation of [`RApp`].
+[`Rokol::run`](crate::glue::sapp::Rokol::run) runs an implementation of [`RApp`].
 */
-
-pub mod glue;
 
 use {
     bitflags::bitflags,

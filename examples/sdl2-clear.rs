@@ -1,4 +1,6 @@
-//! $ cargo run --features glcore33,use-sdl2
+/*!
+$ cargo run --features glcore33,use-sdl2 --example sdl-2-clear
+*/
 
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 

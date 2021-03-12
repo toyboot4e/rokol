@@ -1114,7 +1114,7 @@ pub fn ibuf_desc_immutable<T>(buf: &[T], label: &str) -> BufferDesc {
 }
 
 /// [Non-Sokol] Helper for creating index buffer
-pub fn ibuf_desc_dyn<T>(size: usize, usage: ResourceUsage, label: &str) -> BufferDesc {
+pub fn ibuf_desc_dyn(size: usize, usage: ResourceUsage, label: &str) -> BufferDesc {
     unsafe { buf_desc(std::ptr::null_mut(), size, BufferType::Index, usage, label) }
 }
 

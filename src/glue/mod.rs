@@ -1,5 +1,5 @@
 /*!
-Glue code for each application backend
+Glue code for using `sokol_gfx.h` on each platform
 */
 
 #[cfg(feature = "use-sokol-app")]

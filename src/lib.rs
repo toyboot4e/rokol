@@ -14,9 +14,6 @@ NOTE: Sokol [considers] zero-initizialized structures to be in default state. It
 # Status
 
 This crate is very early in progress. I'd do Learn OpenGL examples to make it better.
-
-* TODO: SDL support
-* TODO: ImGUI support
 */
 
 pub use rokol_ffi as ffi;
@@ -24,12 +21,11 @@ pub use rokol_ffi as ffi;
 #[cfg(feature = "use-sokol-app")]
 pub mod app;
 
+#[cfg(feature = "use-sokol-gfx")]
 pub mod gfx;
 
+#[cfg(feature = "use-sokol-gfx")]
 pub mod glue;
 
-#[cfg(feature = "use-fontstash")]
+#[cfg(all(feature = "use-sokol-gfx", feature = "use-fontstash"))]
 pub mod fons;
-
-#[cfg(feature = "use-imgui-rs")]
-pub mod imgui;

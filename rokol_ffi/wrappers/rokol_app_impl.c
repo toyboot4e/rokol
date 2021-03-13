@@ -1,4 +1,4 @@
-//! File for compiling Sokol
+//! File for compiling `sokol_app.h`
 
 // Sokol render flag is selected and defined by `build.rs`
 // #define SOKOL_<RENDERER>
@@ -13,6 +13,4 @@
 
 // search from include path (-I flag)
 #include "sokol_app.h"
-#include "sokol_gfx.h"
-#include "sokol_glue.h"
 

@@ -23,11 +23,15 @@ NOTE: Sokol [considers] zero-initizialized structures to be in default state. It
 */
 
 // TODO: Do not use `include!` so that we get goto support in Emacs
-// https://docs.rs/bindgen/0.56.0/bindgen/struct.Builder.html#method.module_raw_lines
+// https://docs.rs/bindgen/latest/bindgen/struct.Builder.html#method.module_raw_lines
 
+#[cfg(feature = "use-sokol-app")]
 pub mod app;
+
+#[cfg(feature = "use-sokol-gfx")]
 pub mod gfx;
 
+#[cfg(all(feature = "use-sokol-app", feature = "use-sokol-gfx"))]
 pub mod glue {
     //! FFI to [`sokol_glue.h`](https://github.com/floooh/sokol/blob/master/sokol_glue.h)
 
@@ -37,48 +41,52 @@ pub mod glue {
     }
 }
 
-#[cfg(test)]
-mod test {
-    /// Just to make sure we link to `sokol`
-    fn link_test() {
-        unsafe {
-            let mut desc: crate::gfx::sg_desc = Default::default();
-            desc.context = crate::glue::sapp_sgcontext();
-            crate::gfx::sg_setup(&desc);
+// #[cfg(test)]
+// mod test {
+//     /// Just to make sure we link to `sokol`
+//     fn link_test() {
+//         unsafe {
+//             let mut desc: crate::gfx::sg_desc = Default::default();
+//             desc.context = crate::glue::sapp_sgcontext();
+//             crate::gfx::sg_setup(&desc);
+//         }
+//     }
+// }
+
+#[cfg(feature = "use-sokol-gfx")]
+mod gfx_impls {
+    use super::*;
+    use gfx::sg_color;
+
+    impl From<[f32; 4]> for sg_color {
+        fn from(xs: [f32; 4]) -> sg_color {
+            sg_color {
+                r: xs[0],
+                g: xs[1],
+                b: xs[2],
+                a: xs[3],
+            }
         }
     }
-}
 
-use gfx::sg_color;
-
-impl From<[f32; 4]> for sg_color {
-    fn from(xs: [f32; 4]) -> sg_color {
-        sg_color {
-            r: xs[0],
-            g: xs[1],
-            b: xs[2],
-            a: xs[3],
+    impl From<[&f32; 4]> for sg_color {
+        fn from(xs: [&f32; 4]) -> sg_color {
+            sg_color {
+                r: *xs[0],
+                g: *xs[1],
+                b: *xs[2],
+                a: *xs[3],
+            }
         }
     }
-}
 
-impl From<[&f32; 4]> for sg_color {
-    fn from(xs: [&f32; 4]) -> sg_color {
-        sg_color {
-            r: *xs[0],
-            g: *xs[1],
-            b: *xs[2],
-            a: *xs[3],
-        }
-    }
-}
-
-impl From<&[u8]> for gfx::sg_range {
-    // WARNING: This is VERY UNSAFE since the slice may be a temporary value
-    fn from(x: &[u8]) -> gfx::sg_range {
-        gfx::sg_range {
-            ptr: x.as_ptr() as *const _,
-            size: x.len() as _,
+    impl From<&[u8]> for gfx::sg_range {
+        // WARNING: This is VERY UNSAFE since the slice may be a temporary value
+        fn from(x: &[u8]) -> gfx::sg_range {
+            gfx::sg_range {
+                ptr: x.as_ptr() as *const _,
+                size: x.len() as _,
+            }
         }
     }
 }

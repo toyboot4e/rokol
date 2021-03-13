@@ -1,5 +1,6 @@
 //! Build script of `rokol-ffi`
 
+// TODO: refactor cfg! with fn
 // NOTE: in Crates.io, the file system is read-only and writing to `src/ffi` can fail.
 
 use std::{
@@ -13,6 +14,10 @@ fn main() {
     // update the bindings only when we update `sokol` or `wrappers`
     println!("cargo:rerun-if-changed=sokol");
     println!("cargo:rerun-if-changed=wrappers");
+
+    if !cfg!(feature = "use-sokol-app") && !cfg!(feature = "use-sokol-gfx") {
+        panic!("specify either `use-sokol-app` or `use-sokol-gfx` feature");
+    }
 
     let mut build = Build::new();
 
@@ -36,30 +41,28 @@ fn main() {
     ];
     let derive_default = true;
 
-    self::gen_bindings(
+    if cfg!(feature = "use-sokol-app") {
+        self::gen_bindings(
         root.join("wrappers/rokol_app.h"),
         root.join("src/app.rs"),
         args,
         derive_default,
         "//! Rust FFI to [sokol_app.h](https://github.com/floooh/sokol/blob/master/sokol_app.h)",
     );
+    }
 
-    self::gen_bindings(
+    if cfg!(feature = "use-sokol-gfx") {
+        self::gen_bindings(
         root.join("wrappers/rokol_gfx.h"),
         root.join("src/gfx.rs"),
         args,
         derive_default,
         "//! Rust FFI to [sokol_gfx.h](https://github.com/floooh/sokol/blob/master/sokol_gfx.h)",
     );
+    }
 
     // compile and link to them
-    self::compile(
-        &mut build,
-        is_msvc,
-        &renderer,
-        "wrappers/rokol_impl.c",
-        is_debug,
-    );
+    self::compile(&mut build, is_msvc, &renderer, is_debug);
 }
 
 /// Helper for selecting Sokol renderer
@@ -72,7 +75,7 @@ enum Renderer {
 
 impl Renderer {
     pub fn select(is_msvc: bool) -> Self {
-        // set renderer defined by feature
+        // set renderer defined with feature flag
         if cfg!(feature = "glcore33") {
             Self::GlCore33
         } else if cfg!(feature = "metal") {
@@ -145,19 +148,13 @@ fn gen_bindings(
     gen.write_to_file(dst).ok();
 }
 
-/// Compiles the given `wrapper` file and create FFI to it
-fn compile(
-    build: &mut Build,
-    is_msvc: bool,
-    renderer: &Renderer,
-    src_path_str: &str,
-    will_set_debug_flags: bool,
-) {
+fn compile(build: &mut Build, is_msvc: bool, renderer: &Renderer, will_set_debug_flags: bool) {
     let root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
 
     // ----------------------------------------
     // Set up compiler flags
 
+    // NOTE: Not found on Windows?
     build.flag("-std=c99");
 
     // -Isokol
@@ -165,7 +162,18 @@ fn compile(
     // -Isokol/util
     build.include(&root.join("sokol/util"));
 
-    build.file(PathBuf::from(src_path_str));
+    if cfg!(feature = "use-sokol-app") && cfg!(feature = "use-sokol-gfx") {
+        build.file(root.join("wrappers/rokol_glue_impl.c"));
+    } else {
+        if cfg!(feature = "use-sokol-app") {
+            build.file(root.join("wrappers/rokol_app_impl.c"));
+        }
+        if cfg!(feature = "use-sokol-gfx") {
+            build.file(root.join("wrappers/rokol_gfx_impl.c"));
+        }
+    }
+
+    // TODO: supply only required flags for requested header
 
     // #define SOKOL_<RENDERER>
     build.flag(&format!("-D{}", renderer.sokol_flag_name()));
@@ -201,36 +209,44 @@ fn compile(
     // ----------------------------------------
     // Link platform-dependent libraries
 
-    if cfg!(target_os = "windows") && !is_msvc {
-        // println!("cargo:rustc-link-lib=static=gdi32");
-        // println!("cargo:rustc-link-lib=static=ole32");
-    }
+    // TODO: link properly (for each feature combination)
 
-    if cfg!(target_os = "macos") {
-        println!("cargo:rustc-link-lib=framework=Cocoa");
-        println!("cargo:rustc-link-lib=framework=QuartzCore");
-        // println!("cargo:rustc-link-lib=framework=Quartz");
-        // println!("cargo:rustc-link-lib=framework=Foundation");
+    if cfg!(feature = "use-sokol-gfx") {
+        if cfg!(target_os = "windows") && !is_msvc {
+            // println!("cargo:rustc-link-lib=static=gdi32");
+            // println!("cargo:rustc-link-lib=static=ole32");
+        }
 
-        match renderer {
-            Renderer::Metal => {
-                println!("cargo:rustc-link-lib=framework=Metal");
-                println!("cargo:rustc-link-lib=framework=MetalKit");
+        if cfg!(target_os = "macos") {
+            println!("cargo:rustc-link-lib=framework=Cocoa");
+            println!("cargo:rustc-link-lib=framework=QuartzCore");
+            // println!("cargo:rustc-link-lib=framework=Quartz");
+            // println!("cargo:rustc-link-lib=framework=Foundation");
+
+            match renderer {
+                Renderer::Metal => {
+                    println!("cargo:rustc-link-lib=framework=Metal");
+                    println!("cargo:rustc-link-lib=framework=MetalKit");
+                }
+                Renderer::GlCore33 => {
+                    println!("cargo:rustc-link-lib=framework=OpenGL");
+                }
+                Renderer::D3D11 => panic!("Trying to use D3D11 on macOS"),
             }
-            Renderer::GlCore33 => {
-                println!("cargo:rustc-link-lib=framework=OpenGL");
-            }
-            Renderer::D3D11 => panic!("Trying to use D3D11 on macOS"),
+        }
+
+        if cfg!(target_os = "linux") {
+            println!("cargo:rustc-link-lib=dylib=GL");
+            println!("cargo:rustc-link-lib=dylib=X11");
+            println!("cargo:rustc-link-lib=dylib=Xi");
+            println!("cargo:rustc-link-lib=dylib=Xcursor");
+            println!("cargo:rustc-link-lib=dylib=dl");
+            println!("cargo:rustc-link-lib=dylib=pthread");
+            // println!("cargo:rustc-link-lib=dylib=m");
         }
     }
 
-    if cfg!(target_os = "linux") {
-        println!("cargo:rustc-link-lib=dylib=GL");
-        println!("cargo:rustc-link-lib=dylib=X11");
-        println!("cargo:rustc-link-lib=dylib=Xi");
-        println!("cargo:rustc-link-lib=dylib=Xcursor");
-        println!("cargo:rustc-link-lib=dylib=dl");
-        println!("cargo:rustc-link-lib=dylib=pthread");
-        // println!("cargo:rustc-link-lib=dylib=m");
+    if cfg!(feature = "use-sokol-app") {
+        //
     }
 }

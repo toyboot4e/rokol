@@ -4,7 +4,7 @@ version = "0.1.4"
 authors = ["toyboot4e <toyboot4e@gmail.com>"]
 edition = "2018"
 exclude = ["examples", "book", "src/imgui"]
-description = "Wrapper of Sokol"
+description = "Rust bindings to Sokol"
 repository = "https://github.com/toyboot4e/rokol"
 license = "MIT"
 categories = ["game-development", "graphics"]
@@ -14,8 +14,10 @@ keywords = ["graphics", "gamedev"]
 members = ["rokol_ffi"]
 
 [features]
-# window backend
-use-sokol-app = []
+use-sokol-app = ["rokol_ffi/use-sokol-app"]
+use-sokol-gfx = ["rokol_ffi/use-sokol-gfx"]
+
+# platfrom
 use-sdl2 = ["sdl2"]
 
 # graphics backend
@@ -25,7 +27,9 @@ d3d11 = ["rokol_ffi/d3d11"]
 
 # optional supports
 use-fontstash = ["fontstash"]
-use-imgui-rs = ["imgui"]
+
+[package.metadata.docs.rs]
+features = ["glcore33", "use-sokol-app", "use-sokol-gfx", "use-sdl", "use-fontstash"]
 
 [dependencies]
 log = "0.4.11"
@@ -35,7 +39,6 @@ rokol_ffi = { path = "rokol_ffi", version = "0.1.3" }
 
 sdl2 = { version = "0.34.3", optional = true }
 
-imgui = { version = "0.6.0", optional = true }
 fontstash = { git = "https://github.com/toyboot4e/fontstash-rs", branch = "main", version = "0.1.5", optional = true }
 
 [dev-dependencies]

@@ -14,6 +14,10 @@ links = "sokol"
 # emits `DEP_SOKOL_GFX` to crates that list `rokol_ffi` in their `Cargo.toml`
 
 [features]
+use-sokol-app = []
+use-sokol-gfx = []
+
+# graphics backend for `sokol_gfx.h`
 glcore33 = []
 metal = []
 d3d11 = []

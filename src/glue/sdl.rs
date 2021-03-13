@@ -123,7 +123,7 @@ impl Init {
     /// Initializes Rust-SDL2 and `rokol::gfx`
     ///
     /// I learned from this gist for using OpenGL with Sokol:
-    /// https://gist.github.com/sherjilozair/c0fa81250c1b8f5e4234b1588e755bca
+    /// <https://gist.github.com/sherjilozair/c0fa81250c1b8f5e4234b1588e755bca>
     #[cfg(rokol_gfx = "glcore33")]
     pub fn init(
         &self,

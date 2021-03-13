@@ -48,13 +48,13 @@ pub trait RApp {
     /// Suitable place to implement "really quit?" diaglog.
     ///
     /// The cleanup-callback isn't guaranteed to be called on the web and mobile platforms.
-    #[cfg(feature = "use-sokol-gfx")]
+    #[cfg(feature="impl-gfx")]
     fn cleanup(&mut self) {
         unsafe {
             rokol_ffi::gfx::sg_shutdown();
         }
     }
-    #[cfg(not(feature = "use-sokol-gfx"))]
+    #[cfg(not(feature="impl-gfx"))]
     fn cleanup(&mut self);
 
     /// Event handling

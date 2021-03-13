@@ -1,5 +1,5 @@
 /*!
-$ cargo run --features glcore33,use-sokol-app --example sapp-clear
+$ cargo run --features impl-app,impl-gfx,glcore33 --example sapp-clear
 */
 
 use rokol::{app as ra, gfx as rg, glue::sapp as glue};

@@ -25,13 +25,13 @@ NOTE: Sokol [considers] zero-initizialized structures to be in default state. It
 // TODO: Do not use `include!` so that we get goto support in Emacs
 // https://docs.rs/bindgen/latest/bindgen/struct.Builder.html#method.module_raw_lines
 
-#[cfg(feature = "use-sokol-app")]
+#[cfg(feature = "impl-app")]
 pub mod app;
 
-#[cfg(feature = "use-sokol-gfx")]
+#[cfg(feature = "impl-gfx")]
 pub mod gfx;
 
-#[cfg(all(feature = "use-sokol-app", feature = "use-sokol-gfx"))]
+#[cfg(all(feature = "impl-app", feature = "impl-gfx"))]
 pub mod glue {
     //! FFI to [`sokol_glue.h`](https://github.com/floooh/sokol/blob/master/sokol_glue.h)
 
@@ -53,7 +53,7 @@ pub mod glue {
 //     }
 // }
 
-#[cfg(feature = "use-sokol-gfx")]
+#[cfg(feature = "impl-gfx")]
 mod gfx_impls {
     use super::*;
     use gfx::sg_color;

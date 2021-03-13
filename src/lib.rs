@@ -18,14 +18,14 @@ This crate is very early in progress. I'd do Learn OpenGL examples to make it be
 
 pub use rokol_ffi as ffi;
 
-#[cfg(feature = "use-sokol-app")]
+#[cfg(feature="impl-app")]
 pub mod app;
 
-#[cfg(feature = "use-sokol-gfx")]
+#[cfg(feature="impl-gfx")]
 pub mod gfx;
 
-#[cfg(feature = "use-sokol-gfx")]
+#[cfg(feature="impl-gfx")]
 pub mod glue;
 
-#[cfg(all(feature = "use-sokol-gfx", feature = "use-fontstash"))]
+#[cfg(all(feature="impl-gfx",feature="use-fontstash"))]
 pub mod fons;

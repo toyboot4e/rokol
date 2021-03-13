@@ -15,8 +15,8 @@ fn main() {
     println!("cargo:rerun-if-changed=sokol");
     println!("cargo:rerun-if-changed=wrappers");
 
-    if !cfg!(feature = "use-sokol-app") && !cfg!(feature = "use-sokol-gfx") {
-        panic!("specify either `use-sokol-app` or `use-sokol-gfx` feature");
+    if !cfg!(feature = "impl-app") && !cfg!(feature = "impl-gfx") {
+        panic!("use at least one of `impl-app` or `impl-gfx` feature flag");
     }
 
     let mut build = Build::new();
@@ -41,7 +41,7 @@ fn main() {
     ];
     let derive_default = true;
 
-    if cfg!(feature = "use-sokol-app") {
+    if cfg!(feature = "impl-app") {
         self::gen_bindings(
         root.join("wrappers/rokol_app.h"),
         root.join("src/app.rs"),
@@ -51,7 +51,7 @@ fn main() {
     );
     }
 
-    if cfg!(feature = "use-sokol-gfx") {
+    if cfg!(feature = "impl-gfx") {
         self::gen_bindings(
         root.join("wrappers/rokol_gfx.h"),
         root.join("src/gfx.rs"),
@@ -162,13 +162,13 @@ fn compile(build: &mut Build, is_msvc: bool, renderer: &Renderer, will_set_debug
     // -Isokol/util
     build.include(&root.join("sokol/util"));
 
-    if cfg!(feature = "use-sokol-app") && cfg!(feature = "use-sokol-gfx") {
+    if cfg!(feature = "impl-app") && cfg!(feature = "impl-gfx") {
         build.file(root.join("wrappers/rokol_glue_impl.c"));
     } else {
-        if cfg!(feature = "use-sokol-app") {
+        if cfg!(feature = "impl-app") {
             build.file(root.join("wrappers/rokol_app_impl.c"));
         }
-        if cfg!(feature = "use-sokol-gfx") {
+        if cfg!(feature = "impl-gfx") {
             build.file(root.join("wrappers/rokol_gfx_impl.c"));
         }
     }
@@ -211,7 +211,7 @@ fn compile(build: &mut Build, is_msvc: bool, renderer: &Renderer, will_set_debug
 
     // TODO: link properly (for each feature combination)
 
-    if cfg!(feature = "use-sokol-gfx") {
+    if cfg!(feature = "impl-gfx") {
         if cfg!(target_os = "windows") && !is_msvc {
             // println!("cargo:rustc-link-lib=static=gdi32");
             // println!("cargo:rustc-link-lib=static=ole32");
@@ -246,7 +246,7 @@ fn compile(build: &mut Build, is_msvc: bool, renderer: &Renderer, will_set_debug
         }
     }
 
-    if cfg!(feature = "use-sokol-app") {
+    if cfg!(feature = "impl-app") {
         //
     }
 }

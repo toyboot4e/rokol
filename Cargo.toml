@@ -14,8 +14,8 @@ keywords = ["graphics", "gamedev"]
 members = ["rokol_ffi"]
 
 [features]
-use-sokol-app = ["rokol_ffi/use-sokol-app"]
-use-sokol-gfx = ["rokol_ffi/use-sokol-gfx"]
+impl-app = ["rokol_ffi/impl-app"]
+impl-gfx = ["rokol_ffi/impl-gfx"]
 
 # platfrom
 use-sdl2 = ["sdl2"]
@@ -29,7 +29,7 @@ d3d11 = ["rokol_ffi/d3d11"]
 use-fontstash = ["fontstash"]
 
 [package.metadata.docs.rs]
-features = ["glcore33", "use-sokol-app", "use-sokol-gfx", "use-sdl", "use-fontstash"]
+features = ["impl-app", "impl-gfx", "glcore33", "use-sdl", "use-fontstash"]
 
 [dependencies]
 log = "0.4.11"

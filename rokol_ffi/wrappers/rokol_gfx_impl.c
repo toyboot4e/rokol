@@ -11,9 +11,13 @@
 #define SOKOL_NO_DEPRECATED
 #define SOKOL_TRACE_HOOKS
 
-// NOTE: This include is needed on macOS if we don't use sokol_app.h
-// NOTE: Build on macOS with
-#include <OpenGL/gl3.h>
+// NOTE: `sokol_app.h` automatically links to OpenGL (c.f. ln 1446~)
+#ifdef __APPLE__
+    #define GL_SILENCE_DEPRECATION
+    #include <OpenGL/gl3.h>
+#else
+    #include <GL/gl3.h>
+#endif
 
 // search from include path (-I flag)
 #include "sokol_gfx.h"

@@ -13,6 +13,7 @@
 
 // search from include path (-I flag)
 #include "sokol_app.h"
+// NOTE: `sokol_app.h` automatically links to at least OpenGL
 #include "sokol_gfx.h"
 #include "sokol_glue.h"
 

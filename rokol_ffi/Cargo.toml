@@ -1,6 +1,6 @@
 [package]
 name = "rokol_ffi"
-version = "0.1.3"
+version = "0.2.0"
 authors = ["toyboot4e <toyboot4e@gmail.com>"]
 edition = "2018"
 exclude = ["examples"]
@@ -14,6 +14,8 @@ links = "sokol"
 # emits `DEP_SOKOL_GFX` to crates that list `rokol_ffi` in their `Cargo.toml`
 
 [features]
+default = ["impl-app", "impl-gfx", "glcore33"]
+
 impl-app = []
 impl-gfx = []
 
@@ -21,6 +23,10 @@ impl-gfx = []
 glcore33 = []
 metal = []
 d3d11 = []
+
+[package.metadata.docs.rs]
+# show off all the items
+features = ["impl-app", "impl-gfx", "glcore33", "use-sdl2", "use-fontstash"]
 
 [build-dependencies]
 cc = "1.0.62"

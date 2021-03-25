@@ -1,6 +1,6 @@
 [package]
 name = "rokol"
-version = "0.1.4"
+version = "0.2.0"
 authors = ["toyboot4e <toyboot4e@gmail.com>"]
 edition = "2018"
 exclude = ["examples", "book", "src/imgui"]
@@ -14,7 +14,7 @@ keywords = ["graphics", "gamedev"]
 members = ["rokol_ffi"]
 
 [features]
-default = ["impl-app", "impl-gfx", "glcore33", "use-fontstash"]
+default = ["impl-app", "impl-gfx", "glcore33"]
 impl-app = ["rokol_ffi/impl-app"]
 impl-gfx = ["rokol_ffi/impl-gfx"]
 
@@ -37,7 +37,7 @@ features = ["impl-app", "impl-gfx", "glcore33", "use-sdl2", "use-fontstash"]
 log = "0.4.11"
 bitflags = "1.2.1"
 
-rokol_ffi = { path = "rokol_ffi", version = "0.1.3" }
+rokol_ffi = { path = "rokol_ffi", version = "0.2.0" }
 
 sdl2 = { version = "0.34.3", optional = true }
 

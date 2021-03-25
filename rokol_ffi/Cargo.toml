@@ -26,7 +26,7 @@ d3d11 = []
 
 [package.metadata.docs.rs]
 # show off all the items
-features = ["impl-app", "impl-gfx", "glcore33", "use-sdl2", "use-fontstash"]
+features = ["impl-app", "impl-gfx", "glcore33", "use-sdl2"]
 
 [build-dependencies]
 cc = "1.0.62"

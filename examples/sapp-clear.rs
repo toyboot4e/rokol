@@ -1,5 +1,8 @@
 /*!
-$ cargo run --features impl-app,impl-gfx,glcore33 --example sapp-clear
+```sh
+$ cargo run --example sapp-clear
+$ cargo run --example sapp-clear--features impl-app,impl-gfx,glcore33
+```
 */
 
 use rokol::{app as ra, gfx as rg, glue::sapp as glue};
@@ -8,6 +11,7 @@ fn main() -> glue::Result {
     let rokol = glue::Rokol {
         w: 1280,
         h: 720,
+        use_high_dpi: false,
         title: "Rokol - Clear".to_string(),
         ..Default::default()
     };

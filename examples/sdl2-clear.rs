@@ -1,5 +1,8 @@
 /*!
-$ cargo run --features glcore33,use-sdl2 --example sdl-2-clear
+```sh
+$ cargo run --example sdl2-clear
+$ cargo run --example sdl2-clear--features use-sdl2,impl-gfx,glcore33
+```
 */
 
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
@@ -8,9 +11,10 @@ use rokol::gfx as rg;
 
 fn main() -> Result<()> {
     let handles = rokol::glue::sdl::Init {
-        name: "Rokol + Rust-SDL2".to_string(),
+        title: "Rokol + Rust-SDL2".to_string(),
         w: 1280,
         h: 720,
+        use_high_dpi: false,
         settings: Default::default(),
     }
     .init(|window_builder| {

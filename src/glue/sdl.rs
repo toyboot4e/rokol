@@ -4,6 +4,8 @@ Glue code for SDL support
 
 #![allow(dead_code)]
 
+use std::fmt;
+
 pub use rokol_ffi::gfx::sg_context_desc as SgContextDesc;
 
 use crate::gfx as rg;
@@ -111,12 +113,36 @@ impl WindowHandle {
     }
 }
 
+impl fmt::Debug for WindowHandle {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("WindowHandle")
+            .field("sdl", &"<sdl2::Sdl>")
+            .field("vid", &self.vid)
+            .field("win", &"<sdl2::video::Window>")
+            .field("gcx", &"<sdl2::video::GLContext>")
+            .finish()
+    }
+}
+
 #[derive(Debug)]
 pub struct Init {
-    pub name: String,
+    pub title: String,
     pub w: u32,
     pub h: u32,
+    pub use_high_dpi: bool,
     pub settings: ResourceSettings,
+}
+
+impl Default for Init {
+    fn default() -> Self {
+        Self {
+            title: "unnamed".to_string(),
+            w: 1280,
+            h: 720,
+            use_high_dpi: false,
+            settings: Default::default(),
+        }
+    }
 }
 
 impl Init {
@@ -136,12 +162,14 @@ impl Init {
         // GlCore33
         let attr = vid.gl_attr();
         attr.set_context_profile(sdl2::video::GLProfile::Core);
-        attr.set_context_major_version(3);
-        attr.set_context_minor_version(3);
+        attr.set_context_version(3, 3);
 
         let win = {
-            let mut b = vid.window(&self.name, self.w, self.h);
+            let mut b = vid.window(&self.title, self.w, self.h);
             b.opengl();
+            if self.use_high_dpi {
+                b.allow_highdpi();
+            }
             f(&mut b);
             b.build().map_err(|e| e.to_string())?
         };

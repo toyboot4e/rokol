@@ -935,13 +935,14 @@ pub type WgpuContextDesc = ffi::sg_wgpu_context_desc;
 // --------------------------------------------------------------------------------
 // Functions
 
-/// Screen rendering pass
+/// Screen rendering pass. Pass framebuffer size as arguments
 pub fn begin_default_pass(pa: &impl AsRef<ffi::sg_pass_action>, w: u32, h: u32) {
     unsafe {
         ffi::sg_begin_default_pass(pa.as_ref(), w as i32, h as i32);
     }
 }
 
+/// Screen rendering pass. Pass framebuffer size as arguments
 pub fn begin_default_pass_f(pa: &impl AsRef<ffi::sg_pass_action>, w: f32, h: f32) {
     unsafe {
         ffi::sg_begin_default_passf(pa.as_ref(), w, h);

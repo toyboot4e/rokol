@@ -37,7 +37,7 @@ features = ["impl-app", "impl-gfx", "glcore33", "use-sdl2", "use-fontstash"]
 log = "0.4.11"
 bitflags = "1.2.1"
 
-rokol_ffi = { path = "rokol_ffi", version = "0.2.0" }
+rokol_ffi = { path = "rokol_ffi", version = "0.2.2" }
 
 sdl2 = { version = "0.34.3", optional = true }
 

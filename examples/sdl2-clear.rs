@@ -1,7 +1,7 @@
 /*!
 ```sh
 $ cargo run --example sdl2-clear
-$ cargo run --example sdl2-clear--features use-sdl2,impl-gfx,glcore33
+$ cargo run --example sdl2-clear--features sdl2,impl-gfx,glcore33
 ```
 */
 

@@ -17,10 +17,10 @@ Very early in progress..
 Enable features:
 
 * `impl-app`: Compile `sokol_app.h`
-* `use-sdl2`: Use SDL2
+* `sdl2`: Use SDL2
 * `impl-gfx`: Compile `sokol_gfx.h`. Specify graphics backend with feature:
     * `glcore33`: compile `sokol_gfx.h` with GlCore33 backend
-* `use-fontstash`: Add `sokol_gfx.h` support for FontStash
+* `fontstash`: Add `sokol_gfx.h` support for FontStash
 
 ## Notes
 

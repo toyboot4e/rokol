@@ -8,8 +8,9 @@ features to use Rust-SDL2 platform.
 [examples]: https://github.com/toyboot4e/rokol/tree/master/examples
 [Learn OpenGL examples]: https://github.com/toyboot4e/rokol_learn_opengl
 
-TIP: Sokol [considers] zero-initizialized structures to be in default state. It means
+* TIP: Sokol [considers] zero-initizialized structures to be in default state. It means
 [`Default::default`] is ensured to make sense!
+* TIP: use `bytemuck` to cast types to `&[u8]`.
 
 [considers]: https://floooh.github.io/2017/08/06/sokol-api-update.html
 
@@ -31,5 +32,5 @@ pub mod gfx;
 #[cfg(feature = "impl-gfx")]
 pub mod glue;
 
-#[cfg(all(feature = "impl-gfx", feature = "use-fontstash"))]
+#[cfg(all(feature = "impl-gfx", feature = "fontstash"))]
 pub mod fons;

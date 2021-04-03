@@ -985,10 +985,10 @@ pub fn apply_bindings(bind: &Bindings) {
 /// Applies uniform data to shader
 ///
 /// * `ub-index`: uniform block index
-pub fn apply_uniforms<T>(stage: ShaderStage, ub_index: u32, data: &[T]) {
+pub fn apply_uniforms(stage: ShaderStage, ub_index: u32, data: &[u8]) {
     let data = Range {
         ptr: data.as_ptr() as *mut _,
-        size: (size_of::<T>() * data.len()) as _,
+        size: (size_of::<u8>() * data.len()) as _,
     };
     unsafe {
         ffi::sg_apply_uniforms(stage as u32, ub_index as i32, &data);
@@ -1044,8 +1044,8 @@ pub fn viewport_f(x: f32, y: f32, w: f32, h: f32) {
 /// Requires [`ResourceUsage::Dynamic`] or [`ResourceUsage::Stream`].
 ///
 /// WARNING: can be called only once a frame
-pub unsafe fn update_buffer<T>(buf: Buffer, data: &[T]) {
-    let size = size_of::<T>() * data.len();
+pub unsafe fn update_buffer(buf: Buffer, data: &[u8]) {
+    let size = size_of::<u8>() * data.len();
     let data = Range {
         ptr: data.as_ptr() as *const _,
         size: size as _,
@@ -1060,8 +1060,8 @@ pub unsafe fn update_buffer<T>(buf: Buffer, data: &[T]) {
 /// This can be called multiple times per frame. Returns a byte offset to the start of the written
 /// data. The offset can be assgined to [`Bindings::vertex_buffer_offsets`] or
 /// [`Bindings::index_buffer_offset`].
-pub fn append_buffer<T>(buf: Buffer, data: &[T]) -> i32 {
-    let n_bytes = size_of::<T>() * data.len();
+pub fn append_buffer(buf: Buffer, data: &[u8]) -> i32 {
+    let n_bytes = size_of::<u8>() * data.len();
     let data = Range {
         ptr: data.as_ptr() as *const _,
         size: n_bytes as _,
@@ -1101,8 +1101,8 @@ pub unsafe fn shader_desc(vs: &str, fs: &str) -> ShaderDesc {
 }
 
 /// [Non-Sokol] Helper for creating index buffer
-pub fn ibuf_desc_immutable<T>(buf: &[T], label: &str) -> BufferDesc {
-    let size = std::mem::size_of::<T>() * buf.len();
+pub fn ibuf_desc_immutable(buf: &[u8], label: &str) -> BufferDesc {
+    let size = std::mem::size_of::<u8>() * buf.len();
     unsafe {
         buf_desc(
             buf.as_ptr() as *const _,
@@ -1120,8 +1120,8 @@ pub fn ibuf_desc_dyn(size: usize, usage: ResourceUsage, label: &str) -> BufferDe
 }
 
 /// [Non-Sokol] Helper for creating immutable vertex buffer
-pub fn vbuf_desc_immutable<T>(buf: &[T], label: &str) -> BufferDesc {
-    let size = std::mem::size_of::<T>() * buf.len();
+pub fn vbuf_desc_immutable(buf: &[u8], label: &str) -> BufferDesc {
+    let size = std::mem::size_of::<u8>() * buf.len();
     unsafe {
         buf_desc(
             buf.as_ptr() as *const _,
@@ -1164,15 +1164,4 @@ pub unsafe fn buf_desc(
         },
         ..Default::default()
     }
-}
-
-/// [Non-Sokol] Helper for setting shader uniform
-///
-/// Casts given data as `&[u8]` and then applies it.
-///
-/// FIXME: it doesn't allow [f32; 2]
-pub unsafe fn apply_uniforms_as_bytes<T>(stage: ShaderStage, ub_index: u32, data: &T) {
-    let bytes: &[u8] =
-        std::slice::from_raw_parts(data as *const _ as *const _, std::mem::size_of::<T>());
-    self::apply_uniforms(stage, ub_index, bytes);
 }

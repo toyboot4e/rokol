@@ -39,15 +39,14 @@ fn main() {
         format!("-I{}", root.join("sokol/util").display()),
         format!("-D{}", renderer.sokol_flag_name()),
     ];
-    let derive_default = true;
 
     if cfg!(feature = "impl-app") {
         self::gen_bindings(
         root.join("wrappers/rokol_app.h"),
         root.join("src/app.rs"),
         args,
-        derive_default,
         "//! Rust FFI to [sokol_app.h](https://github.com/floooh/sokol/blob/master/sokol_app.h)",
+        |b| b.derive_default(true).derive_partialeq(true).derive_eq(true)
     );
     }
 
@@ -56,8 +55,8 @@ fn main() {
         root.join("wrappers/rokol_gfx.h"),
         root.join("src/gfx.rs"),
         args,
-        derive_default,
         "//! Rust FFI to [sokol_gfx.h](https://github.com/floooh/sokol/blob/master/sokol_gfx.h)",
+        |b| b.derive_default(true).derive_partialeq(true).derive_eq(true)
     );
     }
 
@@ -122,15 +121,15 @@ fn gen_bindings(
     wrapper: impl AsRef<Path>,
     dst: impl AsRef<Path>,
     args: impl IntoIterator<Item = impl AsRef<str>>,
-    derive_default: bool,
     docstring: &str,
+    mut setup_builder: impl FnMut(bindgen::Builder) -> bindgen::Builder,
 ) {
     let gen = bindgen::Builder::default()
         .header(format!("{}", wrapper.as_ref().display()))
         .clang_args(args)
         .parse_callbacks(Box::new(bindgen::CargoCallbacks));
 
-    let gen = gen.derive_default(derive_default);
+    let gen = setup_builder(gen);
     let gen = gen
         .raw_line(docstring)
         .raw_line("")

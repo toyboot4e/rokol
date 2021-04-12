@@ -14,8 +14,6 @@ links = "sokol"
 # emits `DEP_SOKOL_GFX` to crates that list `rokol_ffi` in their `Cargo.toml`
 
 [features]
-default = ["impl-app", "impl-gfx", "glcore33"]
-
 impl-app = []
 impl-gfx = []
 

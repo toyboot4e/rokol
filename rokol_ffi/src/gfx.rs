@@ -188,7 +188,7 @@ pub type __darwin_useconds_t = __uint32_t;
 pub type __darwin_uuid_t = [::std::os::raw::c_uchar; 16usize];
 pub type __darwin_uuid_string_t = [::std::os::raw::c_char; 37usize];
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct __darwin_pthread_handler_rec {
     pub __routine: ::std::option::Option<unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
     pub __arg: *mut ::std::os::raw::c_void,
@@ -337,7 +337,7 @@ impl Default for _opaque_pthread_cond_t {
     }
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct _opaque_pthread_condattr_t {
     pub __sig: ::std::os::raw::c_long,
     pub __opaque: [::std::os::raw::c_char; 8usize],
@@ -426,7 +426,7 @@ impl Default for _opaque_pthread_mutex_t {
     }
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct _opaque_pthread_mutexattr_t {
     pub __sig: ::std::os::raw::c_long,
     pub __opaque: [::std::os::raw::c_char; 8usize],
@@ -469,7 +469,7 @@ fn bindgen_test_layout__opaque_pthread_mutexattr_t() {
     );
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct _opaque_pthread_once_t {
     pub __sig: ::std::os::raw::c_long,
     pub __opaque: [::std::os::raw::c_char; 8usize],
@@ -554,7 +554,7 @@ impl Default for _opaque_pthread_rwlock_t {
     }
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct _opaque_pthread_rwlockattr_t {
     pub __sig: ::std::os::raw::c_long,
     pub __opaque: [::std::os::raw::c_char; 16usize],
@@ -679,7 +679,7 @@ pub type syscall_arg_t = u_int64_t;
 pub type intmax_t = ::std::os::raw::c_long;
 pub type uintmax_t = ::std::os::raw::c_ulong;
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct sg_buffer {
     pub id: u32,
 }
@@ -707,7 +707,7 @@ fn bindgen_test_layout_sg_buffer() {
     );
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct sg_image {
     pub id: u32,
 }
@@ -735,7 +735,7 @@ fn bindgen_test_layout_sg_image() {
     );
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct sg_shader {
     pub id: u32,
 }
@@ -763,7 +763,7 @@ fn bindgen_test_layout_sg_shader() {
     );
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct sg_pipeline {
     pub id: u32,
 }
@@ -791,7 +791,7 @@ fn bindgen_test_layout_sg_pipeline() {
     );
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct sg_pass {
     pub id: u32,
 }
@@ -819,7 +819,7 @@ fn bindgen_test_layout_sg_pass() {
     );
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct sg_context {
     pub id: u32,
 }
@@ -847,7 +847,7 @@ fn bindgen_test_layout_sg_context() {
     );
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_range {
     pub ptr: *const ::std::os::raw::c_void,
     pub size: size_t,
@@ -903,7 +903,7 @@ pub const SG_MAX_MIPMAPS: ::std::os::raw::c_uint = 16;
 pub const SG_MAX_TEXTUREARRAY_LAYERS: ::std::os::raw::c_uint = 128;
 pub type _bindgen_ty_1 = ::std::os::raw::c_uint;
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq)]
 pub struct sg_color {
     pub r: f32,
     pub g: f32,
@@ -1039,7 +1039,7 @@ pub const sg_pixel_format__SG_PIXELFORMAT_NUM: sg_pixel_format = 62;
 pub const sg_pixel_format__SG_PIXELFORMAT_FORCE_U32: sg_pixel_format = 2147483647;
 pub type sg_pixel_format = ::std::os::raw::c_uint;
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct sg_pixelformat_info {
     pub sample: bool,
     pub filter: bool,
@@ -1122,7 +1122,7 @@ fn bindgen_test_layout_sg_pixelformat_info() {
     );
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct sg_features {
     pub instancing: bool,
     pub origin_top_left: bool,
@@ -1246,7 +1246,7 @@ fn bindgen_test_layout_sg_features() {
     );
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct sg_limits {
     pub max_image_size_2d: ::std::os::raw::c_int,
     pub max_image_size_cube: ::std::os::raw::c_int,
@@ -1541,7 +1541,7 @@ pub const sg_action__SG_ACTION_NUM: sg_action = 4;
 pub const sg_action__SG_ACTION_FORCE_U32: sg_action = 2147483647;
 pub type sg_action = ::std::os::raw::c_uint;
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct sg_color_attachment_action {
     pub action: sg_action,
     pub value: sg_color,
@@ -1589,7 +1589,7 @@ impl Default for sg_color_attachment_action {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct sg_depth_attachment_action {
     pub action: sg_action,
     pub value: f32,
@@ -1637,7 +1637,7 @@ impl Default for sg_depth_attachment_action {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_stencil_attachment_action {
     pub action: sg_action,
     pub value: u8,
@@ -1685,7 +1685,7 @@ impl Default for sg_stencil_attachment_action {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct sg_pass_action {
     pub _start_canary: u32,
     pub colors: [sg_color_attachment_action; 4usize],
@@ -1762,7 +1762,7 @@ impl Default for sg_pass_action {
     }
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct sg_bindings {
     pub _start_canary: u32,
     pub vertex_buffers: [sg_buffer; 8usize],
@@ -1869,7 +1869,7 @@ fn bindgen_test_layout_sg_bindings() {
     );
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_buffer_desc {
     pub _start_canary: u32,
     pub size: size_t,
@@ -2012,7 +2012,7 @@ impl Default for sg_buffer_desc {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_image_data {
     pub subimage: [[sg_range; 16usize]; 6usize],
 }
@@ -2045,7 +2045,7 @@ impl Default for sg_image_data {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct sg_image_desc {
     pub _start_canary: u32,
     pub type_: sg_image_type,
@@ -2378,7 +2378,7 @@ impl Default for sg_image_desc {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_shader_attr_desc {
     pub name: *const ::std::os::raw::c_char,
     pub sem_name: *const ::std::os::raw::c_char,
@@ -2433,7 +2433,7 @@ impl Default for sg_shader_attr_desc {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_shader_uniform_desc {
     pub name: *const ::std::os::raw::c_char,
     pub type_: sg_uniform_type,
@@ -2490,7 +2490,7 @@ impl Default for sg_shader_uniform_desc {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_shader_uniform_block_desc {
     pub size: size_t,
     pub uniforms: [sg_shader_uniform_desc; 16usize],
@@ -2538,7 +2538,7 @@ impl Default for sg_shader_uniform_block_desc {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_shader_image_desc {
     pub name: *const ::std::os::raw::c_char,
     pub image_type: sg_image_type,
@@ -2595,7 +2595,7 @@ impl Default for sg_shader_image_desc {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_shader_stage_desc {
     pub source: *const ::std::os::raw::c_char,
     pub bytecode: sg_range,
@@ -2687,7 +2687,7 @@ impl Default for sg_shader_stage_desc {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_shader_desc {
     pub _start_canary: u32,
     pub attrs: [sg_shader_attr_desc; 16usize],
@@ -2775,7 +2775,7 @@ impl Default for sg_shader_desc {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_buffer_layout_desc {
     pub stride: ::std::os::raw::c_int,
     pub step_func: sg_vertex_step,
@@ -2830,7 +2830,7 @@ impl Default for sg_buffer_layout_desc {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_vertex_attr_desc {
     pub buffer_index: ::std::os::raw::c_int,
     pub offset: ::std::os::raw::c_int,
@@ -2887,7 +2887,7 @@ impl Default for sg_vertex_attr_desc {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_layout_desc {
     pub buffers: [sg_buffer_layout_desc; 8usize],
     pub attrs: [sg_vertex_attr_desc; 16usize],
@@ -2931,7 +2931,7 @@ impl Default for sg_layout_desc {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_stencil_face_state {
     pub compare: sg_compare_func,
     pub fail_op: sg_stencil_op,
@@ -2999,7 +2999,7 @@ impl Default for sg_stencil_face_state {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_stencil_state {
     pub enabled: bool,
     pub front: sg_stencil_face_state,
@@ -3087,7 +3087,7 @@ impl Default for sg_stencil_state {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct sg_depth_state {
     pub pixel_format: sg_pixel_format,
     pub compare: sg_compare_func,
@@ -3175,7 +3175,7 @@ impl Default for sg_depth_state {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_blend_state {
     pub enabled: bool,
     pub src_factor_rgb: sg_blend_factor,
@@ -3274,7 +3274,7 @@ impl Default for sg_blend_state {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_color_state {
     pub pixel_format: sg_pixel_format,
     pub write_mask: sg_color_mask,
@@ -3329,7 +3329,7 @@ impl Default for sg_color_state {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct sg_pipeline_desc {
     pub _start_canary: u32,
     pub shader: sg_shader,
@@ -3530,7 +3530,7 @@ impl Default for sg_pipeline_desc {
     }
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct sg_pass_attachment_desc {
     pub image: sg_image,
     pub mip_level: ::std::os::raw::c_int,
@@ -3582,7 +3582,7 @@ fn bindgen_test_layout_sg_pass_attachment_desc() {
     );
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_pass_desc {
     pub _start_canary: u32,
     pub color_attachments: [sg_pass_attachment_desc; 4usize],
@@ -3661,7 +3661,7 @@ impl Default for sg_pass_desc {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_trace_hooks {
     pub user_data: *mut ::std::os::raw::c_void,
     pub reset_state_cache:
@@ -4572,7 +4572,7 @@ impl Default for sg_trace_hooks {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_slot_info {
     pub state: sg_resource_state,
     pub res_id: u32,
@@ -4627,7 +4627,7 @@ impl Default for sg_slot_info {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_buffer_info {
     pub slot: sg_slot_info,
     pub update_frame_index: u32,
@@ -4730,7 +4730,7 @@ impl Default for sg_buffer_info {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_image_info {
     pub slot: sg_slot_info,
     pub upd_frame_index: u32,
@@ -4818,7 +4818,7 @@ impl Default for sg_image_info {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_shader_info {
     pub slot: sg_slot_info,
 }
@@ -4851,7 +4851,7 @@ impl Default for sg_shader_info {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_pipeline_info {
     pub slot: sg_slot_info,
 }
@@ -4884,7 +4884,7 @@ impl Default for sg_pipeline_info {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_pass_info {
     pub slot: sg_slot_info,
 }
@@ -4917,7 +4917,7 @@ impl Default for sg_pass_info {
     }
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct sg_gl_context_desc {
     pub force_gles2: bool,
 }
@@ -4945,7 +4945,7 @@ fn bindgen_test_layout_sg_gl_context_desc() {
     );
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_metal_context_desc {
     pub device: *const ::std::os::raw::c_void,
     pub renderpass_descriptor_cb:
@@ -5049,7 +5049,7 @@ impl Default for sg_metal_context_desc {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_d3d11_context_desc {
     pub device: *const ::std::os::raw::c_void,
     pub device_context: *const ::std::os::raw::c_void,
@@ -5168,7 +5168,7 @@ impl Default for sg_d3d11_context_desc {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_wgpu_context_desc {
     pub device: *const ::std::os::raw::c_void,
     pub render_view_cb:
@@ -5303,7 +5303,7 @@ impl Default for sg_wgpu_context_desc {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_context_desc {
     pub color_format: sg_pixel_format,
     pub depth_format: sg_pixel_format,
@@ -5402,7 +5402,7 @@ impl Default for sg_context_desc {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sg_desc {
     pub _start_canary: u32,
     pub buffer_pool_size: ::std::os::raw::c_int,
@@ -5836,7 +5836,7 @@ extern "C" {
 }
 pub type __builtin_va_list = [__va_list_tag; 1usize];
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct __va_list_tag {
     pub gp_offset: ::std::os::raw::c_uint,
     pub fp_offset: ::std::os::raw::c_uint,

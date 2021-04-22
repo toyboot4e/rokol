@@ -643,6 +643,10 @@ impl PassAction {
         },
     };
 
+    pub const fn new_const(raw: ffi::sg_pass_action) -> Self {
+        Self { raw }
+    }
+
     pub fn clear(color: impl Into<Color>) -> Self {
         let mut raw = ffi::sg_pass_action::default();
         raw.colors[0] = ColorAttachmentAction {
@@ -651,6 +655,8 @@ impl PassAction {
         };
         Self { raw }
     }
+
+    // TODO: add more constructors
 }
 
 // --------------------------------------------------------------------------------

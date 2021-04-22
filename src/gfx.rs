@@ -643,6 +643,10 @@ impl PassAction {
         },
     };
 
+    pub fn new(raw: ffi::sg_pass_action) -> Self {
+        Self { raw }
+    }
+
     pub const fn new_const(raw: ffi::sg_pass_action) -> Self {
         Self { raw }
     }
@@ -654,6 +658,32 @@ impl PassAction {
             value: color.into(),
         };
         Self { raw }
+    }
+
+    pub const fn clear_const(color: [f32; 4]) -> Self {
+        Self {
+            raw: ffi::sg_pass_action {
+                _start_canary: 0,
+                colors: [self::ColorAttachmentAction {
+                    action: self::Action::Load as u32,
+                    value: ffi::sg_color {
+                        r: color[0],
+                        g: color[1],
+                        b: color[2],
+                        a: color[3],
+                    },
+                }; 4],
+                depth: self::DepthAttachmentAction {
+                    action: self::Action::Load as u32,
+                    value: 0.0,
+                },
+                stencil: self::StencilAttachmentAction {
+                    action: self::Action::Load as u32,
+                    value: 0,
+                },
+                _end_canary: 0,
+            },
+        }
     }
 
     // TODO: add more constructors

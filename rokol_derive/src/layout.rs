@@ -1,49 +1,52 @@
-use {proc_macro::TokenStream, proc_macro2::TokenStream as TokenStream2, quote::*, syn::*};
+use {proc_macro::TokenStream, quote::*, syn::*};
 
+// implements `fn layout_desc`
 pub fn impl_vertex_layout(ast: DeriveInput) -> TokenStream {
     let ty_name = &ast.ident;
 
     let input = match ast.data {
         Data::Struct(ref data) => data,
-        _ => panic!("`VertexLayout` is for structs"),
+        _ => panic!("`#[derive(VertexLayout)]` is for structs"),
     };
 
     // force `#[repr(C)]`
-    // let repr = Attribute::parse_meta("#[repr(C)]").unwrap();
     let repr: syn::Attribute = parse_quote!(#[repr(C)]);
-    assert!(ast.attrs.iter().any(|a| *a == repr), "`VertexLayout` requires `#[repr(C)]` attribute for target type");
+    assert!(
+        ast.attrs.iter().any(|a| *a == repr),
+        "`#[repr(C)]` is required to derive `VertexLayout`"
+    );
 
     let fields = match input.fields {
         Fields::Named(ref fields) => fields,
-        _ => unimplemented!("Fiel`VertexLayout` is only for struct with named fields"),
+        _ => unimplemented!("`#[derive(VertexLayout)]` is only for struct with named fields"),
     };
 
-    let f: syn::Type = syn::parse_str("f32").unwrap();
-    let f2: syn::Type = syn::parse_str("[f32; 2]").unwrap();
-    let f3: syn::Type = syn::parse_str("[f32; 3]").unwrap();
-    let f4: syn::Type = syn::parse_str("[f32; 4]").unwrap();
-    let u4: syn::Type = syn::parse_str("[u8; 4]").unwrap();
+    let format_decls = [
+        ("f32", quote! { rg::VertexFormat::Float }),
+        ("[f32; 2]", quote! { rg::VertexFormat::Float2 }),
+        ("[f32; 3]", quote! { rg::VertexFormat::Float3 }),
+        ("[f32; 4]", quote! { rg::VertexFormat::Float4 }),
+        ("[u8; 4]", quote! { rg::VertexFormat::UByte4N }),
+    ];
+
+    let format_defs = format_decls
+        .iter()
+        .map(|(s, quote)| (syn::parse_str::<syn::Type>(s).unwrap(), quote));
 
     let formats = fields.named.iter().map(|field| {
-        match &field.ty {
-            ty if *ty == f => quote! { rg::VertexFormat::Float },
-            ty if *ty == f2 => quote! { rg::VertexFormat::Float2 },
-            ty if *ty == f3 => quote! { rg::VertexFormat::Float3 },
-            ty if *ty == f4 => quote! { rg::VertexFormat::Float4 },
-            ty if *ty == u4 => quote! { rg::VertexFormat::UByte4N },
-            _ => {
-                // get the field type name (as tokens)
-                let mut field_ty_tokens = TokenStream2::new();
-                field.ty.to_tokens(&mut field_ty_tokens);
+        format_defs
+            .clone()
+            .find_map(|(ty, tokens)| if field.ty == ty { Some(tokens) } else { None })
+            .unwrap_or_else(|| {
+                // not found from the list
 
                 panic!(
-                    "Field `{}: {}` of type `{}` has unsupported type by `VertexLayout`",
+                    "Field `{}: {}` of type `{}` has unsupported type by `#[derive(VertexLayout)]`",
                     field.ident.as_ref().unwrap(),
-                    field_ty_tokens,
+                    field.ty.to_token_stream(),
                     ty_name,
                 )
-            }
-        }
+            })
     });
 
     let i = 0usize..fields.named.len();

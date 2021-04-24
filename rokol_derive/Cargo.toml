@@ -1,0 +1,18 @@
+[package]
+name = "rokol_derive"
+version = "0.1.0"
+authors = ["toyboot4e <toyboot4e@gmail.com>"]
+edition = "2018"
+
+[lib]
+path = "src/lib.rs"
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1.0.26"
+quote = "1.0.9"
+syn = { version = "1.0.70", features = ["derive", "parsing", "printing", "clone-impls", "proc-macro", "extra-traits"] }
+
+[dev-depencendies]
+rokol = { path = "../rokol", features = ["impl-gfx", "glcore33"] }
+

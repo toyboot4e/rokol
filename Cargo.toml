@@ -1,2 +1,2 @@
 [workspace]
-members = ["rokol_ffi", "rokol"]
+members = ["rokol_ffi", "rokol_derive", "rokol"]

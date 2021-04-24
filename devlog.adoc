@@ -10,6 +10,7 @@
 :imgui: https://github.com/ocornut/imgui[ImGUI]
 :imgui-rs: https://github.com/imgui-rs/imgui-rs[imgui-rs]
 :sdl2: https://docs.rs/sdl2/[rust-sdl2]
+:imgui-inspect: https://github.com/aclysma/imgui-inspect[imgui-inspect]
 
 == Background
 
@@ -145,4 +146,10 @@ I'm going to use SDL instead of `sokol_app.h`. `sokol_app.h` is light, but it la
 * [x] Make `rokol::app` optional.
 * [x] Add {sdl2} support
 * [ ] Add {imgui} ({imgui-rs}) support
+
+=== May 24, 2021
+
+I learned about procedual macros (especially derive macros) from {imgui-inspect}. It's even easier than `macro_rules`!
+
+I added `rokol-derive` crate, which exposes a derive macro `VertexLayout`.
 

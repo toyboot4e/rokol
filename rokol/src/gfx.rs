@@ -46,6 +46,9 @@ use {
     std::mem::size_of,
 };
 
+/// Implements [`LayoutDesc`] constructor (i.e., `layout_desc` method)
+pub use rokol_derive::VertexLayout;
+
 /// Field of [`SetupDesc`]
 pub type SetupContextDesc = ffi::sg_context_desc;
 
@@ -1199,5 +1202,36 @@ pub unsafe fn buf_desc(
             label.as_ptr() as *mut _
         },
         ..Default::default()
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::gfx::{self as rg, VertexLayout};
+
+    // for the derive macro:
+    use crate as rokol;
+
+    #[derive(VertexLayout)]
+    #[repr(C)]
+    pub struct Vertex {
+        pub pos: [f32; 2],
+        pub color: [u8; 4],
+        pub uv: [f32; 2],
+    }
+
+    impl Vertex {
+        pub fn manual_layout_desc() -> rg::LayoutDesc {
+            let mut desc = rg::LayoutDesc::default();
+            desc.attrs[0].format = rg::VertexFormat::Float2 as u32;
+            desc.attrs[1].format = rg::VertexFormat::UByte4N as u32;
+            desc.attrs[2].format = rg::VertexFormat::Float2 as u32;
+            desc
+        }
+    }
+
+    #[test]
+    fn static_assert() {
+        assert_eq!(Vertex::layout_desc(), Vertex::manual_layout_desc());
     }
 }

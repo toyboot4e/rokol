@@ -3,6 +3,12 @@ name = "rokol_derive"
 version = "0.1.0"
 authors = ["toyboot4e <toyboot4e@gmail.com>"]
 edition = "2018"
+exclude = []
+description = "Derive crate for Rokol"
+repository = "https://github.com/toyboot4e/rokol"
+license = "MIT"
+categories = []
+keywords = []
 
 [lib]
 path = "src/lib.rs"

@@ -9,7 +9,9 @@ pub fn impl_vertex_layout(ast: DeriveInput) -> TokenStream {
     };
 
     // force `#[repr(C)]`
-    // ast.attrs.iter().any(|a|
+    // let repr = Attribute::parse_meta("#[repr(C)]").unwrap();
+    let repr: syn::Attribute = parse_quote!(#[repr(C)]);
+    assert!(ast.attrs.iter().any(|a| *a == repr), "`VertexLayout` requires `#[repr(C)]` attribute for target type");
 
     let fields = match input.fields {
         Fields::Named(ref fields) => fields,
@@ -29,7 +31,6 @@ pub fn impl_vertex_layout(ast: DeriveInput) -> TokenStream {
             ty if *ty == f3 => quote! { rg::VertexFormat::Float3 },
             ty if *ty == f4 => quote! { rg::VertexFormat::Float4 },
             ty if *ty == u4 => quote! { rg::VertexFormat::UByte4N },
-            // TODO: support more types?
             _ => {
                 // get the field type name (as tokens)
                 let mut field_ty_tokens = TokenStream2::new();
@@ -56,7 +57,7 @@ pub fn impl_vertex_layout(ast: DeriveInput) -> TokenStream {
 
     TokenStream::from(quote! {
         impl #ty_name {
-            pub const fn layout_desc() -> rokol::gfx::LayoutDesc {
+            pub fn layout_desc() -> rokol::gfx::LayoutDesc {
                 #gen_desc
             }
         }

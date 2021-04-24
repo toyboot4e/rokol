@@ -47,6 +47,8 @@ use {
 };
 
 /// Implements [`LayoutDesc`] constructor (i.e., `layout_desc` method)
+///
+/// TODO: support more types?
 pub use rokol_derive::VertexLayout;
 
 /// Field of [`SetupDesc`]
@@ -1231,7 +1233,7 @@ mod test {
     }
 
     #[test]
-    fn static_assert() {
+    fn layout() {
         assert_eq!(Vertex::layout_desc(), Vertex::manual_layout_desc());
     }
 }

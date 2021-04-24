@@ -185,7 +185,7 @@ pub type __darwin_useconds_t = __uint32_t;
 pub type __darwin_uuid_t = [::std::os::raw::c_uchar; 16usize];
 pub type __darwin_uuid_string_t = [::std::os::raw::c_char; 37usize];
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct __darwin_pthread_handler_rec {
     pub __routine: ::std::option::Option<unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
     pub __arg: *mut ::std::os::raw::c_void,
@@ -334,7 +334,7 @@ impl Default for _opaque_pthread_cond_t {
     }
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct _opaque_pthread_condattr_t {
     pub __sig: ::std::os::raw::c_long,
     pub __opaque: [::std::os::raw::c_char; 8usize],
@@ -423,7 +423,7 @@ impl Default for _opaque_pthread_mutex_t {
     }
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct _opaque_pthread_mutexattr_t {
     pub __sig: ::std::os::raw::c_long,
     pub __opaque: [::std::os::raw::c_char; 8usize],
@@ -466,7 +466,7 @@ fn bindgen_test_layout__opaque_pthread_mutexattr_t() {
     );
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct _opaque_pthread_once_t {
     pub __sig: ::std::os::raw::c_long,
     pub __opaque: [::std::os::raw::c_char; 8usize],
@@ -551,7 +551,7 @@ impl Default for _opaque_pthread_rwlock_t {
     }
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct _opaque_pthread_rwlockattr_t {
     pub __sig: ::std::os::raw::c_long,
     pub __opaque: [::std::os::raw::c_char; 16usize],
@@ -828,7 +828,7 @@ pub const sapp_keycode_SAPP_KEYCODE_RIGHT_SUPER: sapp_keycode = 347;
 pub const sapp_keycode_SAPP_KEYCODE_MENU: sapp_keycode = 348;
 pub type sapp_keycode = ::std::os::raw::c_uint;
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone, PartialEq)]
 pub struct sapp_touchpoint {
     pub identifier: usize,
     pub pos_x: f32,
@@ -899,7 +899,7 @@ pub const SAPP_MODIFIER_ALT: ::std::os::raw::c_uint = 4;
 pub const SAPP_MODIFIER_SUPER: ::std::os::raw::c_uint = 8;
 pub type _bindgen_ty_2 = ::std::os::raw::c_uint;
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct sapp_event {
     pub frame_count: u64,
     pub type_: sapp_event_type,
@@ -1130,7 +1130,7 @@ impl Default for sapp_event {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sapp_desc {
     pub init_cb: ::std::option::Option<unsafe extern "C" fn()>,
     pub frame_cb: ::std::option::Option<unsafe extern "C" fn()>,
@@ -1560,7 +1560,7 @@ pub const sapp_html5_fetch_error_SAPP_HTML5_FETCH_ERROR_BUFFER_TOO_SMALL: sapp_h
 pub const sapp_html5_fetch_error_SAPP_HTML5_FETCH_ERROR_OTHER: sapp_html5_fetch_error = 2;
 pub type sapp_html5_fetch_error = ::std::os::raw::c_uint;
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sapp_html5_fetch_response {
     pub succeeded: bool,
     pub error_code: sapp_html5_fetch_error,
@@ -1673,7 +1673,7 @@ impl Default for sapp_html5_fetch_response {
     }
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sapp_html5_fetch_request {
     pub dropped_file_index: ::std::os::raw::c_int,
     pub callback:
@@ -1921,7 +1921,7 @@ extern "C" {
 }
 pub type __builtin_va_list = [__va_list_tag; 1usize];
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct __va_list_tag {
     pub gp_offset: ::std::os::raw::c_uint,
     pub fp_offset: ::std::os::raw::c_uint,

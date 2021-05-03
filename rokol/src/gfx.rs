@@ -1096,11 +1096,11 @@ pub unsafe fn update_buffer(buf: Buffer, data: &[u8]) {
 
 /// Appends vertices/indices to vertex/index buffer
 ///
-/// Requires [`ResourceUsage::Dynamic`] or [`ResourceUsage::Stream`].
+/// Requires [`ResourceUsage::Dynamic`] or [`ResourceUsage::Stream`]. This can be called multiple
+/// times per frame.
 ///
-/// This can be called multiple times per frame. Returns a byte offset to the start of the written
-/// data. The offset can be assgined to [`Bindings::vertex_buffer_offsets`] or
-/// [`Bindings::index_buffer_offset`].
+/// Returns a byte offset to the start of the written data. The offset can be assgined to
+/// [`Bindings::vertex_buffer_offsets`] or [`Bindings::index_buffer_offset`].
 pub fn append_buffer(buf: Buffer, data: &[u8]) -> i32 {
     let n_bytes = size_of::<u8>() * data.len();
     let data = Range {

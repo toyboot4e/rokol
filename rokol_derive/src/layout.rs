@@ -1,7 +1,7 @@
-use {proc_macro::TokenStream, quote::*, syn::*};
+use {proc_macro2::TokenStream as TokenStream2, quote::*, syn::*};
 
 // implements `fn layout_desc`
-pub fn impl_vertex_layout(ast: DeriveInput) -> TokenStream {
+pub fn impl_vertex_layout(ast: DeriveInput) -> TokenStream2 {
     let ty_name = &ast.ident;
 
     let input = match ast.data {
@@ -39,7 +39,6 @@ pub fn impl_vertex_layout(ast: DeriveInput) -> TokenStream {
             .find_map(|(ty, tokens)| if field.ty == ty { Some(tokens) } else { None })
             .unwrap_or_else(|| {
                 // not found from the list
-
                 panic!(
                     "Field `{}: {}` of type `{}` has unsupported type by `#[derive(VertexLayout)]`",
                     field.ident.as_ref().unwrap(),
@@ -58,11 +57,11 @@ pub fn impl_vertex_layout(ast: DeriveInput) -> TokenStream {
         desc
     };
 
-    TokenStream::from(quote! {
+    quote! {
         impl #ty_name {
             pub fn layout_desc() -> rokol::gfx::LayoutDesc {
                 #gen_desc
             }
         }
-    })
+    }
 }

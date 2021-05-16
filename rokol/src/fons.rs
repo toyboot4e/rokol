@@ -146,7 +146,6 @@ impl FontTextureImpl {
         for line in lines {
             if line.is_empty() {
                 h += fontsize + line_spacing;
-                continue;
             } else {
                 let [x1, y1, x2, y2] = self.stash.text_bounds_oneline([0.0, 0.0], line);
 
@@ -154,7 +153,8 @@ impl FontTextureImpl {
                     w = x2 - x1;
                 }
 
-                h += (y2 - y1) + line_spacing;
+                // h += (y2 - y1) + line_spacing;
+                h += fontsize + line_spacing;
             }
         }
 
@@ -181,7 +181,8 @@ impl FontTextureImpl {
                     w = w2
                 }
 
-                h += h2 + line_spacing;
+                // h += h2 + line_spacing;
+                h += fontsize + line_spacing;
             }
         }
 

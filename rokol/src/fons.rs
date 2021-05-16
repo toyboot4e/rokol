@@ -134,6 +134,8 @@ impl FontTextureImpl {
         // TODO: apply fontsize automatially?
         let mut lines = text.lines();
 
+        self.stash.set_size(fontsize);
+
         let [x, y, mut w, mut h] = {
             let [x1, y1, x2, y2] = self
                 .stash
@@ -163,6 +165,8 @@ impl FontTextureImpl {
     pub fn text_size_multiline(&self, text: &str, fontsize: f32, line_spacing: f32) -> [f32; 2] {
         // TODO: apply fontsize automatially?
         let mut lines = text.lines();
+
+        self.stash.set_size(fontsize);
 
         let [mut w, mut h] = self.stash.text_size_oneline(lines.next().unwrap());
 

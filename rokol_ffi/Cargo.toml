@@ -27,5 +27,5 @@ d3d11 = []
 features = ["impl-app", "impl-gfx", "glcore33"]
 
 [build-dependencies]
-cc = "1.0.62"
-bindgen = "0.55.1"
+cc = "1.0.68"
+bindgen = "0.58.1"

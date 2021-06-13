@@ -1,5 +1,5 @@
 /*!
-FontStash integration for Rokol
+FontStash integration for Rokol (`rokol::gfx`)
 */
 
 pub use fontstash::{self, Align, FonsQuad, FontStash};
@@ -147,7 +147,7 @@ impl FontTextureImpl {
             if line.is_empty() {
                 h += fontsize + line_spacing;
             } else {
-                let [x1, y1, x2, y2] = self.stash.text_bounds_oneline([0.0, 0.0], line);
+                let [x1, _y1, x2, _y2] = self.stash.text_bounds_oneline([0.0, 0.0], line);
 
                 if x2 - x1 > w {
                     w = x2 - x1;
@@ -175,7 +175,7 @@ impl FontTextureImpl {
                 h += fontsize + line_spacing;
                 continue;
             } else {
-                let [w2, h2] = self.stash.text_size_oneline(line);
+                let [w2, _h2] = self.stash.text_size_oneline(line);
 
                 if w2 > w {
                     w = w2

@@ -77,13 +77,12 @@ impl ResourceSettings {
         desc
     }
 
-    fn init_gfx(&self) {
+    pub fn init_gfx(&self) {
         let desc = rokol_ffi::gfx::sg_desc {
             context: self.create_context(),
             ..Default::default()
         };
 
-        // FIXME: error at line 5038
         unsafe {
             rokol_ffi::gfx::sg_setup(&desc as *const _);
         }

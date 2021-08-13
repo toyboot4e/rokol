@@ -77,13 +77,12 @@ impl ResourceSettings {
         desc
     }
 
-    fn init_gfx(&self) {
+    pub fn init_gfx(&self) {
         let desc = rokol_ffi::gfx::sg_desc {
             context: self.create_context(),
             ..Default::default()
         };
 
-        // FIXME: error at line 5038
         unsafe {
             rokol_ffi::gfx::sg_setup(&desc as *const _);
         }
@@ -159,10 +158,12 @@ impl Init {
         let sdl = sdl2::init()?;
         let vid = sdl.video()?;
 
-        // GlCore33
-        let attr = vid.gl_attr();
-        attr.set_context_profile(sdl2::video::GLProfile::Core);
-        attr.set_context_version(3, 3);
+        {
+            // GlCore33
+            let attr = vid.gl_attr();
+            attr.set_context_profile(sdl2::video::GLProfile::Core);
+            attr.set_context_version(3, 3);
+        }
 
         let win = {
             let mut b = vid.window(&self.title, self.w, self.h);

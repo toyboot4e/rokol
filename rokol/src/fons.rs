@@ -1,5 +1,5 @@
 /*!
-FontStash integration for Rokol
+FontStash integration for Rokol (`rokol::gfx`)
 */
 
 pub use fontstash::{self, Align, FonsQuad, FontStash};
@@ -134,6 +134,8 @@ impl FontTextureImpl {
         // TODO: apply fontsize automatially?
         let mut lines = text.lines();
 
+        self.stash.set_size(fontsize);
+
         let [x, y, mut w, mut h] = {
             let [x1, y1, x2, y2] = self
                 .stash
@@ -144,15 +146,15 @@ impl FontTextureImpl {
         for line in lines {
             if line.is_empty() {
                 h += fontsize + line_spacing;
-                continue;
             } else {
-                let [x1, y1, x2, y2] = self.stash.text_bounds_oneline([0.0, 0.0], line);
+                let [x1, _y1, x2, _y2] = self.stash.text_bounds_oneline([0.0, 0.0], line);
 
                 if x2 - x1 > w {
                     w = x2 - x1;
                 }
 
-                h += (y2 - y1) + line_spacing;
+                // h += (y2 - y1) + line_spacing;
+                h += fontsize + line_spacing;
             }
         }
 
@@ -164,6 +166,8 @@ impl FontTextureImpl {
         // TODO: apply fontsize automatially?
         let mut lines = text.lines();
 
+        self.stash.set_size(fontsize);
+
         let [mut w, mut h] = self.stash.text_size_oneline(lines.next().unwrap());
 
         for line in lines {
@@ -171,13 +175,14 @@ impl FontTextureImpl {
                 h += fontsize + line_spacing;
                 continue;
             } else {
-                let [w2, h2] = self.stash.text_size_oneline(line);
+                let [w2, _h2] = self.stash.text_size_oneline(line);
 
                 if w2 > w {
                     w = w2
                 }
 
-                h += h2 + line_spacing;
+                // h += h2 + line_spacing;
+                h += fontsize + line_spacing;
             }
         }
 

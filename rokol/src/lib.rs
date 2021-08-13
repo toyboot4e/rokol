@@ -1,24 +1,29 @@
 /*!
-Wrapper of [Sokol] libraries (`sokol_gfx.h` and `sokol_app.h`)
-
-Check out the [examples] and [Learn OpenGL examples] (WIP) to get more information. You can switch
-features to use Rust-SDL2 platform.
+Wrapper of [Sokol] libraries
 
 [Sokol]: https://github.com/floooh/sokol
-[examples]: https://github.com/toyboot4e/rokol/tree/master/examples
-[Learn OpenGL examples]: https://github.com/toyboot4e/rokol_learn_opengl
 
-* TIP: Sokol [considers] zero-initizialized structures to be in default state. It means
-[`Default::default`] is ensured to make sense!
-* TIP: use `bytemuck` to cast types to `&[u8]`.
+NOTE: `rokol` is still early in progress: **currently only macOS + GlCore33 backend is considered**
 
+# Features (specified in `Cargo.toml`)
+
+* `impl-app`: imports `sokol_app.h` and enables [`app`] module
+* `sdl2`: generates [`glue`] code for `sdl2`
+* `impl-gfx`: imports `sokol_gfx.h` and enables [`gfx`] module
+  * `glcore33`: use OpenGL backend
+  * `metal`: use Metal backend
+  * `d3d11`: use DirectX11 backend
+* `fontstash`: imports `fontstash.h` and enables [`fons`] module
+
+# Tips
+
+* Checkout [The Brain Dump]
+  * Sokol [considers] zero-initizialized structures to be in default state. It means
+    [`Default::default`] is ensured to make sense!
+* use `bytemuck` to cast types to `&[u8]`.
+
+[The Brain Dump]: https://floooh.github.io/
 [considers]: https://floooh.github.io/2017/08/06/sokol-api-update.html
-
-# Status
-
-Early in progress: **currently only macOS + GlCore33 backend is considered**
-
-I'd do Learn OpenGL examples to make it better.
 */
 
 pub use rokol_ffi as ffi;

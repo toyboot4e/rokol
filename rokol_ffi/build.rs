@@ -161,11 +161,20 @@ fn compile(build: &mut Build, is_msvc: bool, renderer: &Renderer, will_set_debug
     // -Isokol/util
     build.include(&root.join("sokol/util"));
 
+    // NOTE: On windows, sokol_app.h must be compiled as Objective-C
     if cfg!(feature = "impl-app") && cfg!(feature = "impl-gfx") {
-        build.file(root.join("wrappers/rokol_glue_impl.c"));
+        if cfg!(target_os = "macos") {
+            build.file(root.join("wrappers/rokol_glue_impl.m"));
+        } else {
+            build.file(root.join("wrappers/rokol_glue_impl.c"));
+        }
     } else {
         if cfg!(feature = "impl-app") {
-            build.file(root.join("wrappers/rokol_app_impl.c"));
+            if cfg!(target_os = "macos") {
+                build.file(root.join("wrappers/rokol_app_impl.m"));
+            } else {
+                build.file(root.join("wrappers/rokol_app_impl.c"));
+            }
         }
         if cfg!(feature = "impl-gfx") {
             build.file(root.join("wrappers/rokol_gfx_impl.c"));
@@ -177,10 +186,11 @@ fn compile(build: &mut Build, is_msvc: bool, renderer: &Renderer, will_set_debug
     // #define SOKOL_<RENDERER>
     build.flag(&format!("-D{}", renderer.sokol_flag_name()));
 
+    // Compile as Objective-C
     if cfg!(target_os = "macos") {
-        // compile as Objective-C
+        // This time, it's named as `rokol_app_impl.m` and it's already Objective-C.
         // build.flag("-fobjc-arc");
-        build.flag("-ObjC");
+        // build.flag("-ObjC");
     }
 
     if cfg!(target_os = "linux") {

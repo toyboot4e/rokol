@@ -1253,12 +1253,13 @@ pub struct sg_limits {
     pub max_image_size_array: ::std::os::raw::c_int,
     pub max_image_array_layers: ::std::os::raw::c_int,
     pub max_vertex_attrs: ::std::os::raw::c_int,
+    pub gl_max_vertex_uniform_vectors: ::std::os::raw::c_int,
 }
 #[test]
 fn bindgen_test_layout_sg_limits() {
     assert_eq!(
         ::std::mem::size_of::<sg_limits>(),
-        24usize,
+        28usize,
         concat!("Size of: ", stringify!(sg_limits))
     );
     assert_eq!(
@@ -1326,6 +1327,18 @@ fn bindgen_test_layout_sg_limits() {
             stringify!(sg_limits),
             "::",
             stringify!(max_vertex_attrs)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<sg_limits>())).gl_max_vertex_uniform_vectors as *const _ as usize
+        },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sg_limits),
+            "::",
+            stringify!(gl_max_vertex_uniform_vectors)
         )
     );
 }

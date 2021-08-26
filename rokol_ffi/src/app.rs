@@ -81,6 +81,9 @@ pub const SIG_ATOMIC_MAX: u32 = 2147483647;
 pub const true_: u32 = 1;
 pub const false_: u32 = 0;
 pub const __bool_true_false_are_defined: u32 = 1;
+pub type size_t = ::std::os::raw::c_ulong;
+pub type wchar_t = ::std::os::raw::c_int;
+pub type max_align_t = u128;
 pub type int_least8_t = i8;
 pub type int_least16_t = i16;
 pub type int_least32_t = i32;
@@ -677,6 +680,7 @@ pub type uintmax_t = ::std::os::raw::c_ulong;
 pub const SAPP_MAX_TOUCHPOINTS: ::std::os::raw::c_uint = 8;
 pub const SAPP_MAX_MOUSEBUTTONS: ::std::os::raw::c_uint = 3;
 pub const SAPP_MAX_KEYCODES: ::std::os::raw::c_uint = 512;
+pub const SAPP_MAX_ICONIMAGES: ::std::os::raw::c_uint = 8;
 pub type _bindgen_ty_1 = ::std::os::raw::c_uint;
 pub const sapp_event_type_SAPP_EVENTTYPE_INVALID: sapp_event_type = 0;
 pub const sapp_event_type_SAPP_EVENTTYPE_KEY_DOWN: sapp_event_type = 1;
@@ -896,6 +900,9 @@ pub const SAPP_MODIFIER_SHIFT: ::std::os::raw::c_uint = 1;
 pub const SAPP_MODIFIER_CTRL: ::std::os::raw::c_uint = 2;
 pub const SAPP_MODIFIER_ALT: ::std::os::raw::c_uint = 4;
 pub const SAPP_MODIFIER_SUPER: ::std::os::raw::c_uint = 8;
+pub const SAPP_MODIFIER_LMB: ::std::os::raw::c_uint = 256;
+pub const SAPP_MODIFIER_RMB: ::std::os::raw::c_uint = 512;
+pub const SAPP_MODIFIER_MMB: ::std::os::raw::c_uint = 1024;
 pub type _bindgen_ty_2 = ::std::os::raw::c_uint;
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq)]
@@ -1130,6 +1137,149 @@ impl Default for sapp_event {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub struct sapp_range {
+    pub ptr: *const ::std::os::raw::c_void,
+    pub size: size_t,
+}
+#[test]
+fn bindgen_test_layout_sapp_range() {
+    assert_eq!(
+        ::std::mem::size_of::<sapp_range>(),
+        16usize,
+        concat!("Size of: ", stringify!(sapp_range))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<sapp_range>(),
+        8usize,
+        concat!("Alignment of ", stringify!(sapp_range))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sapp_range>())).ptr as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sapp_range),
+            "::",
+            stringify!(ptr)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sapp_range>())).size as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sapp_range),
+            "::",
+            stringify!(size)
+        )
+    );
+}
+impl Default for sapp_range {
+    fn default() -> Self {
+        unsafe { ::std::mem::zeroed() }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub struct sapp_image_desc {
+    pub width: ::std::os::raw::c_int,
+    pub height: ::std::os::raw::c_int,
+    pub pixels: sapp_range,
+}
+#[test]
+fn bindgen_test_layout_sapp_image_desc() {
+    assert_eq!(
+        ::std::mem::size_of::<sapp_image_desc>(),
+        24usize,
+        concat!("Size of: ", stringify!(sapp_image_desc))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<sapp_image_desc>(),
+        8usize,
+        concat!("Alignment of ", stringify!(sapp_image_desc))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sapp_image_desc>())).width as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sapp_image_desc),
+            "::",
+            stringify!(width)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sapp_image_desc>())).height as *const _ as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sapp_image_desc),
+            "::",
+            stringify!(height)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sapp_image_desc>())).pixels as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sapp_image_desc),
+            "::",
+            stringify!(pixels)
+        )
+    );
+}
+impl Default for sapp_image_desc {
+    fn default() -> Self {
+        unsafe { ::std::mem::zeroed() }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub struct sapp_icon_desc {
+    pub sokol_default: bool,
+    pub images: [sapp_image_desc; 8usize],
+}
+#[test]
+fn bindgen_test_layout_sapp_icon_desc() {
+    assert_eq!(
+        ::std::mem::size_of::<sapp_icon_desc>(),
+        200usize,
+        concat!("Size of: ", stringify!(sapp_icon_desc))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<sapp_icon_desc>(),
+        8usize,
+        concat!("Alignment of ", stringify!(sapp_icon_desc))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sapp_icon_desc>())).sokol_default as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sapp_icon_desc),
+            "::",
+            stringify!(sokol_default)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sapp_icon_desc>())).images as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sapp_icon_desc),
+            "::",
+            stringify!(images)
+        )
+    );
+}
+impl Default for sapp_icon_desc {
+    fn default() -> Self {
+        unsafe { ::std::mem::zeroed() }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sapp_desc {
     pub init_cb: ::std::option::Option<unsafe extern "C" fn()>,
     pub frame_cb: ::std::option::Option<unsafe extern "C" fn()>,
@@ -1166,6 +1316,7 @@ pub struct sapp_desc {
     pub enable_dragndrop: bool,
     pub max_dropped_files: ::std::os::raw::c_int,
     pub max_dropped_file_path_length: ::std::os::raw::c_int,
+    pub icon: sapp_icon_desc,
     pub gl_force_gles2: bool,
     pub win32_console_utf8: bool,
     pub win32_console_create: bool,
@@ -1181,7 +1332,7 @@ pub struct sapp_desc {
 fn bindgen_test_layout_sapp_desc() {
     assert_eq!(
         ::std::mem::size_of::<sapp_desc>(),
-        160usize,
+        368usize,
         concat!("Size of: ", stringify!(sapp_desc))
     );
     assert_eq!(
@@ -1442,8 +1593,18 @@ fn bindgen_test_layout_sapp_desc() {
         )
     );
     assert_eq!(
+        unsafe { &(*(::std::ptr::null::<sapp_desc>())).icon as *const _ as usize },
+        144usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(sapp_desc),
+            "::",
+            stringify!(icon)
+        )
+    );
+    assert_eq!(
         unsafe { &(*(::std::ptr::null::<sapp_desc>())).gl_force_gles2 as *const _ as usize },
-        140usize,
+        344usize,
         concat!(
             "Offset of field: ",
             stringify!(sapp_desc),
@@ -1453,7 +1614,7 @@ fn bindgen_test_layout_sapp_desc() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sapp_desc>())).win32_console_utf8 as *const _ as usize },
-        141usize,
+        345usize,
         concat!(
             "Offset of field: ",
             stringify!(sapp_desc),
@@ -1463,7 +1624,7 @@ fn bindgen_test_layout_sapp_desc() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sapp_desc>())).win32_console_create as *const _ as usize },
-        142usize,
+        346usize,
         concat!(
             "Offset of field: ",
             stringify!(sapp_desc),
@@ -1473,7 +1634,7 @@ fn bindgen_test_layout_sapp_desc() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sapp_desc>())).win32_console_attach as *const _ as usize },
-        143usize,
+        347usize,
         concat!(
             "Offset of field: ",
             stringify!(sapp_desc),
@@ -1483,7 +1644,7 @@ fn bindgen_test_layout_sapp_desc() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sapp_desc>())).html5_canvas_name as *const _ as usize },
-        144usize,
+        352usize,
         concat!(
             "Offset of field: ",
             stringify!(sapp_desc),
@@ -1493,7 +1654,7 @@ fn bindgen_test_layout_sapp_desc() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sapp_desc>())).html5_canvas_resize as *const _ as usize },
-        152usize,
+        360usize,
         concat!(
             "Offset of field: ",
             stringify!(sapp_desc),
@@ -1505,7 +1666,7 @@ fn bindgen_test_layout_sapp_desc() {
         unsafe {
             &(*(::std::ptr::null::<sapp_desc>())).html5_preserve_drawing_buffer as *const _ as usize
         },
-        153usize,
+        361usize,
         concat!(
             "Offset of field: ",
             stringify!(sapp_desc),
@@ -1517,7 +1678,7 @@ fn bindgen_test_layout_sapp_desc() {
         unsafe {
             &(*(::std::ptr::null::<sapp_desc>())).html5_premultiplied_alpha as *const _ as usize
         },
-        154usize,
+        362usize,
         concat!(
             "Offset of field: ",
             stringify!(sapp_desc),
@@ -1527,7 +1688,7 @@ fn bindgen_test_layout_sapp_desc() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<sapp_desc>())).html5_ask_leave_site as *const _ as usize },
-        155usize,
+        363usize,
         concat!(
             "Offset of field: ",
             stringify!(sapp_desc),
@@ -1539,7 +1700,7 @@ fn bindgen_test_layout_sapp_desc() {
         unsafe {
             &(*(::std::ptr::null::<sapp_desc>())).ios_keyboard_resizes_canvas as *const _ as usize
         },
-        156usize,
+        364usize,
         concat!(
             "Offset of field: ",
             stringify!(sapp_desc),
@@ -1851,6 +2012,9 @@ extern "C" {
     pub fn sapp_set_window_title(str_: *const ::std::os::raw::c_char);
 }
 extern "C" {
+    pub fn sapp_set_icon(icon_desc: *const sapp_icon_desc);
+}
+extern "C" {
     pub fn sapp_get_num_dropped_files() -> ::std::os::raw::c_int;
 }
 extern "C" {
@@ -1893,6 +2057,9 @@ extern "C" {
 }
 extern "C" {
     pub fn sapp_d3d11_get_device_context() -> *const ::std::os::raw::c_void;
+}
+extern "C" {
+    pub fn sapp_d3d11_get_swap_chain() -> *const ::std::os::raw::c_void;
 }
 extern "C" {
     pub fn sapp_d3d11_get_render_target_view() -> *const ::std::os::raw::c_void;

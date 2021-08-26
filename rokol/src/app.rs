@@ -48,13 +48,13 @@ pub trait RApp {
     /// Suitable place to implement "really quit?" diaglog.
     ///
     /// The cleanup-callback isn't guaranteed to be called on the web and mobile platforms.
-    #[cfg(feature="impl-gfx")]
+    #[cfg(feature = "impl-gfx")]
     fn cleanup(&mut self) {
         unsafe {
             rokol_ffi::gfx::sg_shutdown();
         }
     }
-    #[cfg(not(feature="impl-gfx"))]
+    #[cfg(not(feature = "impl-gfx"))]
     fn cleanup(&mut self);
 
     /// Event handling
@@ -553,6 +553,16 @@ pub type TouchPoint = ffi::sapp_touchpoint;
 /// [`rokol::app`]: crate::app
 pub type Event = ffi::sapp_event;
 
+pub type Range = ffi::sapp_range;
+
+pub type IconDesc = ffi::sapp_icon_desc;
+
+pub fn set_icon(icon: &IconDesc) {
+    unsafe {
+        ffi::sapp_set_icon(icon as *const _);
+    }
+}
+
 /// Returns true after Rokol app is initialized
 pub fn is_valid() -> bool {
     unsafe { ffi::sapp_isvalid() }
@@ -788,6 +798,7 @@ pub fn dropped_file_path(ix: u32) -> Result<String, std::str::Utf8Error> {
 // // SOKOL_API_DECL const void* sapp_d3d11_get_depth_stencil_view(void);
 // // /* Win32: get the HWND window handle */
 // // SOKOL_API_DECL const void* sapp_win32_get_hwnd(void);
+// sapp_d3d11_get_swapchain
 
 // // /* WebGPU: get WGPUDevice handle */
 // // SOKOL_API_DECL const void* sapp_wgpu_get_device(void);

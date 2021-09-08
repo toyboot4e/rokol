@@ -102,10 +102,10 @@ pub type Color = ffi::sg_color;
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum PassActionKind {
-    _Default = ffi::sg_action__SG_ACTION_DEFAULT,
-    Clear = ffi::sg_action_SG_ACTION_CLEAR,
-    Load = ffi::sg_action_SG_ACTION_LOAD,
-    DontCare = ffi::sg_action_SG_ACTION_DONTCARE,
+    _Default = ffi::sg_action__SG_ACTION_DEFAULT as u32,
+    Clear = ffi::sg_action_SG_ACTION_CLEAR as u32,
+    Load = ffi::sg_action_SG_ACTION_LOAD as u32,
+    DontCare = ffi::sg_action_SG_ACTION_DONTCARE as u32,
 }
 
 /// Update strategy of buffers and images
@@ -138,12 +138,12 @@ pub enum PassActionKind {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum ResourceUsage {
-    _Default = ffi::sg_usage__SG_USAGE_DEFAULT,
-    Immutable = ffi::sg_usage_SG_USAGE_IMMUTABLE,
-    Dynamic = ffi::sg_usage_SG_USAGE_DYNAMIC,
-    Stream = ffi::sg_usage_SG_USAGE_STREAM,
-    _ForceU32 = ffi::sg_usage__SG_USAGE_FORCE_U32,
-    _Num = ffi::sg_usage__SG_USAGE_NUM,
+    _Default = ffi::sg_usage__SG_USAGE_DEFAULT as u32,
+    Immutable = ffi::sg_usage_SG_USAGE_IMMUTABLE as u32,
+    Dynamic = ffi::sg_usage_SG_USAGE_DYNAMIC as u32,
+    Stream = ffi::sg_usage_SG_USAGE_STREAM as u32,
+    _ForceU32 = ffi::sg_usage__SG_USAGE_FORCE_U32 as u32,
+    _Num = ffi::sg_usage__SG_USAGE_NUM as u32,
 }
 
 /// Fs | Vs
@@ -151,24 +151,24 @@ pub enum ResourceUsage {
 #[repr(u32)]
 pub enum ShaderStage {
     /// Fragment shader
-    Fs = ffi::sg_shader_stage_SG_SHADERSTAGE_FS,
+    Fs = ffi::sg_shader_stage_SG_SHADERSTAGE_FS as u32,
     /// Vertex shader
-    Vs = ffi::sg_shader_stage_SG_SHADERSTAGE_VS,
-    // _ForceU32 = ffi::sg_shader_stage__SG_SHADERSTAGE_FORCE_U32,
+    Vs = ffi::sg_shader_stage_SG_SHADERSTAGE_VS as u32,
+    // _ForceU32 = ffi::sg_shader_stage__SG_SHADERSTAGE_FORCE_U32 as u32,
 }
 
 /// Mat4 | Float | Float2 | Float3 | Float4
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum UniformType {
-    Float = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT,
-    Float2 = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT2,
-    Float3 = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT3,
-    Float4 = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT4,
-    Invalid = ffi::sg_uniform_type_SG_UNIFORMTYPE_INVALID,
-    Mat4 = ffi::sg_uniform_type_SG_UNIFORMTYPE_MAT4,
-    _ForceU32 = ffi::sg_uniform_type__SG_UNIFORMTYPE_FORCE_U32,
-    _Num = ffi::sg_uniform_type__SG_UNIFORMTYPE_NUM,
+    Float = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT as u32,
+    Float2 = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT2 as u32,
+    Float3 = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT3 as u32,
+    Float4 = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT4 as u32,
+    Invalid = ffi::sg_uniform_type_SG_UNIFORMTYPE_INVALID as u32,
+    Mat4 = ffi::sg_uniform_type_SG_UNIFORMTYPE_MAT4 as u32,
+    _ForceU32 = ffi::sg_uniform_type__SG_UNIFORMTYPE_FORCE_U32 as u32,
+    _Num = ffi::sg_uniform_type__SG_UNIFORMTYPE_NUM as u32,
 }
 
 /// Float | SInt | UInt
@@ -182,10 +182,10 @@ pub enum UniformType {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum SamplerType {
-    _Default = ffi::sg_sampler_type__SG_SAMPLERTYPE_DEFAULT,
-    Float = ffi::sg_sampler_type_SG_SAMPLERTYPE_FLOAT,
-    SInt = ffi::sg_sampler_type_SG_SAMPLERTYPE_SINT,
-    UInt = ffi::sg_sampler_type_SG_SAMPLERTYPE_UINT,
+    _Default = ffi::sg_sampler_type__SG_SAMPLERTYPE_DEFAULT as u32,
+    Float = ffi::sg_sampler_type_SG_SAMPLERTYPE_FLOAT as u32,
+    SInt = ffi::sg_sampler_type_SG_SAMPLERTYPE_SINT as u32,
+    UInt = ffi::sg_sampler_type_SG_SAMPLERTYPE_UINT as u32,
 }
 
 // --------------------------------------------------------------------------------
@@ -205,61 +205,61 @@ pub enum SamplerType {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum VertexFormat {
-    Inalid = ffi::sg_vertex_format_SG_VERTEXFORMAT_INVALID,
-    Float = ffi::sg_vertex_format_SG_VERTEXFORMAT_FLOAT,
-    Float2 = ffi::sg_vertex_format_SG_VERTEXFORMAT_FLOAT2,
-    Float3 = ffi::sg_vertex_format_SG_VERTEXFORMAT_FLOAT3,
-    Float4 = ffi::sg_vertex_format_SG_VERTEXFORMAT_FLOAT4,
-    Byte4 = ffi::sg_vertex_format_SG_VERTEXFORMAT_BYTE4,
-    Byte4N = ffi::sg_vertex_format_SG_VERTEXFORMAT_BYTE4N,
-    UByte4 = ffi::sg_vertex_format_SG_VERTEXFORMAT_UBYTE4,
-    UByte4N = ffi::sg_vertex_format_SG_VERTEXFORMAT_UBYTE4N,
-    Short2 = ffi::sg_vertex_format_SG_VERTEXFORMAT_SHORT2,
-    Short2N = ffi::sg_vertex_format_SG_VERTEXFORMAT_SHORT2N,
-    UShort2N = ffi::sg_vertex_format_SG_VERTEXFORMAT_USHORT2N,
-    Short4 = ffi::sg_vertex_format_SG_VERTEXFORMAT_SHORT4,
-    Short4N = ffi::sg_vertex_format_SG_VERTEXFORMAT_SHORT4N,
-    UShort4N = ffi::sg_vertex_format_SG_VERTEXFORMAT_USHORT4N,
-    Uint10N2 = ffi::sg_vertex_format_SG_VERTEXFORMAT_UINT10_N2,
-    _Num = ffi::sg_vertex_format__SG_VERTEXFORMAT_NUM,
-    _ForceU32 = ffi::sg_vertex_format__SG_VERTEXFORMAT_FORCE_U32,
+    Inalid = ffi::sg_vertex_format_SG_VERTEXFORMAT_INVALID as u32,
+    Float = ffi::sg_vertex_format_SG_VERTEXFORMAT_FLOAT as u32,
+    Float2 = ffi::sg_vertex_format_SG_VERTEXFORMAT_FLOAT2 as u32,
+    Float3 = ffi::sg_vertex_format_SG_VERTEXFORMAT_FLOAT3 as u32,
+    Float4 = ffi::sg_vertex_format_SG_VERTEXFORMAT_FLOAT4 as u32,
+    Byte4 = ffi::sg_vertex_format_SG_VERTEXFORMAT_BYTE4 as u32,
+    Byte4N = ffi::sg_vertex_format_SG_VERTEXFORMAT_BYTE4N as u32,
+    UByte4 = ffi::sg_vertex_format_SG_VERTEXFORMAT_UBYTE4 as u32,
+    UByte4N = ffi::sg_vertex_format_SG_VERTEXFORMAT_UBYTE4N as u32,
+    Short2 = ffi::sg_vertex_format_SG_VERTEXFORMAT_SHORT2 as u32,
+    Short2N = ffi::sg_vertex_format_SG_VERTEXFORMAT_SHORT2N as u32,
+    UShort2N = ffi::sg_vertex_format_SG_VERTEXFORMAT_USHORT2N as u32,
+    Short4 = ffi::sg_vertex_format_SG_VERTEXFORMAT_SHORT4 as u32,
+    Short4N = ffi::sg_vertex_format_SG_VERTEXFORMAT_SHORT4N as u32,
+    UShort4N = ffi::sg_vertex_format_SG_VERTEXFORMAT_USHORT4N as u32,
+    Uint10N2 = ffi::sg_vertex_format_SG_VERTEXFORMAT_UINT10_N2 as u32,
+    _Num = ffi::sg_vertex_format__SG_VERTEXFORMAT_NUM as u32,
+    _ForceU32 = ffi::sg_vertex_format__SG_VERTEXFORMAT_FORCE_U32 as u32,
 }
 
 /// Index | Vertex
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum BufferType {
-    _Default = ffi::sg_buffer_type__SG_BUFFERTYPE_DEFAULT,
-    Index = ffi::sg_buffer_type_SG_BUFFERTYPE_INDEXBUFFER,
-    Vertex = ffi::sg_buffer_type_SG_BUFFERTYPE_VERTEXBUFFER,
-    _ForceU32 = ffi::sg_buffer_type__SG_BUFFERTYPE_FORCE_U32,
-    _Num = ffi::sg_buffer_type__SG_BUFFERTYPE_NUM,
+    _Default = ffi::sg_buffer_type__SG_BUFFERTYPE_DEFAULT as u32,
+    Index = ffi::sg_buffer_type_SG_BUFFERTYPE_INDEXBUFFER as u32,
+    Vertex = ffi::sg_buffer_type_SG_BUFFERTYPE_VERTEXBUFFER as u32,
+    _ForceU32 = ffi::sg_buffer_type__SG_BUFFERTYPE_FORCE_U32 as u32,
+    _Num = ffi::sg_buffer_type__SG_BUFFERTYPE_NUM as u32,
 }
 
 /// UInt16 | UInt32
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum IndexType {
-    _Default = ffi::sg_index_type__SG_INDEXTYPE_DEFAULT,
-    None = ffi::sg_index_type_SG_INDEXTYPE_NONE,
-    UInt16 = ffi::sg_index_type_SG_INDEXTYPE_UINT16,
-    UInt32 = ffi::sg_index_type_SG_INDEXTYPE_UINT32,
-    _ForceU32 = ffi::sg_index_type__SG_INDEXTYPE_FORCE_U32,
-    _Num = ffi::sg_index_type__SG_INDEXTYPE_NUM,
+    _Default = ffi::sg_index_type__SG_INDEXTYPE_DEFAULT as u32,
+    None = ffi::sg_index_type_SG_INDEXTYPE_NONE as u32,
+    UInt16 = ffi::sg_index_type_SG_INDEXTYPE_UINT16 as u32,
+    UInt32 = ffi::sg_index_type_SG_INDEXTYPE_UINT32 as u32,
+    _ForceU32 = ffi::sg_index_type__SG_INDEXTYPE_FORCE_U32 as u32,
+    _Num = ffi::sg_index_type__SG_INDEXTYPE_NUM as u32,
 }
 
 /// Common subset of 3D primitive types supported across all 3D APIs. Field of [`PipelineDesc`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum PrimitiveType {
-    _Default = ffi::sg_primitive_type__SG_PRIMITIVETYPE_DEFAULT,
-    _ForuceU32 = ffi::sg_primitive_type__SG_PRIMITIVETYPE_FORCE_U32,
-    _Num = ffi::sg_primitive_type__SG_PRIMITIVETYPE_NUM,
-    Lines = ffi::sg_primitive_type_SG_PRIMITIVETYPE_LINES,
-    LinesStrip = ffi::sg_primitive_type_SG_PRIMITIVETYPE_LINE_STRIP,
-    Points = ffi::sg_primitive_type_SG_PRIMITIVETYPE_POINTS,
-    Triangles = ffi::sg_primitive_type_SG_PRIMITIVETYPE_TRIANGLES,
-    TrianglesStrip = ffi::sg_primitive_type_SG_PRIMITIVETYPE_TRIANGLE_STRIP,
+    _Default = ffi::sg_primitive_type__SG_PRIMITIVETYPE_DEFAULT as u32,
+    _ForuceU32 = ffi::sg_primitive_type__SG_PRIMITIVETYPE_FORCE_U32 as u32,
+    _Num = ffi::sg_primitive_type__SG_PRIMITIVETYPE_NUM as u32,
+    Lines = ffi::sg_primitive_type_SG_PRIMITIVETYPE_LINES as u32,
+    LinesStrip = ffi::sg_primitive_type_SG_PRIMITIVETYPE_LINE_STRIP as u32,
+    Points = ffi::sg_primitive_type_SG_PRIMITIVETYPE_POINTS as u32,
+    Triangles = ffi::sg_primitive_type_SG_PRIMITIVETYPE_TRIANGLES as u32,
+    TrianglesStrip = ffi::sg_primitive_type_SG_PRIMITIVETYPE_TRIANGLE_STRIP as u32,
 }
 
 // --------------------------------------------------------------------------------
@@ -280,15 +280,15 @@ pub enum PrimitiveType {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum ImageType {
-    _Default = ffi::sg_image_type__SG_IMAGETYPE_DEFAULT,
+    _Default = ffi::sg_image_type__SG_IMAGETYPE_DEFAULT as u32,
     /// 2D
-    Dim2 = ffi::sg_image_type_SG_IMAGETYPE_2D,
+    Dim2 = ffi::sg_image_type_SG_IMAGETYPE_2D as u32,
     /// 3D
-    Dim3 = ffi::sg_image_type_SG_IMAGETYPE_3D,
-    Array = ffi::sg_image_type_SG_IMAGETYPE_ARRAY,
-    Cube = ffi::sg_image_type_SG_IMAGETYPE_CUBE,
-    _ForceU32 = ffi::sg_image_type__SG_IMAGETYPE_FORCE_U32,
-    _Num = ffi::sg_image_type__SG_IMAGETYPE_NUM,
+    Dim3 = ffi::sg_image_type_SG_IMAGETYPE_3D as u32,
+    Array = ffi::sg_image_type_SG_IMAGETYPE_ARRAY as u32,
+    Cube = ffi::sg_image_type_SG_IMAGETYPE_CUBE as u32,
+    _ForceU32 = ffi::sg_image_type__SG_IMAGETYPE_FORCE_U32 as u32,
+    _Num = ffi::sg_image_type__SG_IMAGETYPE_NUM as u32,
 }
 
 /// The filtering mode when sampling a texture image
@@ -300,15 +300,15 @@ pub enum ImageType {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum Filter {
-    Linear = ffi::sg_filter_SG_FILTER_LINEAR,
-    LinearMipmap = ffi::sg_filter_SG_FILTER_LINEAR_MIPMAP_LINEAR,
-    LinearMipmapNearest = ffi::sg_filter_SG_FILTER_LINEAR_MIPMAP_NEAREST,
-    Nearest = ffi::sg_filter_SG_FILTER_NEAREST,
-    NearestMipmapLinear = ffi::sg_filter_SG_FILTER_NEAREST_MIPMAP_LINEAR,
-    NearestMipmapNearest = ffi::sg_filter_SG_FILTER_NEAREST_MIPMAP_NEAREST,
-    _Default = ffi::sg_filter__SG_FILTER_DEFAULT,
-    _ForceU32 = ffi::sg_filter__SG_FILTER_FORCE_U32,
-    _Num = ffi::sg_filter__SG_FILTER_NUM,
+    Linear = ffi::sg_filter_SG_FILTER_LINEAR as u32,
+    LinearMipmap = ffi::sg_filter_SG_FILTER_LINEAR_MIPMAP_LINEAR as u32,
+    LinearMipmapNearest = ffi::sg_filter_SG_FILTER_LINEAR_MIPMAP_NEAREST as u32,
+    Nearest = ffi::sg_filter_SG_FILTER_NEAREST as u32,
+    NearestMipmapLinear = ffi::sg_filter_SG_FILTER_NEAREST_MIPMAP_LINEAR as u32,
+    NearestMipmapNearest = ffi::sg_filter_SG_FILTER_NEAREST_MIPMAP_NEAREST as u32,
+    _Default = ffi::sg_filter__SG_FILTER_DEFAULT as u32,
+    _ForceU32 = ffi::sg_filter__SG_FILTER_FORCE_U32 as u32,
+    _Num = ffi::sg_filter__SG_FILTER_NUM as u32,
 }
 
 /// The texture coordinates wrapping mode when sampling a texture image
@@ -339,14 +339,14 @@ pub enum Filter {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum Wrap {
-    _Default = ffi::sg_wrap__SG_WRAP_DEFAULT,
+    _Default = ffi::sg_wrap__SG_WRAP_DEFAULT as u32,
     /// (Platform) Not supported on all platform
-    ClampToBorder = ffi::sg_wrap_SG_WRAP_CLAMP_TO_BORDER,
-    ClampToEdge = ffi::sg_wrap_SG_WRAP_CLAMP_TO_EDGE,
-    MirroredRepeat = ffi::sg_wrap_SG_WRAP_MIRRORED_REPEAT,
-    Repeat = ffi::sg_wrap_SG_WRAP_REPEAT,
-    _ForceU32 = ffi::sg_wrap__SG_WRAP_FORCE_U32,
-    _Wrap = ffi::sg_wrap__SG_WRAP_NUM,
+    ClampToBorder = ffi::sg_wrap_SG_WRAP_CLAMP_TO_BORDER as u32,
+    ClampToEdge = ffi::sg_wrap_SG_WRAP_CLAMP_TO_EDGE as u32,
+    MirroredRepeat = ffi::sg_wrap_SG_WRAP_MIRRORED_REPEAT as u32,
+    Repeat = ffi::sg_wrap_SG_WRAP_REPEAT as u32,
+    _ForceU32 = ffi::sg_wrap__SG_WRAP_FORCE_U32 as u32,
+    _Wrap = ffi::sg_wrap__SG_WRAP_NUM as u32,
 }
 
 /// Pixel format
@@ -408,70 +408,70 @@ pub enum Wrap {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum PixelFormat {
-    _Default = ffi::sg_pixel_format__SG_PIXELFORMAT_DEFAULT as u32,
-    Bc1Rgba = ffi::sg_pixel_format_SG_PIXELFORMAT_BC1_RGBA as u32,
-    Bc2Rgba = ffi::sg_pixel_format_SG_PIXELFORMAT_BC2_RGBA as u32,
-    Bc3Rgba = ffi::sg_pixel_format_SG_PIXELFORMAT_BC3_RGBA as u32,
-    Bc4R = ffi::sg_pixel_format_SG_PIXELFORMAT_BC4_R as u32,
-    Bc4Rsc = ffi::sg_pixel_format_SG_PIXELFORMAT_BC4_RSN as u32,
-    Bc5Rg = ffi::sg_pixel_format_SG_PIXELFORMAT_BC5_RG as u32,
-    Bc5Rgsn = ffi::sg_pixel_format_SG_PIXELFORMAT_BC5_RGSN as u32,
-    Bc6hRgf = ffi::sg_pixel_format_SG_PIXELFORMAT_BC6H_RGBF as u32,
-    Bc6hRgbuf = ffi::sg_pixel_format_SG_PIXELFORMAT_BC6H_RGBUF as u32,
-    Bc7Rgba = ffi::sg_pixel_format_SG_PIXELFORMAT_BC7_RGBA as u32,
-    Bgra8 = ffi::sg_pixel_format_SG_PIXELFORMAT_BGRA8 as u32,
-    Depth = ffi::sg_pixel_format_SG_PIXELFORMAT_DEPTH as u32,
-    DepthStencil = ffi::sg_pixel_format_SG_PIXELFORMAT_DEPTH_STENCIL as u32,
-    Etc2Rg11 = ffi::sg_pixel_format_SG_PIXELFORMAT_ETC2_RG11 as u32,
-    Etc2Rg11Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_ETC2_RG11SN as u32,
-    Etc2Rgb8 = ffi::sg_pixel_format_SG_PIXELFORMAT_ETC2_RGB8 as u32,
-    Etc2Rgb8A1 = ffi::sg_pixel_format_SG_PIXELFORMAT_ETC2_RGB8A1 as u32,
-    Etc2Rgba8 = ffi::sg_pixel_format_SG_PIXELFORMAT_ETC2_RGBA8 as u32,
-    None = ffi::sg_pixel_format_SG_PIXELFORMAT_NONE as u32,
-    PvrtcRgba2Bpp = ffi::sg_pixel_format_SG_PIXELFORMAT_PVRTC_RGBA_2BPP as u32,
-    PvrtcRgba24pp = ffi::sg_pixel_format_SG_PIXELFORMAT_PVRTC_RGBA_4BPP as u32,
-    PvrtcRgb2Bpp = ffi::sg_pixel_format_SG_PIXELFORMAT_PVRTC_RGB_2BPP as u32,
-    PvrtcRgb4Bpp = ffi::sg_pixel_format_SG_PIXELFORMAT_PVRTC_RGB_4BPP as u32,
-    R8 = ffi::sg_pixel_format_SG_PIXELFORMAT_R8 as u32,
-    R8Si = ffi::sg_pixel_format_SG_PIXELFORMAT_R8SI as u32,
-    R8Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_R8SN as u32,
-    R8Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_R8UI as u32,
-    R16 = ffi::sg_pixel_format_SG_PIXELFORMAT_R16 as u32,
-    R16F = ffi::sg_pixel_format_SG_PIXELFORMAT_R16F as u32,
-    R16Si = ffi::sg_pixel_format_SG_PIXELFORMAT_R16SI as u32,
-    R16Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_R16SN as u32,
-    R16Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_R16UI as u32,
-    R32F = ffi::sg_pixel_format_SG_PIXELFORMAT_R32F as u32,
-    R32Si = ffi::sg_pixel_format_SG_PIXELFORMAT_R32SI as u32,
-    R32Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_R32UI as u32,
-    Rg8 = ffi::sg_pixel_format_SG_PIXELFORMAT_RG8 as u32,
-    Rg8Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RG8SI as u32,
-    Rg8Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_RG8SN as u32,
-    Rg8Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RG8UI as u32,
-    Rg11B10F = ffi::sg_pixel_format_SG_PIXELFORMAT_RG11B10F as u32,
-    Rg16 = ffi::sg_pixel_format_SG_PIXELFORMAT_RG16 as u32,
-    Rg16F = ffi::sg_pixel_format_SG_PIXELFORMAT_RG16F as u32,
-    Rg16Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RG16SI as u32,
-    Rg16Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_RG16SN as u32,
-    Rg16Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RG16UI as u32,
-    Rg32F = ffi::sg_pixel_format_SG_PIXELFORMAT_RG32F as u32,
-    Rg32Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RG32SI as u32,
-    Rg32Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RG32UI as u32,
-    Rgb10A2 = ffi::sg_pixel_format_SG_PIXELFORMAT_RGB10A2 as u32,
-    Rgba8 = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA8 as u32,
-    Rgba8Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA8SI as u32,
-    Rgba8Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA8SN as u32,
-    Rgba8Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA8UI as u32,
-    Rgba16 = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA16 as u32,
-    Rgba16F = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA16F as u32,
-    Rgba16Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA16SI as u32,
-    Rgba16Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA16SN as u32,
-    Rgba16Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA16UI as u32,
-    Rgba32F = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA32F as u32,
-    Rgba32Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA32SI as u32,
-    Rgba32Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA32UI as u32,
-    _ForceU32 = ffi::sg_pixel_format__SG_PIXELFORMAT_FORCE_U32 as u32,
-    _Num = ffi::sg_pixel_format__SG_PIXELFORMAT_NUM as u32,
+    _Default = ffi::sg_pixel_format__SG_PIXELFORMAT_DEFAULT as u32 as u32,
+    Bc1Rgba = ffi::sg_pixel_format_SG_PIXELFORMAT_BC1_RGBA as u32 as u32,
+    Bc2Rgba = ffi::sg_pixel_format_SG_PIXELFORMAT_BC2_RGBA as u32 as u32,
+    Bc3Rgba = ffi::sg_pixel_format_SG_PIXELFORMAT_BC3_RGBA as u32 as u32,
+    Bc4R = ffi::sg_pixel_format_SG_PIXELFORMAT_BC4_R as u32 as u32,
+    Bc4Rsc = ffi::sg_pixel_format_SG_PIXELFORMAT_BC4_RSN as u32 as u32,
+    Bc5Rg = ffi::sg_pixel_format_SG_PIXELFORMAT_BC5_RG as u32 as u32,
+    Bc5Rgsn = ffi::sg_pixel_format_SG_PIXELFORMAT_BC5_RGSN as u32 as u32,
+    Bc6hRgf = ffi::sg_pixel_format_SG_PIXELFORMAT_BC6H_RGBF as u32 as u32,
+    Bc6hRgbuf = ffi::sg_pixel_format_SG_PIXELFORMAT_BC6H_RGBUF as u32 as u32,
+    Bc7Rgba = ffi::sg_pixel_format_SG_PIXELFORMAT_BC7_RGBA as u32 as u32,
+    Bgra8 = ffi::sg_pixel_format_SG_PIXELFORMAT_BGRA8 as u32 as u32,
+    Depth = ffi::sg_pixel_format_SG_PIXELFORMAT_DEPTH as u32 as u32,
+    DepthStencil = ffi::sg_pixel_format_SG_PIXELFORMAT_DEPTH_STENCIL as u32 as u32,
+    Etc2Rg11 = ffi::sg_pixel_format_SG_PIXELFORMAT_ETC2_RG11 as u32 as u32,
+    Etc2Rg11Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_ETC2_RG11SN as u32 as u32,
+    Etc2Rgb8 = ffi::sg_pixel_format_SG_PIXELFORMAT_ETC2_RGB8 as u32 as u32,
+    Etc2Rgb8A1 = ffi::sg_pixel_format_SG_PIXELFORMAT_ETC2_RGB8A1 as u32 as u32,
+    Etc2Rgba8 = ffi::sg_pixel_format_SG_PIXELFORMAT_ETC2_RGBA8 as u32 as u32,
+    None = ffi::sg_pixel_format_SG_PIXELFORMAT_NONE as u32 as u32,
+    PvrtcRgba2Bpp = ffi::sg_pixel_format_SG_PIXELFORMAT_PVRTC_RGBA_2BPP as u32 as u32,
+    PvrtcRgba24pp = ffi::sg_pixel_format_SG_PIXELFORMAT_PVRTC_RGBA_4BPP as u32 as u32,
+    PvrtcRgb2Bpp = ffi::sg_pixel_format_SG_PIXELFORMAT_PVRTC_RGB_2BPP as u32 as u32,
+    PvrtcRgb4Bpp = ffi::sg_pixel_format_SG_PIXELFORMAT_PVRTC_RGB_4BPP as u32 as u32,
+    R8 = ffi::sg_pixel_format_SG_PIXELFORMAT_R8 as u32 as u32,
+    R8Si = ffi::sg_pixel_format_SG_PIXELFORMAT_R8SI as u32 as u32,
+    R8Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_R8SN as u32 as u32,
+    R8Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_R8UI as u32 as u32,
+    R16 = ffi::sg_pixel_format_SG_PIXELFORMAT_R16 as u32 as u32,
+    R16F = ffi::sg_pixel_format_SG_PIXELFORMAT_R16F as u32 as u32,
+    R16Si = ffi::sg_pixel_format_SG_PIXELFORMAT_R16SI as u32 as u32,
+    R16Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_R16SN as u32 as u32,
+    R16Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_R16UI as u32 as u32,
+    R32F = ffi::sg_pixel_format_SG_PIXELFORMAT_R32F as u32 as u32,
+    R32Si = ffi::sg_pixel_format_SG_PIXELFORMAT_R32SI as u32 as u32,
+    R32Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_R32UI as u32 as u32,
+    Rg8 = ffi::sg_pixel_format_SG_PIXELFORMAT_RG8 as u32 as u32,
+    Rg8Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RG8SI as u32 as u32,
+    Rg8Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_RG8SN as u32 as u32,
+    Rg8Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RG8UI as u32 as u32,
+    Rg11B10F = ffi::sg_pixel_format_SG_PIXELFORMAT_RG11B10F as u32 as u32,
+    Rg16 = ffi::sg_pixel_format_SG_PIXELFORMAT_RG16 as u32 as u32,
+    Rg16F = ffi::sg_pixel_format_SG_PIXELFORMAT_RG16F as u32 as u32,
+    Rg16Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RG16SI as u32 as u32,
+    Rg16Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_RG16SN as u32 as u32,
+    Rg16Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RG16UI as u32 as u32,
+    Rg32F = ffi::sg_pixel_format_SG_PIXELFORMAT_RG32F as u32 as u32,
+    Rg32Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RG32SI as u32 as u32,
+    Rg32Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RG32UI as u32 as u32,
+    Rgb10A2 = ffi::sg_pixel_format_SG_PIXELFORMAT_RGB10A2 as u32 as u32,
+    Rgba8 = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA8 as u32 as u32,
+    Rgba8Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA8SI as u32 as u32,
+    Rgba8Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA8SN as u32 as u32,
+    Rgba8Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA8UI as u32 as u32,
+    Rgba16 = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA16 as u32 as u32,
+    Rgba16F = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA16F as u32 as u32,
+    Rgba16Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA16SI as u32 as u32,
+    Rgba16Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA16SN as u32 as u32,
+    Rgba16Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA16UI as u32 as u32,
+    Rgba32F = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA32F as u32 as u32,
+    Rgba32Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA32SI as u32 as u32,
+    Rgba32Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA32UI as u32 as u32,
+    _ForceU32 = ffi::sg_pixel_format__SG_PIXELFORMAT_FORCE_U32 as u32 as u32,
+    _Num = ffi::sg_pixel_format__SG_PIXELFORMAT_NUM as u32 as u32,
 }
 
 /// The source and destination factors in blending operations.
@@ -484,24 +484,24 @@ pub enum PixelFormat {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum BlendFactor {
-    _Default = ffi::sg_blend_factor__SG_BLENDFACTOR_DEFAULT as u32,
-    Zero = ffi::sg_blend_factor_SG_BLENDFACTOR_ZERO as u32,
-    One = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE as u32,
-    Color = ffi::sg_blend_factor_SG_BLENDFACTOR_SRC_COLOR as u32,
-    OneMinusSourceColor = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_SRC_COLOR as u32,
-    SrcAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_SRC_ALPHA as u32,
-    OneMinusSrcAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_SRC_ALPHA as u32,
-    DstColor = ffi::sg_blend_factor_SG_BLENDFACTOR_DST_COLOR as u32,
-    OneMinusDstColor = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_DST_COLOR as u32,
-    DstAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_DST_ALPHA as u32,
-    OneMinusDstAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_DST_ALPHA as u32,
-    SrcAlphaSatuerd = ffi::sg_blend_factor_SG_BLENDFACTOR_SRC_ALPHA_SATURATED as u32,
-    BlendColor = ffi::sg_blend_factor_SG_BLENDFACTOR_BLEND_COLOR as u32,
-    OneMinusBlendColor = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_BLEND_COLOR as u32,
-    BlendAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_BLEND_ALPHA as u32,
-    OneMinusBlendAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_BLEND_ALPHA as u32,
-    _Num = ffi::sg_blend_factor__SG_BLENDFACTOR_NUM as u32,
-    _ForceU32 = ffi::sg_blend_factor__SG_BLENDFACTOR_FORCE_U32 as u32,
+    _Default = ffi::sg_blend_factor__SG_BLENDFACTOR_DEFAULT as u32 as u32,
+    Zero = ffi::sg_blend_factor_SG_BLENDFACTOR_ZERO as u32 as u32,
+    One = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE as u32 as u32,
+    Color = ffi::sg_blend_factor_SG_BLENDFACTOR_SRC_COLOR as u32 as u32,
+    OneMinusSourceColor = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_SRC_COLOR as u32 as u32,
+    SrcAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_SRC_ALPHA as u32 as u32,
+    OneMinusSrcAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_SRC_ALPHA as u32 as u32,
+    DstColor = ffi::sg_blend_factor_SG_BLENDFACTOR_DST_COLOR as u32 as u32,
+    OneMinusDstColor = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_DST_COLOR as u32 as u32,
+    DstAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_DST_ALPHA as u32 as u32,
+    OneMinusDstAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_DST_ALPHA as u32 as u32,
+    SrcAlphaSatuerd = ffi::sg_blend_factor_SG_BLENDFACTOR_SRC_ALPHA_SATURATED as u32 as u32,
+    BlendColor = ffi::sg_blend_factor_SG_BLENDFACTOR_BLEND_COLOR as u32 as u32,
+    OneMinusBlendColor = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_BLEND_COLOR as u32 as u32,
+    BlendAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_BLEND_ALPHA as u32 as u32,
+    OneMinusBlendAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_BLEND_ALPHA as u32 as u32,
+    _Num = ffi::sg_blend_factor__SG_BLENDFACTOR_NUM as u32 as u32,
+    _ForceU32 = ffi::sg_blend_factor__SG_BLENDFACTOR_FORCE_U32 as u32 as u32,
 }
 
 /// Defines what action should be performed at the start of a render pass:
@@ -517,15 +517,15 @@ pub enum BlendFactor {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum Action {
-    _Default = ffi::sg_action__SG_ACTION_DEFAULT as u32,
+    _Default = ffi::sg_action__SG_ACTION_DEFAULT as u32 as u32,
     /// Clear the render target image
-    Clear = ffi::sg_action_SG_ACTION_CLEAR as u32,
+    Clear = ffi::sg_action_SG_ACTION_CLEAR as u32 as u32,
     /// Leave the render target image content undefined
-    DontCare = ffi::sg_action_SG_ACTION_DONTCARE as u32,
+    DontCare = ffi::sg_action_SG_ACTION_DONTCARE as u32 as u32,
     /// Load the previous content of the render target image
-    Load = ffi::sg_action_SG_ACTION_LOAD as u32,
-    _ForceU32 = ffi::sg_action__SG_ACTION_FORCE_U32 as u32,
-    _NUM = ffi::sg_action__SG_ACTION_NUM as u32,
+    Load = ffi::sg_action_SG_ACTION_LOAD as u32 as u32,
+    _ForceU32 = ffi::sg_action__SG_ACTION_FORCE_U32 as u32 as u32,
+    _NUM = ffi::sg_action__SG_ACTION_NUM as u32 as u32,
 }
 
 // --------------------------------------------------------------------------------
@@ -535,17 +535,17 @@ pub enum Action {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum CompareFunc {
-    _Default = ffi::sg_compare_func__SG_COMPAREFUNC_DEFAULT,
-    Always = ffi::sg_compare_func_SG_COMPAREFUNC_ALWAYS,
-    Eq = ffi::sg_compare_func_SG_COMPAREFUNC_EQUAL,
-    Greater = ffi::sg_compare_func_SG_COMPAREFUNC_GREATER,
-    GreaterEq = ffi::sg_compare_func_SG_COMPAREFUNC_GREATER_EQUAL,
-    Less = ffi::sg_compare_func_SG_COMPAREFUNC_LESS,
-    LessEq = ffi::sg_compare_func_SG_COMPAREFUNC_LESS_EQUAL,
-    Never = ffi::sg_compare_func_SG_COMPAREFUNC_NEVER,
-    NotEq = ffi::sg_compare_func_SG_COMPAREFUNC_NOT_EQUAL,
-    _ForceU32 = ffi::sg_compare_func__SG_COMPAREFUNC_FORCE_U32,
-    _Num = ffi::sg_compare_func__SG_COMPAREFUNC_NUM,
+    _Default = ffi::sg_compare_func__SG_COMPAREFUNC_DEFAULT as u32,
+    Always = ffi::sg_compare_func_SG_COMPAREFUNC_ALWAYS as u32,
+    Eq = ffi::sg_compare_func_SG_COMPAREFUNC_EQUAL as u32,
+    Greater = ffi::sg_compare_func_SG_COMPAREFUNC_GREATER as u32,
+    GreaterEq = ffi::sg_compare_func_SG_COMPAREFUNC_GREATER_EQUAL as u32,
+    Less = ffi::sg_compare_func_SG_COMPAREFUNC_LESS as u32,
+    LessEq = ffi::sg_compare_func_SG_COMPAREFUNC_LESS_EQUAL as u32,
+    Never = ffi::sg_compare_func_SG_COMPAREFUNC_NEVER as u32,
+    NotEq = ffi::sg_compare_func_SG_COMPAREFUNC_NOT_EQUAL as u32,
+    _ForceU32 = ffi::sg_compare_func__SG_COMPAREFUNC_FORCE_U32 as u32,
+    _Num = ffi::sg_compare_func__SG_COMPAREFUNC_NUM as u32,
 }
 
 /// Front | Back | None
@@ -554,12 +554,12 @@ pub enum CompareFunc {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum CullMode {
-    _Default = ffi::sg_cull_mode__SG_CULLMODE_DEFAULT,
-    Back = ffi::sg_cull_mode_SG_CULLMODE_BACK,
-    Front = ffi::sg_cull_mode_SG_CULLMODE_FRONT,
-    None = ffi::sg_cull_mode_SG_CULLMODE_NONE,
-    _ForuceU32 = ffi::sg_cull_mode__SG_CULLMODE_FORCE_U32,
-    _Num = ffi::sg_cull_mode__SG_CULLMODE_NUM,
+    _Default = ffi::sg_cull_mode__SG_CULLMODE_DEFAULT as u32,
+    Back = ffi::sg_cull_mode_SG_CULLMODE_BACK as u32,
+    Front = ffi::sg_cull_mode_SG_CULLMODE_FRONT as u32,
+    None = ffi::sg_cull_mode_SG_CULLMODE_NONE as u32,
+    _ForuceU32 = ffi::sg_cull_mode__SG_CULLMODE_FORCE_U32 as u32,
+    _Num = ffi::sg_cull_mode__SG_CULLMODE_NUM as u32,
 }
 
 /// CCW | CW
@@ -568,35 +568,35 @@ pub enum CullMode {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u32)]
 pub enum FaceWinding {
-    _Default = ffi::sg_face_winding__SG_FACEWINDING_DEFAULT,
+    _Default = ffi::sg_face_winding__SG_FACEWINDING_DEFAULT as u32,
     /// Counter clockwise winding ordering (the default)
-    Ccw = ffi::sg_face_winding_SG_FACEWINDING_CCW,
+    Ccw = ffi::sg_face_winding_SG_FACEWINDING_CCW as u32,
     /// Clockwise winding ordering
-    Cw = ffi::sg_face_winding_SG_FACEWINDING_CW,
-    _Num = ffi::sg_face_winding__SG_FACEWINDING_NUM,
-    _ForceU32 = ffi::sg_face_winding__SG_FACEWINDING_FORCE_U32,
+    Cw = ffi::sg_face_winding_SG_FACEWINDING_CW as u32,
+    _Num = ffi::sg_face_winding__SG_FACEWINDING_NUM as u32,
+    _ForceU32 = ffi::sg_face_winding__SG_FACEWINDING_FORCE_U32 as u32,
 }
 
 bitflags::bitflags! {
     pub struct ColorMask: u32 {
-        const DEFAULT = ffi::sg_color_mask__SG_COLORMASK_DEFAULT;
-        const NONE = ffi::sg_color_mask_SG_COLORMASK_NONE;
-        const R = ffi::sg_color_mask_SG_COLORMASK_R;
-        const G = ffi::sg_color_mask_SG_COLORMASK_G;
-        const RG = ffi::sg_color_mask_SG_COLORMASK_RG;
-        const B = ffi::sg_color_mask_SG_COLORMASK_B;
-        const RB = ffi::sg_color_mask_SG_COLORMASK_RB;
-        const GB = ffi::sg_color_mask_SG_COLORMASK_GB;
-        const RGB = ffi::sg_color_mask_SG_COLORMASK_RGB;
-        const A = ffi::sg_color_mask_SG_COLORMASK_A;
-        const RA = ffi::sg_color_mask_SG_COLORMASK_RA;
-        const GA = ffi::sg_color_mask_SG_COLORMASK_GA;
-        const RGA = ffi::sg_color_mask_SG_COLORMASK_RGA;
-        const BA = ffi::sg_color_mask_SG_COLORMASK_BA;
-        const RBA = ffi::sg_color_mask_SG_COLORMASK_RBA;
-        const GBA = ffi::sg_color_mask_SG_COLORMASK_GBA;
-        const RGBA = ffi::sg_color_mask_SG_COLORMASK_RGBA;
-        const FORCE_U32 = ffi::sg_color_mask__SG_COLORMASK_FORCE_U32;
+        const DEFAULT = ffi::sg_color_mask__SG_COLORMASK_DEFAULT as u32;
+        const NONE = ffi::sg_color_mask_SG_COLORMASK_NONE as u32;
+        const R = ffi::sg_color_mask_SG_COLORMASK_R as u32;
+        const G = ffi::sg_color_mask_SG_COLORMASK_G as u32;
+        const RG = ffi::sg_color_mask_SG_COLORMASK_RG as u32;
+        const B = ffi::sg_color_mask_SG_COLORMASK_B as u32;
+        const RB = ffi::sg_color_mask_SG_COLORMASK_RB as u32;
+        const GB = ffi::sg_color_mask_SG_COLORMASK_GB as u32;
+        const RGB = ffi::sg_color_mask_SG_COLORMASK_RGB as u32;
+        const A = ffi::sg_color_mask_SG_COLORMASK_A as u32;
+        const RA = ffi::sg_color_mask_SG_COLORMASK_RA as u32;
+        const GA = ffi::sg_color_mask_SG_COLORMASK_GA as u32;
+        const RGA = ffi::sg_color_mask_SG_COLORMASK_RGA as u32;
+        const BA = ffi::sg_color_mask_SG_COLORMASK_BA as u32;
+        const RBA = ffi::sg_color_mask_SG_COLORMASK_RBA as u32;
+        const GBA = ffi::sg_color_mask_SG_COLORMASK_GBA as u32;
+        const RGBA = ffi::sg_color_mask_SG_COLORMASK_RGBA as u32;
+        const FORCE_U32 = ffi::sg_color_mask__SG_COLORMASK_FORCE_U32 as u32;
     }
 }
 

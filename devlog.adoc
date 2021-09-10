@@ -12,6 +12,8 @@
 :sdl2: https://docs.rs/sdl2/[rust-sdl2]
 :imgui-inspect: https://github.com/aclysma/imgui-inspect[imgui-inspect]
 
+:no-1: https://github.com/toyboot4e/rokol/issues/1
+
 == Background
 
 I'm interested in C libraries. They can be used from almost any other programming language. That's cool!
@@ -152,4 +154,10 @@ I'm going to use SDL instead of `sokol_app.h`. `sokol_app.h` is light, but it la
 I learned about procedual macros (especially derive macros) from {imgui-inspect}. It's even easier than `macro_rules`!
 
 I added `rokol-derive` crate, which exposes a derive macro `VertexLayout`.
+
+=== Sep 10, 2021
+
+I tried Windows on virtual machine; `rokol` can now be built on Windows! ({no-1})
+
+I had to tweak every `enum` bindings, since Windows MSVC generates different ABI from other compilers.
 

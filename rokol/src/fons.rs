@@ -209,10 +209,10 @@ unsafe impl fontstash::Renderer for FontTextureImpl {
         log::trace!("FontTextureImpl::create [{}, {}]", width, height);
 
         me.img = rg::Image::create(&rg::ImageDesc {
-            type_: rg::ImageType::Dim2 as u32,
+            type_: rg::ImageType::Dim2.to_ffi(),
             width,
             height,
-            usage: rg::ResourceUsage::Dynamic as u32,
+            usage: rg::ResourceUsage::Dynamic.to_ffi(),
             ..Default::default()
         });
 

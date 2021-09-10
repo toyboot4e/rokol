@@ -1,6 +1,6 @@
 [package]
 name = "rokol"
-version = "0.2.3"
+version = "0.3.0"
 authors = ["toyboot4e <toyboot4e@gmail.com>"]
 edition = "2018"
 exclude = ["examples", "book"]
@@ -24,7 +24,7 @@ d3d11 = ["rokol_ffi/d3d11"]
 features = ["impl-app", "impl-gfx", "glcore33", "sdl2", "fontstash"]
 
 [dependencies]
-rokol_ffi = { path = "../rokol_ffi", version = "0.2.2" }
+rokol_ffi = { path = "../rokol_ffi", version = "0.3.0" }
 rokol_derive = { path = "../rokol_derive", version = "0.1.0", optional = true }
 
 log = "0.4.11"

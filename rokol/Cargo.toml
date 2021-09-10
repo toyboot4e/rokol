@@ -11,6 +11,9 @@ categories = ["game-development", "graphics"]
 keywords = ["graphics", "gamedev"]
 
 [features]
+# show off all the items
+default = ["sdl2", "impl-gfx", "glcore33", "fontstash"]
+
 impl-app = ["rokol_ffi/impl-app"]
 impl-gfx = ["rokol_ffi/impl-gfx", "rokol_derive"]
 
@@ -21,7 +24,7 @@ d3d11 = ["rokol_ffi/d3d11"]
 
 [package.metadata.docs.rs]
 # show all the items
-features = ["impl-app", "impl-gfx", "glcore33", "sdl2", "fontstash"]
+features = ["impl-app", "sdl2", "impl-gfx", "glcore33", "fontstash"]
 
 [dependencies]
 rokol_ffi = { path = "../rokol_ffi", version = "0.3.0" }

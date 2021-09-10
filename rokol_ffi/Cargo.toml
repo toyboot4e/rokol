@@ -14,6 +14,9 @@ links = "sokol"
 # emits `DEP_SOKOL_GFX` to crates that list `rokol_ffi` in their `Cargo.toml`
 
 [features]
+# show off all the items
+default = ["impl-app", "impl-gfx", "glcore33"]
+
 impl-app = []
 impl-gfx = []
 
@@ -21,10 +24,6 @@ impl-gfx = []
 glcore33 = []
 metal = []
 d3d11 = []
-
-[package.metadata.docs.rs]
-# show off all the items
-features = ["impl-app", "impl-gfx", "glcore33"]
 
 [build-dependencies]
 cc = "1.0.68"

@@ -20,6 +20,15 @@ pub enum ColorFormat {
     Bgra8 = rg::PixelFormat::Bgra8 as u32,
 }
 
+impl ColorFormat {
+    pub fn to_ffi(self) -> rokol_ffi::gfx::sg_pixel_format {
+        match self {
+            Self::Rgba8 => rokol_ffi::gfx::sg_pixel_format::SG_PIXELFORMAT_RGBA8,
+            Self::Bgra8 => rokol_ffi::gfx::sg_pixel_format::SG_PIXELFORMAT_BGRA8,
+        }
+    }
+}
+
 /// Enum compatible with [`PixelFormat`] in `rokol::gfx`
 ///
 /// [`PixelFormat`]: crate::gfx::PixelFormat
@@ -28,6 +37,15 @@ pub enum ColorFormat {
 pub enum DepthFormat {
     Depth = rg::PixelFormat::Depth as u32,
     DepthStencil = rg::PixelFormat::DepthStencil as u32,
+}
+
+impl DepthFormat {
+    pub fn to_ffi(self) -> rokol_ffi::gfx::sg_pixel_format {
+        match self {
+            Self::Depth => rokol_ffi::gfx::sg_pixel_format::SG_PIXELFORMAT_DEPTH,
+            Self::DepthStencil => rokol_ffi::gfx::sg_pixel_format::SG_PIXELFORMAT_DEPTH_STENCIL,
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -50,8 +68,8 @@ impl Default for ResourceSettings {
 
 impl ResourceSettings {
     fn apply(&self, desc: &mut SgContextDesc) {
-        desc.color_format = self.color_format as u32;
-        desc.depth_format = self.depth_format as u32;
+        desc.color_format = self.color_format.to_ffi();
+        desc.depth_format = self.depth_format.to_ffi();
         desc.sample_count = self.sample_count as i32;
     }
 

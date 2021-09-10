@@ -677,159 +677,174 @@ pub type user_off_t = i64;
 pub type syscall_arg_t = u_int64_t;
 pub type intmax_t = ::std::os::raw::c_long;
 pub type uintmax_t = ::std::os::raw::c_ulong;
-pub const SAPP_MAX_TOUCHPOINTS: ::std::os::raw::c_uint = 8;
-pub const SAPP_MAX_MOUSEBUTTONS: ::std::os::raw::c_uint = 3;
-pub const SAPP_MAX_KEYCODES: ::std::os::raw::c_uint = 512;
-pub const SAPP_MAX_ICONIMAGES: ::std::os::raw::c_uint = 8;
-pub type _bindgen_ty_1 = ::std::os::raw::c_uint;
-pub const sapp_event_type_SAPP_EVENTTYPE_INVALID: sapp_event_type = 0;
-pub const sapp_event_type_SAPP_EVENTTYPE_KEY_DOWN: sapp_event_type = 1;
-pub const sapp_event_type_SAPP_EVENTTYPE_KEY_UP: sapp_event_type = 2;
-pub const sapp_event_type_SAPP_EVENTTYPE_CHAR: sapp_event_type = 3;
-pub const sapp_event_type_SAPP_EVENTTYPE_MOUSE_DOWN: sapp_event_type = 4;
-pub const sapp_event_type_SAPP_EVENTTYPE_MOUSE_UP: sapp_event_type = 5;
-pub const sapp_event_type_SAPP_EVENTTYPE_MOUSE_SCROLL: sapp_event_type = 6;
-pub const sapp_event_type_SAPP_EVENTTYPE_MOUSE_MOVE: sapp_event_type = 7;
-pub const sapp_event_type_SAPP_EVENTTYPE_MOUSE_ENTER: sapp_event_type = 8;
-pub const sapp_event_type_SAPP_EVENTTYPE_MOUSE_LEAVE: sapp_event_type = 9;
-pub const sapp_event_type_SAPP_EVENTTYPE_TOUCHES_BEGAN: sapp_event_type = 10;
-pub const sapp_event_type_SAPP_EVENTTYPE_TOUCHES_MOVED: sapp_event_type = 11;
-pub const sapp_event_type_SAPP_EVENTTYPE_TOUCHES_ENDED: sapp_event_type = 12;
-pub const sapp_event_type_SAPP_EVENTTYPE_TOUCHES_CANCELLED: sapp_event_type = 13;
-pub const sapp_event_type_SAPP_EVENTTYPE_RESIZED: sapp_event_type = 14;
-pub const sapp_event_type_SAPP_EVENTTYPE_ICONIFIED: sapp_event_type = 15;
-pub const sapp_event_type_SAPP_EVENTTYPE_RESTORED: sapp_event_type = 16;
-pub const sapp_event_type_SAPP_EVENTTYPE_SUSPENDED: sapp_event_type = 17;
-pub const sapp_event_type_SAPP_EVENTTYPE_RESUMED: sapp_event_type = 18;
-pub const sapp_event_type_SAPP_EVENTTYPE_UPDATE_CURSOR: sapp_event_type = 19;
-pub const sapp_event_type_SAPP_EVENTTYPE_QUIT_REQUESTED: sapp_event_type = 20;
-pub const sapp_event_type_SAPP_EVENTTYPE_CLIPBOARD_PASTED: sapp_event_type = 21;
-pub const sapp_event_type_SAPP_EVENTTYPE_FILES_DROPPED: sapp_event_type = 22;
-pub const sapp_event_type__SAPP_EVENTTYPE_NUM: sapp_event_type = 23;
-pub const sapp_event_type__SAPP_EVENTTYPE_FORCE_U32: sapp_event_type = 2147483647;
-pub type sapp_event_type = ::std::os::raw::c_uint;
-pub const sapp_keycode_SAPP_KEYCODE_INVALID: sapp_keycode = 0;
-pub const sapp_keycode_SAPP_KEYCODE_SPACE: sapp_keycode = 32;
-pub const sapp_keycode_SAPP_KEYCODE_APOSTROPHE: sapp_keycode = 39;
-pub const sapp_keycode_SAPP_KEYCODE_COMMA: sapp_keycode = 44;
-pub const sapp_keycode_SAPP_KEYCODE_MINUS: sapp_keycode = 45;
-pub const sapp_keycode_SAPP_KEYCODE_PERIOD: sapp_keycode = 46;
-pub const sapp_keycode_SAPP_KEYCODE_SLASH: sapp_keycode = 47;
-pub const sapp_keycode_SAPP_KEYCODE_0: sapp_keycode = 48;
-pub const sapp_keycode_SAPP_KEYCODE_1: sapp_keycode = 49;
-pub const sapp_keycode_SAPP_KEYCODE_2: sapp_keycode = 50;
-pub const sapp_keycode_SAPP_KEYCODE_3: sapp_keycode = 51;
-pub const sapp_keycode_SAPP_KEYCODE_4: sapp_keycode = 52;
-pub const sapp_keycode_SAPP_KEYCODE_5: sapp_keycode = 53;
-pub const sapp_keycode_SAPP_KEYCODE_6: sapp_keycode = 54;
-pub const sapp_keycode_SAPP_KEYCODE_7: sapp_keycode = 55;
-pub const sapp_keycode_SAPP_KEYCODE_8: sapp_keycode = 56;
-pub const sapp_keycode_SAPP_KEYCODE_9: sapp_keycode = 57;
-pub const sapp_keycode_SAPP_KEYCODE_SEMICOLON: sapp_keycode = 59;
-pub const sapp_keycode_SAPP_KEYCODE_EQUAL: sapp_keycode = 61;
-pub const sapp_keycode_SAPP_KEYCODE_A: sapp_keycode = 65;
-pub const sapp_keycode_SAPP_KEYCODE_B: sapp_keycode = 66;
-pub const sapp_keycode_SAPP_KEYCODE_C: sapp_keycode = 67;
-pub const sapp_keycode_SAPP_KEYCODE_D: sapp_keycode = 68;
-pub const sapp_keycode_SAPP_KEYCODE_E: sapp_keycode = 69;
-pub const sapp_keycode_SAPP_KEYCODE_F: sapp_keycode = 70;
-pub const sapp_keycode_SAPP_KEYCODE_G: sapp_keycode = 71;
-pub const sapp_keycode_SAPP_KEYCODE_H: sapp_keycode = 72;
-pub const sapp_keycode_SAPP_KEYCODE_I: sapp_keycode = 73;
-pub const sapp_keycode_SAPP_KEYCODE_J: sapp_keycode = 74;
-pub const sapp_keycode_SAPP_KEYCODE_K: sapp_keycode = 75;
-pub const sapp_keycode_SAPP_KEYCODE_L: sapp_keycode = 76;
-pub const sapp_keycode_SAPP_KEYCODE_M: sapp_keycode = 77;
-pub const sapp_keycode_SAPP_KEYCODE_N: sapp_keycode = 78;
-pub const sapp_keycode_SAPP_KEYCODE_O: sapp_keycode = 79;
-pub const sapp_keycode_SAPP_KEYCODE_P: sapp_keycode = 80;
-pub const sapp_keycode_SAPP_KEYCODE_Q: sapp_keycode = 81;
-pub const sapp_keycode_SAPP_KEYCODE_R: sapp_keycode = 82;
-pub const sapp_keycode_SAPP_KEYCODE_S: sapp_keycode = 83;
-pub const sapp_keycode_SAPP_KEYCODE_T: sapp_keycode = 84;
-pub const sapp_keycode_SAPP_KEYCODE_U: sapp_keycode = 85;
-pub const sapp_keycode_SAPP_KEYCODE_V: sapp_keycode = 86;
-pub const sapp_keycode_SAPP_KEYCODE_W: sapp_keycode = 87;
-pub const sapp_keycode_SAPP_KEYCODE_X: sapp_keycode = 88;
-pub const sapp_keycode_SAPP_KEYCODE_Y: sapp_keycode = 89;
-pub const sapp_keycode_SAPP_KEYCODE_Z: sapp_keycode = 90;
-pub const sapp_keycode_SAPP_KEYCODE_LEFT_BRACKET: sapp_keycode = 91;
-pub const sapp_keycode_SAPP_KEYCODE_BACKSLASH: sapp_keycode = 92;
-pub const sapp_keycode_SAPP_KEYCODE_RIGHT_BRACKET: sapp_keycode = 93;
-pub const sapp_keycode_SAPP_KEYCODE_GRAVE_ACCENT: sapp_keycode = 96;
-pub const sapp_keycode_SAPP_KEYCODE_WORLD_1: sapp_keycode = 161;
-pub const sapp_keycode_SAPP_KEYCODE_WORLD_2: sapp_keycode = 162;
-pub const sapp_keycode_SAPP_KEYCODE_ESCAPE: sapp_keycode = 256;
-pub const sapp_keycode_SAPP_KEYCODE_ENTER: sapp_keycode = 257;
-pub const sapp_keycode_SAPP_KEYCODE_TAB: sapp_keycode = 258;
-pub const sapp_keycode_SAPP_KEYCODE_BACKSPACE: sapp_keycode = 259;
-pub const sapp_keycode_SAPP_KEYCODE_INSERT: sapp_keycode = 260;
-pub const sapp_keycode_SAPP_KEYCODE_DELETE: sapp_keycode = 261;
-pub const sapp_keycode_SAPP_KEYCODE_RIGHT: sapp_keycode = 262;
-pub const sapp_keycode_SAPP_KEYCODE_LEFT: sapp_keycode = 263;
-pub const sapp_keycode_SAPP_KEYCODE_DOWN: sapp_keycode = 264;
-pub const sapp_keycode_SAPP_KEYCODE_UP: sapp_keycode = 265;
-pub const sapp_keycode_SAPP_KEYCODE_PAGE_UP: sapp_keycode = 266;
-pub const sapp_keycode_SAPP_KEYCODE_PAGE_DOWN: sapp_keycode = 267;
-pub const sapp_keycode_SAPP_KEYCODE_HOME: sapp_keycode = 268;
-pub const sapp_keycode_SAPP_KEYCODE_END: sapp_keycode = 269;
-pub const sapp_keycode_SAPP_KEYCODE_CAPS_LOCK: sapp_keycode = 280;
-pub const sapp_keycode_SAPP_KEYCODE_SCROLL_LOCK: sapp_keycode = 281;
-pub const sapp_keycode_SAPP_KEYCODE_NUM_LOCK: sapp_keycode = 282;
-pub const sapp_keycode_SAPP_KEYCODE_PRINT_SCREEN: sapp_keycode = 283;
-pub const sapp_keycode_SAPP_KEYCODE_PAUSE: sapp_keycode = 284;
-pub const sapp_keycode_SAPP_KEYCODE_F1: sapp_keycode = 290;
-pub const sapp_keycode_SAPP_KEYCODE_F2: sapp_keycode = 291;
-pub const sapp_keycode_SAPP_KEYCODE_F3: sapp_keycode = 292;
-pub const sapp_keycode_SAPP_KEYCODE_F4: sapp_keycode = 293;
-pub const sapp_keycode_SAPP_KEYCODE_F5: sapp_keycode = 294;
-pub const sapp_keycode_SAPP_KEYCODE_F6: sapp_keycode = 295;
-pub const sapp_keycode_SAPP_KEYCODE_F7: sapp_keycode = 296;
-pub const sapp_keycode_SAPP_KEYCODE_F8: sapp_keycode = 297;
-pub const sapp_keycode_SAPP_KEYCODE_F9: sapp_keycode = 298;
-pub const sapp_keycode_SAPP_KEYCODE_F10: sapp_keycode = 299;
-pub const sapp_keycode_SAPP_KEYCODE_F11: sapp_keycode = 300;
-pub const sapp_keycode_SAPP_KEYCODE_F12: sapp_keycode = 301;
-pub const sapp_keycode_SAPP_KEYCODE_F13: sapp_keycode = 302;
-pub const sapp_keycode_SAPP_KEYCODE_F14: sapp_keycode = 303;
-pub const sapp_keycode_SAPP_KEYCODE_F15: sapp_keycode = 304;
-pub const sapp_keycode_SAPP_KEYCODE_F16: sapp_keycode = 305;
-pub const sapp_keycode_SAPP_KEYCODE_F17: sapp_keycode = 306;
-pub const sapp_keycode_SAPP_KEYCODE_F18: sapp_keycode = 307;
-pub const sapp_keycode_SAPP_KEYCODE_F19: sapp_keycode = 308;
-pub const sapp_keycode_SAPP_KEYCODE_F20: sapp_keycode = 309;
-pub const sapp_keycode_SAPP_KEYCODE_F21: sapp_keycode = 310;
-pub const sapp_keycode_SAPP_KEYCODE_F22: sapp_keycode = 311;
-pub const sapp_keycode_SAPP_KEYCODE_F23: sapp_keycode = 312;
-pub const sapp_keycode_SAPP_KEYCODE_F24: sapp_keycode = 313;
-pub const sapp_keycode_SAPP_KEYCODE_F25: sapp_keycode = 314;
-pub const sapp_keycode_SAPP_KEYCODE_KP_0: sapp_keycode = 320;
-pub const sapp_keycode_SAPP_KEYCODE_KP_1: sapp_keycode = 321;
-pub const sapp_keycode_SAPP_KEYCODE_KP_2: sapp_keycode = 322;
-pub const sapp_keycode_SAPP_KEYCODE_KP_3: sapp_keycode = 323;
-pub const sapp_keycode_SAPP_KEYCODE_KP_4: sapp_keycode = 324;
-pub const sapp_keycode_SAPP_KEYCODE_KP_5: sapp_keycode = 325;
-pub const sapp_keycode_SAPP_KEYCODE_KP_6: sapp_keycode = 326;
-pub const sapp_keycode_SAPP_KEYCODE_KP_7: sapp_keycode = 327;
-pub const sapp_keycode_SAPP_KEYCODE_KP_8: sapp_keycode = 328;
-pub const sapp_keycode_SAPP_KEYCODE_KP_9: sapp_keycode = 329;
-pub const sapp_keycode_SAPP_KEYCODE_KP_DECIMAL: sapp_keycode = 330;
-pub const sapp_keycode_SAPP_KEYCODE_KP_DIVIDE: sapp_keycode = 331;
-pub const sapp_keycode_SAPP_KEYCODE_KP_MULTIPLY: sapp_keycode = 332;
-pub const sapp_keycode_SAPP_KEYCODE_KP_SUBTRACT: sapp_keycode = 333;
-pub const sapp_keycode_SAPP_KEYCODE_KP_ADD: sapp_keycode = 334;
-pub const sapp_keycode_SAPP_KEYCODE_KP_ENTER: sapp_keycode = 335;
-pub const sapp_keycode_SAPP_KEYCODE_KP_EQUAL: sapp_keycode = 336;
-pub const sapp_keycode_SAPP_KEYCODE_LEFT_SHIFT: sapp_keycode = 340;
-pub const sapp_keycode_SAPP_KEYCODE_LEFT_CONTROL: sapp_keycode = 341;
-pub const sapp_keycode_SAPP_KEYCODE_LEFT_ALT: sapp_keycode = 342;
-pub const sapp_keycode_SAPP_KEYCODE_LEFT_SUPER: sapp_keycode = 343;
-pub const sapp_keycode_SAPP_KEYCODE_RIGHT_SHIFT: sapp_keycode = 344;
-pub const sapp_keycode_SAPP_KEYCODE_RIGHT_CONTROL: sapp_keycode = 345;
-pub const sapp_keycode_SAPP_KEYCODE_RIGHT_ALT: sapp_keycode = 346;
-pub const sapp_keycode_SAPP_KEYCODE_RIGHT_SUPER: sapp_keycode = 347;
-pub const sapp_keycode_SAPP_KEYCODE_MENU: sapp_keycode = 348;
-pub type sapp_keycode = ::std::os::raw::c_uint;
+pub const SAPP_MAX_TOUCHPOINTS: _bindgen_ty_1 = _bindgen_ty_1::SAPP_MAX_TOUCHPOINTS;
+pub const SAPP_MAX_MOUSEBUTTONS: _bindgen_ty_1 = _bindgen_ty_1::SAPP_MAX_MOUSEBUTTONS;
+pub const SAPP_MAX_KEYCODES: _bindgen_ty_1 = _bindgen_ty_1::SAPP_MAX_KEYCODES;
+pub const SAPP_MAX_ICONIMAGES: _bindgen_ty_1 = _bindgen_ty_1::SAPP_MAX_TOUCHPOINTS;
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _bindgen_ty_1 {
+    SAPP_MAX_TOUCHPOINTS = 8,
+    SAPP_MAX_MOUSEBUTTONS = 3,
+    SAPP_MAX_KEYCODES = 512,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sapp_event_type {
+    SAPP_EVENTTYPE_INVALID = 0,
+    SAPP_EVENTTYPE_KEY_DOWN = 1,
+    SAPP_EVENTTYPE_KEY_UP = 2,
+    SAPP_EVENTTYPE_CHAR = 3,
+    SAPP_EVENTTYPE_MOUSE_DOWN = 4,
+    SAPP_EVENTTYPE_MOUSE_UP = 5,
+    SAPP_EVENTTYPE_MOUSE_SCROLL = 6,
+    SAPP_EVENTTYPE_MOUSE_MOVE = 7,
+    SAPP_EVENTTYPE_MOUSE_ENTER = 8,
+    SAPP_EVENTTYPE_MOUSE_LEAVE = 9,
+    SAPP_EVENTTYPE_TOUCHES_BEGAN = 10,
+    SAPP_EVENTTYPE_TOUCHES_MOVED = 11,
+    SAPP_EVENTTYPE_TOUCHES_ENDED = 12,
+    SAPP_EVENTTYPE_TOUCHES_CANCELLED = 13,
+    SAPP_EVENTTYPE_RESIZED = 14,
+    SAPP_EVENTTYPE_ICONIFIED = 15,
+    SAPP_EVENTTYPE_RESTORED = 16,
+    SAPP_EVENTTYPE_SUSPENDED = 17,
+    SAPP_EVENTTYPE_RESUMED = 18,
+    SAPP_EVENTTYPE_UPDATE_CURSOR = 19,
+    SAPP_EVENTTYPE_QUIT_REQUESTED = 20,
+    SAPP_EVENTTYPE_CLIPBOARD_PASTED = 21,
+    SAPP_EVENTTYPE_FILES_DROPPED = 22,
+    _SAPP_EVENTTYPE_NUM = 23,
+    _SAPP_EVENTTYPE_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sapp_keycode {
+    SAPP_KEYCODE_INVALID = 0,
+    SAPP_KEYCODE_SPACE = 32,
+    SAPP_KEYCODE_APOSTROPHE = 39,
+    SAPP_KEYCODE_COMMA = 44,
+    SAPP_KEYCODE_MINUS = 45,
+    SAPP_KEYCODE_PERIOD = 46,
+    SAPP_KEYCODE_SLASH = 47,
+    SAPP_KEYCODE_0 = 48,
+    SAPP_KEYCODE_1 = 49,
+    SAPP_KEYCODE_2 = 50,
+    SAPP_KEYCODE_3 = 51,
+    SAPP_KEYCODE_4 = 52,
+    SAPP_KEYCODE_5 = 53,
+    SAPP_KEYCODE_6 = 54,
+    SAPP_KEYCODE_7 = 55,
+    SAPP_KEYCODE_8 = 56,
+    SAPP_KEYCODE_9 = 57,
+    SAPP_KEYCODE_SEMICOLON = 59,
+    SAPP_KEYCODE_EQUAL = 61,
+    SAPP_KEYCODE_A = 65,
+    SAPP_KEYCODE_B = 66,
+    SAPP_KEYCODE_C = 67,
+    SAPP_KEYCODE_D = 68,
+    SAPP_KEYCODE_E = 69,
+    SAPP_KEYCODE_F = 70,
+    SAPP_KEYCODE_G = 71,
+    SAPP_KEYCODE_H = 72,
+    SAPP_KEYCODE_I = 73,
+    SAPP_KEYCODE_J = 74,
+    SAPP_KEYCODE_K = 75,
+    SAPP_KEYCODE_L = 76,
+    SAPP_KEYCODE_M = 77,
+    SAPP_KEYCODE_N = 78,
+    SAPP_KEYCODE_O = 79,
+    SAPP_KEYCODE_P = 80,
+    SAPP_KEYCODE_Q = 81,
+    SAPP_KEYCODE_R = 82,
+    SAPP_KEYCODE_S = 83,
+    SAPP_KEYCODE_T = 84,
+    SAPP_KEYCODE_U = 85,
+    SAPP_KEYCODE_V = 86,
+    SAPP_KEYCODE_W = 87,
+    SAPP_KEYCODE_X = 88,
+    SAPP_KEYCODE_Y = 89,
+    SAPP_KEYCODE_Z = 90,
+    SAPP_KEYCODE_LEFT_BRACKET = 91,
+    SAPP_KEYCODE_BACKSLASH = 92,
+    SAPP_KEYCODE_RIGHT_BRACKET = 93,
+    SAPP_KEYCODE_GRAVE_ACCENT = 96,
+    SAPP_KEYCODE_WORLD_1 = 161,
+    SAPP_KEYCODE_WORLD_2 = 162,
+    SAPP_KEYCODE_ESCAPE = 256,
+    SAPP_KEYCODE_ENTER = 257,
+    SAPP_KEYCODE_TAB = 258,
+    SAPP_KEYCODE_BACKSPACE = 259,
+    SAPP_KEYCODE_INSERT = 260,
+    SAPP_KEYCODE_DELETE = 261,
+    SAPP_KEYCODE_RIGHT = 262,
+    SAPP_KEYCODE_LEFT = 263,
+    SAPP_KEYCODE_DOWN = 264,
+    SAPP_KEYCODE_UP = 265,
+    SAPP_KEYCODE_PAGE_UP = 266,
+    SAPP_KEYCODE_PAGE_DOWN = 267,
+    SAPP_KEYCODE_HOME = 268,
+    SAPP_KEYCODE_END = 269,
+    SAPP_KEYCODE_CAPS_LOCK = 280,
+    SAPP_KEYCODE_SCROLL_LOCK = 281,
+    SAPP_KEYCODE_NUM_LOCK = 282,
+    SAPP_KEYCODE_PRINT_SCREEN = 283,
+    SAPP_KEYCODE_PAUSE = 284,
+    SAPP_KEYCODE_F1 = 290,
+    SAPP_KEYCODE_F2 = 291,
+    SAPP_KEYCODE_F3 = 292,
+    SAPP_KEYCODE_F4 = 293,
+    SAPP_KEYCODE_F5 = 294,
+    SAPP_KEYCODE_F6 = 295,
+    SAPP_KEYCODE_F7 = 296,
+    SAPP_KEYCODE_F8 = 297,
+    SAPP_KEYCODE_F9 = 298,
+    SAPP_KEYCODE_F10 = 299,
+    SAPP_KEYCODE_F11 = 300,
+    SAPP_KEYCODE_F12 = 301,
+    SAPP_KEYCODE_F13 = 302,
+    SAPP_KEYCODE_F14 = 303,
+    SAPP_KEYCODE_F15 = 304,
+    SAPP_KEYCODE_F16 = 305,
+    SAPP_KEYCODE_F17 = 306,
+    SAPP_KEYCODE_F18 = 307,
+    SAPP_KEYCODE_F19 = 308,
+    SAPP_KEYCODE_F20 = 309,
+    SAPP_KEYCODE_F21 = 310,
+    SAPP_KEYCODE_F22 = 311,
+    SAPP_KEYCODE_F23 = 312,
+    SAPP_KEYCODE_F24 = 313,
+    SAPP_KEYCODE_F25 = 314,
+    SAPP_KEYCODE_KP_0 = 320,
+    SAPP_KEYCODE_KP_1 = 321,
+    SAPP_KEYCODE_KP_2 = 322,
+    SAPP_KEYCODE_KP_3 = 323,
+    SAPP_KEYCODE_KP_4 = 324,
+    SAPP_KEYCODE_KP_5 = 325,
+    SAPP_KEYCODE_KP_6 = 326,
+    SAPP_KEYCODE_KP_7 = 327,
+    SAPP_KEYCODE_KP_8 = 328,
+    SAPP_KEYCODE_KP_9 = 329,
+    SAPP_KEYCODE_KP_DECIMAL = 330,
+    SAPP_KEYCODE_KP_DIVIDE = 331,
+    SAPP_KEYCODE_KP_MULTIPLY = 332,
+    SAPP_KEYCODE_KP_SUBTRACT = 333,
+    SAPP_KEYCODE_KP_ADD = 334,
+    SAPP_KEYCODE_KP_ENTER = 335,
+    SAPP_KEYCODE_KP_EQUAL = 336,
+    SAPP_KEYCODE_LEFT_SHIFT = 340,
+    SAPP_KEYCODE_LEFT_CONTROL = 341,
+    SAPP_KEYCODE_LEFT_ALT = 342,
+    SAPP_KEYCODE_LEFT_SUPER = 343,
+    SAPP_KEYCODE_RIGHT_SHIFT = 344,
+    SAPP_KEYCODE_RIGHT_CONTROL = 345,
+    SAPP_KEYCODE_RIGHT_ALT = 346,
+    SAPP_KEYCODE_RIGHT_SUPER = 347,
+    SAPP_KEYCODE_MENU = 348,
+}
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone, PartialEq)]
 pub struct sapp_touchpoint {
@@ -891,19 +906,34 @@ fn bindgen_test_layout_sapp_touchpoint() {
         )
     );
 }
-pub const sapp_mousebutton_SAPP_MOUSEBUTTON_LEFT: sapp_mousebutton = 0;
-pub const sapp_mousebutton_SAPP_MOUSEBUTTON_RIGHT: sapp_mousebutton = 1;
-pub const sapp_mousebutton_SAPP_MOUSEBUTTON_MIDDLE: sapp_mousebutton = 2;
-pub const sapp_mousebutton_SAPP_MOUSEBUTTON_INVALID: sapp_mousebutton = 256;
-pub type sapp_mousebutton = ::std::os::raw::c_uint;
-pub const SAPP_MODIFIER_SHIFT: ::std::os::raw::c_uint = 1;
-pub const SAPP_MODIFIER_CTRL: ::std::os::raw::c_uint = 2;
-pub const SAPP_MODIFIER_ALT: ::std::os::raw::c_uint = 4;
-pub const SAPP_MODIFIER_SUPER: ::std::os::raw::c_uint = 8;
-pub const SAPP_MODIFIER_LMB: ::std::os::raw::c_uint = 256;
-pub const SAPP_MODIFIER_RMB: ::std::os::raw::c_uint = 512;
-pub const SAPP_MODIFIER_MMB: ::std::os::raw::c_uint = 1024;
-pub type _bindgen_ty_2 = ::std::os::raw::c_uint;
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sapp_mousebutton {
+    SAPP_MOUSEBUTTON_LEFT = 0,
+    SAPP_MOUSEBUTTON_RIGHT = 1,
+    SAPP_MOUSEBUTTON_MIDDLE = 2,
+    SAPP_MOUSEBUTTON_INVALID = 256,
+}
+pub const SAPP_MODIFIER_SHIFT: _bindgen_ty_2 = _bindgen_ty_2::SAPP_MODIFIER_SHIFT;
+pub const SAPP_MODIFIER_CTRL: _bindgen_ty_2 = _bindgen_ty_2::SAPP_MODIFIER_CTRL;
+pub const SAPP_MODIFIER_ALT: _bindgen_ty_2 = _bindgen_ty_2::SAPP_MODIFIER_ALT;
+pub const SAPP_MODIFIER_SUPER: _bindgen_ty_2 = _bindgen_ty_2::SAPP_MODIFIER_SUPER;
+pub const SAPP_MODIFIER_LMB: _bindgen_ty_2 = _bindgen_ty_2::SAPP_MODIFIER_LMB;
+pub const SAPP_MODIFIER_RMB: _bindgen_ty_2 = _bindgen_ty_2::SAPP_MODIFIER_RMB;
+pub const SAPP_MODIFIER_MMB: _bindgen_ty_2 = _bindgen_ty_2::SAPP_MODIFIER_MMB;
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _bindgen_ty_2 {
+    SAPP_MODIFIER_SHIFT = 1,
+    SAPP_MODIFIER_CTRL = 2,
+    SAPP_MODIFIER_ALT = 4,
+    SAPP_MODIFIER_SUPER = 8,
+    SAPP_MODIFIER_LMB = 256,
+    SAPP_MODIFIER_RMB = 512,
+    SAPP_MODIFIER_MMB = 1024,
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct sapp_event {
@@ -1714,11 +1744,14 @@ impl Default for sapp_desc {
         unsafe { ::std::mem::zeroed() }
     }
 }
-pub const sapp_html5_fetch_error_SAPP_HTML5_FETCH_ERROR_NO_ERROR: sapp_html5_fetch_error = 0;
-pub const sapp_html5_fetch_error_SAPP_HTML5_FETCH_ERROR_BUFFER_TOO_SMALL: sapp_html5_fetch_error =
-    1;
-pub const sapp_html5_fetch_error_SAPP_HTML5_FETCH_ERROR_OTHER: sapp_html5_fetch_error = 2;
-pub type sapp_html5_fetch_error = ::std::os::raw::c_uint;
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sapp_html5_fetch_error {
+    SAPP_HTML5_FETCH_ERROR_NO_ERROR = 0,
+    SAPP_HTML5_FETCH_ERROR_BUFFER_TOO_SMALL = 1,
+    SAPP_HTML5_FETCH_ERROR_OTHER = 2,
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct sapp_html5_fetch_response {

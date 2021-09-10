@@ -42,22 +42,28 @@ fn main() {
 
     if cfg!(feature = "impl-app") {
         self::gen_bindings(
-        root.join("wrappers/rokol_app.h"),
-        root.join("src/app.rs"),
-        args,
-        "//! Rust FFI to [sokol_app.h](https://github.com/floooh/sokol/blob/master/sokol_app.h)",
-        |b| b.derive_default(true).derive_partialeq(true).derive_eq(true)
-    );
+             root.join("wrappers/rokol_app.h"),
+             root.join("src/app.rs"),
+             args,
+             "//! Rust FFI to [sokol_app.h](https://github.com/floooh/sokol/blob/master/sokol_app.h)",
+             |b| b.derive_default(true).derive_partialeq(true).derive_eq(true)
+                     .default_enum_style(bindgen::EnumVariation::Rust {
+                 non_exhaustive: true,
+             })
+        );
     }
 
     if cfg!(feature = "impl-gfx") {
         self::gen_bindings(
-        root.join("wrappers/rokol_gfx.h"),
-        root.join("src/gfx.rs"),
-        args,
-        "//! Rust FFI to [sokol_gfx.h](https://github.com/floooh/sokol/blob/master/sokol_gfx.h)",
-        |b| b.derive_default(true).derive_partialeq(true).derive_eq(true)
-    );
+             root.join("wrappers/rokol_gfx.h"),
+             root.join("src/gfx.rs"),
+             args,
+             "//! Rust FFI to [sokol_gfx.h](https://github.com/floooh/sokol/blob/master/sokol_gfx.h)",
+             |b| b.derive_default(true).derive_partialeq(true).derive_eq(true)
+                     .default_enum_style(bindgen::EnumVariation::Rust {
+                 non_exhaustive: true,
+             })
+         );
     }
 
     // compile and link to them

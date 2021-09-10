@@ -1,5 +1,4 @@
 /*!
-
 Rust FFI to [Sokol] headers for [Rokol] ([API](https://docs.rs/rokol/latest/rokol/))
 
 Last update: Dec 3, 2020 ([commit]). Sokol header declaration diffs can be seen on [GitHub][Rokol].
@@ -19,7 +18,6 @@ NOTE: Sokol [considers] zero-initizialized structures to be in default state. It
 [`bindgen`]: https://docs.rs/bindgen/latest/bindgen
 [derive]: https://docs.rs/bindgen/0.56.0/bindgen/struct.Builder.html#method.derive_default
 [considers]: https://floooh.github.io/2017/08/06/sokol-api-update.html
-
 */
 
 // TODO: Do not use `include!` so that we get goto support in Emacs

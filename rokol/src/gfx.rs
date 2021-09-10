@@ -41,12 +41,10 @@ For example, for one frame with one screen rendering pass:
 */
 
 use {
-    enum_repr::EnumRepr,
     rokol_ffi::gfx as ffi,
     std::{
         ffi::{c_void, CString},
         mem::size_of,
-        os::raw::c_uint,
     },
 };
 
@@ -90,517 +88,535 @@ pub type Color = ffi::sg_color;
 // --------------------------------------------------------------------------------
 // Resource enums
 
-/// Actions to be performed at the start of a rendering pass in [`begin_pass`] or [`begin_default_pass`]
-///
-/// A separate action and clear values can be defined for each
-/// color attachment, and for the depth-stencil attachment.
-///
-/// # The default clear values
-///
-/// - SG_DEFAULT_CLEAR_RED:     0.5f
-/// - SG_DEFAULT_CLEAR_GREEN:   0.5f
-/// - SG_DEFAULT_CLEAR_BLUE:    0.5f
-/// - SG_DEFAULT_CLEAR_ALPHA:   1.0f
-/// - SG_DEFAULT_CLEAR_DEPTH:   1.0f
-/// - SG_DEFAULT_CLEAR_STENCIL: 0
-#[EnumRepr(type = "c_uint")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum PassActionKind {
-    _Default = ffi::sg_action__SG_ACTION_DEFAULT,
-    Clear = ffi::sg_action_SG_ACTION_CLEAR,
-    Load = ffi::sg_action_SG_ACTION_LOAD,
-    DontCare = ffi::sg_action_SG_ACTION_DONTCARE,
+ffi_enum! {
+    /// Actions to be performed at the start of a rendering pass in [`begin_pass`] or [`begin_default_pass`]
+    ///
+    /// A separate action and clear values can be defined for each
+    /// color attachment, and for the depth-stencil attachment.
+    ///
+    /// # The default clear values
+    ///
+    /// - SG_DEFAULT_CLEAR_RED:     0.5f
+    /// - SG_DEFAULT_CLEAR_GREEN:   0.5f
+    /// - SG_DEFAULT_CLEAR_BLUE:    0.5f
+    /// - SG_DEFAULT_CLEAR_ALPHA:   1.0f
+    /// - SG_DEFAULT_CLEAR_DEPTH:   1.0f
+    /// - SG_DEFAULT_CLEAR_STENCIL: 0
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub enum PassActionKind around ffi::sg_action {
+        _Default = _SG_ACTION_DEFAULT,
+        Clear = SG_ACTION_CLEAR,
+        Load = SG_ACTION_LOAD,
+        DontCare = SG_ACTION_DONTCARE,
+    }
 }
 
-/// Update strategy of buffers and images
-///
-/// Render target image has to have `Immutable` usage.
-///
-/// # Kinds
-///
-/// * `Immutable`: Never be updated after creation
-/// * `Dynamic`: Updated infrequently ("once after creation" to "quite often but not every frame")
-/// * `Stream`: Updated each frame
-///
-/// The rendering backends use this hint to prevent that the
-/// CPU needs to wait for the GPU when attempting to update
-/// a resource that might be currently accessed by the GPU.
-///
-/// # Update frequency
-///
-/// Resource content is updated with the functions `sg_update_buffer()` or
-/// `sg_append_buffer()` for buffer objects, and `sg_update_image()` for image
-/// objects.
-///
-/// For the `sg_update_*()` functions, only one update is allowed per
-/// frame and resource object, while `sg_append_buffer()` can be called
-/// multiple times per frame on the same buffer. The application must update
-/// all data required for rendering (this means that the update data can be
-/// smaller than the resource size, if only a part of the overall resource
-/// size is used for rendering, you only need to make sure that the data that
-/// *is* used is valid).
-#[EnumRepr(type = "c_uint")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum ResourceUsage {
-    _Default = ffi::sg_usage__SG_USAGE_DEFAULT,
-    Immutable = ffi::sg_usage_SG_USAGE_IMMUTABLE,
-    Dynamic = ffi::sg_usage_SG_USAGE_DYNAMIC,
-    Stream = ffi::sg_usage_SG_USAGE_STREAM,
-    _ForceU32 = ffi::sg_usage__SG_USAGE_FORCE_U32,
-    _Num = ffi::sg_usage__SG_USAGE_NUM,
+ffi_enum! {
+    /// Update strategy of buffers and images
+    ///
+    /// Render target image has to have `Immutable` usage.
+    ///
+    /// # Kinds
+    ///
+    /// * `Immutable`: Never be updated after creation
+    /// * `Dynamic`: Updated infrequently ("once after creation" to "quite often but not every frame")
+    /// * `Stream`: Updated each frame
+    ///
+    /// The rendering backends use this hint to prevent that the
+    /// CPU needs to wait for the GPU when attempting to update
+    /// a resource that might be currently accessed by the GPU.
+    ///
+    /// # Update frequency
+    ///
+    /// Resource content is updated with the functions `sg_update_buffer()` or
+    /// `sg_append_buffer()` for buffer objects, and `sg_update_image()` for image
+    /// objects.
+    ///
+    /// For the `sg_update_*()` functions, only one update is allowed per
+    /// frame and resource object, while `sg_append_buffer()` can be called
+    /// multiple times per frame on the same buffer. The application must update
+    /// all data required for rendering (this means that the update data can be
+    /// smaller than the resource size, if only a part of the overall resource
+    /// size is used for rendering, you only need to make sure that the data that
+    /// *is* used is valid).
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub enum ResourceUsage around ffi::sg_usage {
+        _Default = _SG_USAGE_DEFAULT,
+        Immutable = SG_USAGE_IMMUTABLE,
+        Dynamic = SG_USAGE_DYNAMIC,
+        Stream = SG_USAGE_STREAM,
+        _ForceU32 = _SG_USAGE_FORCE_U32,
+        _Num = _SG_USAGE_NUM,
+    }
 }
 
-/// Fs | Vs
-#[EnumRepr(type = "c_uint")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum ShaderStage {
-    /// Fragment shader
-    Fs = ffi::sg_shader_stage_SG_SHADERSTAGE_FS,
-    /// Vertex shader
-    Vs = ffi::sg_shader_stage_SG_SHADERSTAGE_VS,
-    // _ForceU32 = ffi::sg_shader_stage__SG_SHADERSTAGE_FORCE_U32 ,
+ffi_enum! {
+    /// Fs | Vs
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub enum ShaderStage around ffi::sg_shader_stage {
+        /// Fragment shader
+        Fs = SG_SHADERSTAGE_FS,
+        /// Vertex shader
+        Vs = SG_SHADERSTAGE_VS,
+    }
+    // _ForceU32 = _SHADERSTAGE_FORCE_U32,
 }
 
-/// Mat4 | Float | Float2 | Float3 | Float4
-#[EnumRepr(type = "c_uint")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum UniformType {
-    Float = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT,
-    Float2 = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT2,
-    Float3 = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT3,
-    Float4 = ffi::sg_uniform_type_SG_UNIFORMTYPE_FLOAT4,
-    Invalid = ffi::sg_uniform_type_SG_UNIFORMTYPE_INVALID,
-    Mat4 = ffi::sg_uniform_type_SG_UNIFORMTYPE_MAT4,
-    _ForceU32 = ffi::sg_uniform_type__SG_UNIFORMTYPE_FORCE_U32,
-    _Num = ffi::sg_uniform_type__SG_UNIFORMTYPE_NUM,
+ffi_enum! {
+    /// Mat4 | Float | Float2 | Float3 | Float4
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub enum UniformType around ffi::sg_uniform_type {
+        Float = SG_UNIFORMTYPE_FLOAT,
+        Float2 = SG_UNIFORMTYPE_FLOAT2,
+        Float3 = SG_UNIFORMTYPE_FLOAT3,
+        Float4 = SG_UNIFORMTYPE_FLOAT4,
+        Invalid = SG_UNIFORMTYPE_INVALID,
+        Mat4 = SG_UNIFORMTYPE_MAT4,
+        _ForceU32 = _SG_UNIFORMTYPE_FORCE_U32,
+        _Num = _SG_UNIFORMTYPE_NUM,
+    }
 }
 
-/// Float | SInt | UInt
-///
-/// Indicates the basic data type of a shader's texture sampler which
-/// can be float , unsigned integer or signed integer. The sampler
-/// type is used in the sg_shader_image_desc to describe the
-/// sampler type of a shader's texture sampler binding.
-///
-/// The default sampler type is SG_SAMPLERTYPE_FLOAT.
-#[EnumRepr(type = "c_uint")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum SamplerType {
-    _Default = ffi::sg_sampler_type__SG_SAMPLERTYPE_DEFAULT,
-    Float = ffi::sg_sampler_type_SG_SAMPLERTYPE_FLOAT,
-    SInt = ffi::sg_sampler_type_SG_SAMPLERTYPE_SINT,
-    UInt = ffi::sg_sampler_type_SG_SAMPLERTYPE_UINT,
+ffi_enum! {
+    /// Float | SInt | UInt
+    ///
+    /// Indicates the basic data type of a shader's texture sampler which
+    /// can be float , unsigned integer or signed integer. The sampler
+    /// type is used in the sg_shader_image_desc to describe the
+    /// sampler type of a shader's texture sampler binding.
+    ///
+    /// The default sampler type is SG_SAMPLERTYPE_FLOAT.
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub enum SamplerType around ffi::sg_sampler_type {
+        _Default = _SG_SAMPLERTYPE_DEFAULT,
+        Float = SG_SAMPLERTYPE_FLOAT,
+        SInt = SG_SAMPLERTYPE_SINT,
+        UInt = SG_SAMPLERTYPE_UINT,
+    }
 }
 
 // --------------------------------------------------------------------------------
 // Binding enums
 
-/// Data type of a vertex component
-///
-/// Used to describe the layout of vertex data when creating a pipeline object.
-///
-/// # Portability of integer values
-///
-/// Only normalized integer formats (`*N`) is portable across all platforms.
-///
-/// The reason is that D3D11 cannot convert from non-normalized
-/// formats to floating point inputs (only to integer inputs),
-/// and WebGL2 / GLES2 don't support integer vertex shader inputs.
-#[EnumRepr(type = "c_uint")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum VertexFormat {
-    Inalid = ffi::sg_vertex_format_SG_VERTEXFORMAT_INVALID,
-    Float = ffi::sg_vertex_format_SG_VERTEXFORMAT_FLOAT,
-    Float2 = ffi::sg_vertex_format_SG_VERTEXFORMAT_FLOAT2,
-    Float3 = ffi::sg_vertex_format_SG_VERTEXFORMAT_FLOAT3,
-    Float4 = ffi::sg_vertex_format_SG_VERTEXFORMAT_FLOAT4,
-    Byte4 = ffi::sg_vertex_format_SG_VERTEXFORMAT_BYTE4,
-    Byte4N = ffi::sg_vertex_format_SG_VERTEXFORMAT_BYTE4N,
-    UByte4 = ffi::sg_vertex_format_SG_VERTEXFORMAT_UBYTE4,
-    UByte4N = ffi::sg_vertex_format_SG_VERTEXFORMAT_UBYTE4N,
-    Short2 = ffi::sg_vertex_format_SG_VERTEXFORMAT_SHORT2,
-    Short2N = ffi::sg_vertex_format_SG_VERTEXFORMAT_SHORT2N,
-    UShort2N = ffi::sg_vertex_format_SG_VERTEXFORMAT_USHORT2N,
-    Short4 = ffi::sg_vertex_format_SG_VERTEXFORMAT_SHORT4,
-    Short4N = ffi::sg_vertex_format_SG_VERTEXFORMAT_SHORT4N,
-    UShort4N = ffi::sg_vertex_format_SG_VERTEXFORMAT_USHORT4N,
-    Uint10N2 = ffi::sg_vertex_format_SG_VERTEXFORMAT_UINT10_N2,
-    _Num = ffi::sg_vertex_format__SG_VERTEXFORMAT_NUM,
-    _ForceU32 = ffi::sg_vertex_format__SG_VERTEXFORMAT_FORCE_U32,
+ffi_enum! {
+    /// Data type of a vertex component
+    ///
+    /// Used to describe the layout of vertex data when creating a pipeline object.
+    ///
+    /// # Portability of integer values
+    ///
+    /// Only normalized integer formats (`*N`) is portable across all platforms.
+    ///
+    /// The reason is that D3D11 cannot convert from non-normalized
+    /// formats to floating point inputs (only to integer inputs),
+    /// and WebGL2 / GLES2 don't support integer vertex shader inputs.
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub enum VertexFormat around ffi::sg_vertex_format {
+        Inalid = SG_VERTEXFORMAT_INVALID,
+        Float = SG_VERTEXFORMAT_FLOAT,
+        Float2 = SG_VERTEXFORMAT_FLOAT2,
+        Float3 = SG_VERTEXFORMAT_FLOAT3,
+        Float4 = SG_VERTEXFORMAT_FLOAT4,
+        Byte4 = SG_VERTEXFORMAT_BYTE4,
+        Byte4N = SG_VERTEXFORMAT_BYTE4N,
+        UByte4 = SG_VERTEXFORMAT_UBYTE4,
+        UByte4N = SG_VERTEXFORMAT_UBYTE4N,
+        Short2 = SG_VERTEXFORMAT_SHORT2,
+        Short2N = SG_VERTEXFORMAT_SHORT2N,
+        UShort2N = SG_VERTEXFORMAT_USHORT2N,
+        Short4 = SG_VERTEXFORMAT_SHORT4,
+        Short4N = SG_VERTEXFORMAT_SHORT4N,
+        UShort4N = SG_VERTEXFORMAT_USHORT4N,
+        Uint10N2 = SG_VERTEXFORMAT_UINT10_N2,
+        _Num = _SG_VERTEXFORMAT_NUM,
+        _ForceU32 = _SG_VERTEXFORMAT_FORCE_U32,
+    }
 }
 
-/// Index | Vertex
-#[EnumRepr(type = "c_uint")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum BufferType {
-    _Default = ffi::sg_buffer_type__SG_BUFFERTYPE_DEFAULT,
-    Index = ffi::sg_buffer_type_SG_BUFFERTYPE_INDEXBUFFER,
-    Vertex = ffi::sg_buffer_type_SG_BUFFERTYPE_VERTEXBUFFER,
-    _ForceU32 = ffi::sg_buffer_type__SG_BUFFERTYPE_FORCE_U32,
-    _Num = ffi::sg_buffer_type__SG_BUFFERTYPE_NUM,
+ffi_enum! {
+    /// Index | Vertex
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub enum BufferType around ffi::sg_buffer_type {
+        _Default = _SG_BUFFERTYPE_DEFAULT,
+        Index = SG_BUFFERTYPE_INDEXBUFFER,
+        Vertex = SG_BUFFERTYPE_VERTEXBUFFER,
+        _ForceU32 = _SG_BUFFERTYPE_FORCE_U32,
+        _Num = _SG_BUFFERTYPE_NUM,
+    }
 }
 
-/// UInt16 | UInt32
-#[EnumRepr(type = "c_uint")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum IndexType {
-    _Default = ffi::sg_index_type__SG_INDEXTYPE_DEFAULT,
-    None = ffi::sg_index_type_SG_INDEXTYPE_NONE,
-    UInt16 = ffi::sg_index_type_SG_INDEXTYPE_UINT16,
-    UInt32 = ffi::sg_index_type_SG_INDEXTYPE_UINT32,
-    _ForceU32 = ffi::sg_index_type__SG_INDEXTYPE_FORCE_U32,
-    _Num = ffi::sg_index_type__SG_INDEXTYPE_NUM,
+ffi_enum! {
+    /// UInt16 | UInt32
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub enum IndexType around ffi::sg_index_type {
+        _Default = _SG_INDEXTYPE_DEFAULT,
+        None = SG_INDEXTYPE_NONE,
+        UInt16 = SG_INDEXTYPE_UINT16,
+        UInt32 = SG_INDEXTYPE_UINT32,
+        _ForceU32 = _SG_INDEXTYPE_FORCE_U32,
+        _Num = _SG_INDEXTYPE_NUM,
+    }
 }
 
-/// Common subset of 3D primitive types supported across all 3D APIs. Field of [`PipelineDesc`].
-#[EnumRepr(type = "c_uint")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum PrimitiveType {
-    _Default = ffi::sg_primitive_type__SG_PRIMITIVETYPE_DEFAULT,
-    _ForuceU32 = ffi::sg_primitive_type__SG_PRIMITIVETYPE_FORCE_U32,
-    _Num = ffi::sg_primitive_type__SG_PRIMITIVETYPE_NUM,
-    Lines = ffi::sg_primitive_type_SG_PRIMITIVETYPE_LINES,
-    LinesStrip = ffi::sg_primitive_type_SG_PRIMITIVETYPE_LINE_STRIP,
-    Points = ffi::sg_primitive_type_SG_PRIMITIVETYPE_POINTS,
-    Triangles = ffi::sg_primitive_type_SG_PRIMITIVETYPE_TRIANGLES,
-    TrianglesStrip = ffi::sg_primitive_type_SG_PRIMITIVETYPE_TRIANGLE_STRIP,
+ffi_enum! {
+    /// Common subset of 3D primitive types supported across all 3D APIs. Field of [`PipelineDesc`].
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub enum PrimitiveType around ffi::sg_primitive_type {
+        _Default = _SG_PRIMITIVETYPE_DEFAULT,
+        _ForuceU32 = _SG_PRIMITIVETYPE_FORCE_U32,
+        _Num = _SG_PRIMITIVETYPE_NUM,
+        Lines = SG_PRIMITIVETYPE_LINES,
+        LinesStrip = SG_PRIMITIVETYPE_LINE_STRIP,
+        Points = SG_PRIMITIVETYPE_POINTS,
+        Triangles = SG_PRIMITIVETYPE_TRIANGLES,
+        TrianglesStrip = SG_PRIMITIVETYPE_TRIANGLE_STRIP,
+    }
 }
 
 // --------------------------------------------------------------------------------
 // Image enums
 
-/// 2D | 3D | Array | Cube
-///
-/// Basic type of an image object.
-///
-/// The image type is used in the `sg_image_desc.type` member when creating an image, and
-/// in `sg_shader_image_desc` when describing a shader's texture sampler binding.
-///
-/// # Platform
-///
-/// 3D- and array-textures are not supported on the GLES2/WebGL backend
-/// (use `sg_query_features().imagetype_3d` and `sg_query_features().imagetype_array` to check for
-/// support).
-#[EnumRepr(type = "c_uint")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum ImageType {
-    _Default = ffi::sg_image_type__SG_IMAGETYPE_DEFAULT,
-    /// 2D
-    Dim2 = ffi::sg_image_type_SG_IMAGETYPE_2D,
-    /// 3D
-    Dim3 = ffi::sg_image_type_SG_IMAGETYPE_3D,
-    Array = ffi::sg_image_type_SG_IMAGETYPE_ARRAY,
-    Cube = ffi::sg_image_type_SG_IMAGETYPE_CUBE,
-    _ForceU32 = ffi::sg_image_type__SG_IMAGETYPE_FORCE_U32,
-    _Num = ffi::sg_image_type__SG_IMAGETYPE_NUM,
+ffi_enum! {
+    /// 2D | 3D | Array | Cube
+    ///
+    /// Basic type of an image object.
+    ///
+    /// The image type is used in the `sg_image_desc.type` member when creating an image, and
+    /// in `sg_shader_image_desc` when describing a shader's texture sampler binding.
+    ///
+    /// # Platform
+    ///
+    /// 3D- and array-textures are not supported on the GLES2/WebGL backend
+    /// (use `sg_query_features().imagetype_3d` and `sg_query_features().imagetype_array` to check for
+    /// support).
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub enum ImageType around ffi::sg_image_type {
+        _Default = _SG_IMAGETYPE_DEFAULT,
+        /// 2D
+        Dim2 = SG_IMAGETYPE_2D,
+        /// 3D
+        Dim3 = SG_IMAGETYPE_3D,
+        Array = SG_IMAGETYPE_ARRAY,
+        Cube = SG_IMAGETYPE_CUBE,
+        _ForceU32 = _SG_IMAGETYPE_FORCE_U32,
+        _Num = _SG_IMAGETYPE_NUM,
+    }
 }
 
-/// The filtering mode when sampling a texture image
-///
-/// This is used in the `sg_image_desc.min_filter` and `sg_image_desc.mag_filter`
-/// members when creating an image object.
-///
-/// The default filter mode is SG_FILTER_NEAREST.
-#[EnumRepr(type = "c_uint")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum Filter {
-    Linear = ffi::sg_filter_SG_FILTER_LINEAR,
-    LinearMipmap = ffi::sg_filter_SG_FILTER_LINEAR_MIPMAP_LINEAR,
-    LinearMipmapNearest = ffi::sg_filter_SG_FILTER_LINEAR_MIPMAP_NEAREST,
-    Nearest = ffi::sg_filter_SG_FILTER_NEAREST,
-    NearestMipmapLinear = ffi::sg_filter_SG_FILTER_NEAREST_MIPMAP_LINEAR,
-    NearestMipmapNearest = ffi::sg_filter_SG_FILTER_NEAREST_MIPMAP_NEAREST,
-    _Default = ffi::sg_filter__SG_FILTER_DEFAULT,
-    _ForceU32 = ffi::sg_filter__SG_FILTER_FORCE_U32,
-    _Num = ffi::sg_filter__SG_FILTER_NUM,
+ffi_enum! {
+    /// The filtering mode when sampling a texture image
+    ///
+    /// This is used in the `sg_image_desc.min_filter` and `sg_image_desc.mag_filter`
+    /// members when creating an image object.
+    ///
+    /// The default filter mode is SG_FILTER_NEAREST.
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub enum Filter around ffi::sg_filter {
+        Linear = SG_FILTER_LINEAR,
+        LinearMipmap = SG_FILTER_LINEAR_MIPMAP_LINEAR,
+        LinearMipmapNearest = SG_FILTER_LINEAR_MIPMAP_NEAREST,
+        Nearest = SG_FILTER_NEAREST,
+        NearestMipmapLinear = SG_FILTER_NEAREST_MIPMAP_LINEAR,
+        NearestMipmapNearest = SG_FILTER_NEAREST_MIPMAP_NEAREST,
+        _Default = _SG_FILTER_DEFAULT,
+        _ForceU32 = _SG_FILTER_FORCE_U32,
+        _Num = _SG_FILTER_NUM,
+    }
 }
 
-/// The texture coordinates wrapping mode when sampling a texture image
-///
-/// This is used in [`rokol_ffi::gfx::sg_image_desc`] when creating an image..
-///
-/// # Platform
-///
-/// `SG_WRAP_CLAMP_TO_BORDER` is not supported on all backends
-/// and platforms. To check for support, call sg_query_features()
-/// and check the "clamp_to_border" nitboolean in the returned
-/// sg_features struct.
-///
-///
-/// Platforms which don't support `SG_WRAP_CLAMP_TO_BORDER` will silently fall back
-/// to `SG_WRAP_CLAMP_TO_EDGE` without a validation error.
-///
-/// Platforms which support clamp-to-border are:
-///
-///     - all desktop GL platforms
-///     - Metal on macOS
-///     - D3D11
-///
-/// Platforms which do not support clamp-to-border:
-///
-///     - GLES2/3 and WebGL/WebGL2
-///     - Metal on iOS
-#[EnumRepr(type = "c_uint")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum Wrap {
-    _Default = ffi::sg_wrap__SG_WRAP_DEFAULT,
-    /// (Platform) Not supported on all platform
-    ClampToBorder = ffi::sg_wrap_SG_WRAP_CLAMP_TO_BORDER,
-    ClampToEdge = ffi::sg_wrap_SG_WRAP_CLAMP_TO_EDGE,
-    MirroredRepeat = ffi::sg_wrap_SG_WRAP_MIRRORED_REPEAT,
-    Repeat = ffi::sg_wrap_SG_WRAP_REPEAT,
-    _ForceU32 = ffi::sg_wrap__SG_WRAP_FORCE_U32,
-    _Wrap = ffi::sg_wrap__SG_WRAP_NUM,
+ffi_enum! {
+    /// The texture coordinates wrapping mode when sampling a texture image
+    ///
+    /// This is used in [`rokol_ffi::gfx::sg_image_desc`] when creating an image..
+    ///
+    /// # Platform
+    ///
+    /// `SG_WRAP_CLAMP_TO_BORDER` is not supported on all backends
+    /// and platforms. To check for support, call sg_query_features()
+    /// and check the "clamp_to_border" nitboolean in the returned
+    /// sg_features struct.
+    ///
+    ///
+    /// Platforms which don't support `SG_WRAP_CLAMP_TO_BORDER` will silently fall back
+    /// to `SG_WRAP_CLAMP_TO_EDGE` without a validation error.
+    ///
+    /// Platforms which support clamp-to-border are:
+    ///
+    ///     - all desktop GL platforms
+    ///     - Metal on macOS
+    ///     - D3D11
+    ///
+    /// Platforms which do not support clamp-to-border:
+    ///
+    ///     - GLES2/3 and WebGL/WebGL2
+    ///     - Metal on iOS
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub enum Wrap around ffi::sg_wrap {
+        _Default = _SG_WRAP_DEFAULT,
+        /// (Platform) Not supported on all platform
+        ClampToBorder = SG_WRAP_CLAMP_TO_BORDER,
+        ClampToEdge = SG_WRAP_CLAMP_TO_EDGE,
+        MirroredRepeat = SG_WRAP_MIRRORED_REPEAT,
+        Repeat = SG_WRAP_REPEAT,
+        _ForceU32 = _SG_WRAP_FORCE_U32,
+        _Wrap = _SG_WRAP_NUM,
+    }
 }
 
-/// Pixel format
-///
-/// # Features
-///
-/// `sokol_gfx.h` basically uses the same pixel formats as WebGPU, since these
-/// are supported on most newer GPUs. GLES2 and WebGL has a much smaller
-/// subset of available pixel formats. Call `sg_query_pixelformat()` to check
-/// at runtime if a pixel format supports the desired features.
-///
-/// # Naming convension
-///
-/// A pixelformat name consist of three parts:
-///
-///     - components (R, RG, RGB or RGBA)
-///     - bit width per component (8, 16 or 32)
-///     - component data type:
-///         - unsigned normalized (no postfix)
-///         - signed normalized (SN postfix)
-///         - unsigned integer (UI postfix)
-///         - signed integer (SI postfix)
-///         - float (F postfix)
-///
-/// # Supported formats
-///
-/// Not all pixel formats can be used for everything, call `sg_query_pixelformat()`
-/// to inspect the capabilities of a given pixelformat. The function returns
-/// an `sg_pixelformat_info` struct with the following bool members:
-///
-///     - sample: the pixelformat can be sampled as texture at least with
-///               nearest filtering
-///     - filter: the pixelformat can be samples as texture with linear
-///               filtering
-///     - render: the pixelformat can be used for render targets
-///     - blend:  blending is supported when using the pixelformat for
-///               render targets
-///     - msaa:   multisample-antialiasing is supported when using the
-///               pixelformat for render targets
-///     - depth:  the pixelformat can be used for depth-stencil attachments
-///
-/// When targeting GLES2/WebGL, the only safe formats to use
-/// as texture are `SG_PIXELFORMAT_R8` and `SG_PIXELFORMAT_RGBA8`. For rendering
-/// in GLES2/WebGL, only `SG_PIXELFORMAT_RGBA8` is safe. All other formats
-/// must be checked via sg_query_pixelformats().
-///
-/// # Default pixel format
-///
-/// The default pixel format for texture images is `SG_PIXELFORMAT_RGBA8`.
-///
-/// The default pixel format for render target images is platform-dependent:
-///     - for Metal and D3D11 it is `SG_PIXELFORMAT_BGRA8`
-///     - for GL backends it is `SG_PIXELFORMAT_RGBA8`
-///
-/// This is mainly because of the default framebuffer which is setup outside
-/// of `sokol_gfx.h`. On some backends, using BGRA for the default frame buffer
-/// allows more efficient frame flips. For your own offscreen-render-targets,
-/// use whatever renderable pixel format is convenient for you.
-#[EnumRepr(type = "c_uint")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum PixelFormat {
-    _Default = ffi::sg_pixel_format__SG_PIXELFORMAT_DEFAULT,
-    Bc1Rgba = ffi::sg_pixel_format_SG_PIXELFORMAT_BC1_RGBA,
-    Bc2Rgba = ffi::sg_pixel_format_SG_PIXELFORMAT_BC2_RGBA,
-    Bc3Rgba = ffi::sg_pixel_format_SG_PIXELFORMAT_BC3_RGBA,
-    Bc4R = ffi::sg_pixel_format_SG_PIXELFORMAT_BC4_R,
-    Bc4Rsc = ffi::sg_pixel_format_SG_PIXELFORMAT_BC4_RSN,
-    Bc5Rg = ffi::sg_pixel_format_SG_PIXELFORMAT_BC5_RG,
-    Bc5Rgsn = ffi::sg_pixel_format_SG_PIXELFORMAT_BC5_RGSN,
-    Bc6hRgf = ffi::sg_pixel_format_SG_PIXELFORMAT_BC6H_RGBF,
-    Bc6hRgbuf = ffi::sg_pixel_format_SG_PIXELFORMAT_BC6H_RGBUF,
-    Bc7Rgba = ffi::sg_pixel_format_SG_PIXELFORMAT_BC7_RGBA,
-    Bgra8 = ffi::sg_pixel_format_SG_PIXELFORMAT_BGRA8,
-    Depth = ffi::sg_pixel_format_SG_PIXELFORMAT_DEPTH,
-    DepthStencil = ffi::sg_pixel_format_SG_PIXELFORMAT_DEPTH_STENCIL,
-    Etc2Rg11 = ffi::sg_pixel_format_SG_PIXELFORMAT_ETC2_RG11,
-    Etc2Rg11Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_ETC2_RG11SN,
-    Etc2Rgb8 = ffi::sg_pixel_format_SG_PIXELFORMAT_ETC2_RGB8,
-    Etc2Rgb8A1 = ffi::sg_pixel_format_SG_PIXELFORMAT_ETC2_RGB8A1,
-    Etc2Rgba8 = ffi::sg_pixel_format_SG_PIXELFORMAT_ETC2_RGBA8,
-    None = ffi::sg_pixel_format_SG_PIXELFORMAT_NONE,
-    PvrtcRgba2Bpp = ffi::sg_pixel_format_SG_PIXELFORMAT_PVRTC_RGBA_2BPP,
-    PvrtcRgba24pp = ffi::sg_pixel_format_SG_PIXELFORMAT_PVRTC_RGBA_4BPP,
-    PvrtcRgb2Bpp = ffi::sg_pixel_format_SG_PIXELFORMAT_PVRTC_RGB_2BPP,
-    PvrtcRgb4Bpp = ffi::sg_pixel_format_SG_PIXELFORMAT_PVRTC_RGB_4BPP,
-    R8 = ffi::sg_pixel_format_SG_PIXELFORMAT_R8,
-    R8Si = ffi::sg_pixel_format_SG_PIXELFORMAT_R8SI,
-    R8Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_R8SN,
-    R8Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_R8UI,
-    R16 = ffi::sg_pixel_format_SG_PIXELFORMAT_R16,
-    R16F = ffi::sg_pixel_format_SG_PIXELFORMAT_R16F,
-    R16Si = ffi::sg_pixel_format_SG_PIXELFORMAT_R16SI,
-    R16Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_R16SN,
-    R16Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_R16UI,
-    R32F = ffi::sg_pixel_format_SG_PIXELFORMAT_R32F,
-    R32Si = ffi::sg_pixel_format_SG_PIXELFORMAT_R32SI,
-    R32Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_R32UI,
-    Rg8 = ffi::sg_pixel_format_SG_PIXELFORMAT_RG8,
-    Rg8Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RG8SI,
-    Rg8Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_RG8SN,
-    Rg8Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RG8UI,
-    Rg11B10F = ffi::sg_pixel_format_SG_PIXELFORMAT_RG11B10F,
-    Rg16 = ffi::sg_pixel_format_SG_PIXELFORMAT_RG16,
-    Rg16F = ffi::sg_pixel_format_SG_PIXELFORMAT_RG16F,
-    Rg16Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RG16SI,
-    Rg16Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_RG16SN,
-    Rg16Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RG16UI,
-    Rg32F = ffi::sg_pixel_format_SG_PIXELFORMAT_RG32F,
-    Rg32Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RG32SI,
-    Rg32Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RG32UI,
-    Rgb10A2 = ffi::sg_pixel_format_SG_PIXELFORMAT_RGB10A2,
-    Rgba8 = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA8,
-    Rgba8Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA8SI,
-    Rgba8Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA8SN,
-    Rgba8Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA8UI,
-    Rgba16 = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA16,
-    Rgba16F = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA16F,
-    Rgba16Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA16SI,
-    Rgba16Sn = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA16SN,
-    Rgba16Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA16UI,
-    Rgba32F = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA32F,
-    Rgba32Si = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA32SI,
-    Rgba32Ui = ffi::sg_pixel_format_SG_PIXELFORMAT_RGBA32UI,
-    _ForceU32 = ffi::sg_pixel_format__SG_PIXELFORMAT_FORCE_U32,
-    _Num = ffi::sg_pixel_format__SG_PIXELFORMAT_NUM,
+ffi_enum! {
+    /// Pixel format
+    ///
+    /// # Features
+    ///
+    /// `sokol_gfx.h` basically uses the same pixel formats as WebGPU, since these
+    /// are supported on most newer GPUs. GLES2 and WebGL has a much smaller
+    /// subset of available pixel formats. Call `sg_query_pixelformat()` to check
+    /// at runtime if a pixel format supports the desired features.
+    ///
+    /// # Naming convension
+    ///
+    /// A pixelformat name consist of three parts:
+    ///
+    ///     - components (R, RG, RGB or RGBA)
+    ///     - bit width per component (8, 16 or 32)
+    ///     - component data type:
+    ///         - unsigned normalized (no postfix)
+    ///         - signed normalized (SN postfix)
+    ///         - unsigned integer (UI postfix)
+    ///         - signed integer (SI postfix)
+    ///         - float (F postfix)
+    ///
+    /// # Supported formats
+    ///
+    /// Not all pixel formats can be used for everything, call `sg_query_pixelformat()`
+    /// to inspect the capabilities of a given pixelformat. The function returns
+    /// an `sg_pixelformat_info` struct with the following bool members:
+    ///
+    ///     - sample: the pixelformat can be sampled as texture at least with
+    ///               nearest filtering
+    ///     - filter: the pixelformat can be samples as texture with linear
+    ///               filtering
+    ///     - render: the pixelformat can be used for render targets
+    ///     - blend:  blending is supported when using the pixelformat for
+    ///               render targets
+    ///     - msaa:   multisample-antialiasing is supported when using the
+    ///               pixelformat for render targets
+    ///     - depth:  the pixelformat can be used for depth-stencil attachments
+    ///
+    /// When targeting GLES2/WebGL, the only safe formats to use
+    /// as texture are `SG_PIXELFORMAT_R8` and `SG_PIXELFORMAT_RGBA8`. For rendering
+    /// in GLES2/WebGL, only `SG_PIXELFORMAT_RGBA8` is safe. All other formats
+    /// must be checked via sg_query_pixelformats().
+    ///
+    /// # Default pixel format
+    ///
+    /// The default pixel format for texture images is `SG_PIXELFORMAT_RGBA8`.
+    ///
+    /// The default pixel format for render target images is platform-dependent:
+    ///     - for Metal and D3D11 it is `SG_PIXELFORMAT_BGRA8`
+    ///     - for GL backends it is `SG_PIXELFORMAT_RGBA8`
+    ///
+    /// This is mainly because of the default framebuffer which is setup outside
+    /// of `sokol_gfx.h`. On some backends, using BGRA for the default frame buffer
+    /// allows more efficient frame flips. For your own offscreen-render-targets,
+    /// use whatever renderable pixel format is convenient for you.
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub enum PixelFormat around ffi::sg_pixel_format {
+        _Default = _SG_PIXELFORMAT_DEFAULT,
+        Bc1Rgba = SG_PIXELFORMAT_BC1_RGBA,
+        Bc2Rgba = SG_PIXELFORMAT_BC2_RGBA,
+        Bc3Rgba = SG_PIXELFORMAT_BC3_RGBA,
+        Bc4R = SG_PIXELFORMAT_BC4_R,
+        Bc4Rsc = SG_PIXELFORMAT_BC4_RSN,
+        Bc5Rg = SG_PIXELFORMAT_BC5_RG,
+        Bc5Rgsn = SG_PIXELFORMAT_BC5_RGSN,
+        Bc6hRgf = SG_PIXELFORMAT_BC6H_RGBF,
+        Bc6hRgbuf = SG_PIXELFORMAT_BC6H_RGBUF,
+        Bc7Rgba = SG_PIXELFORMAT_BC7_RGBA,
+        Bgra8 = SG_PIXELFORMAT_BGRA8,
+        Depth = SG_PIXELFORMAT_DEPTH,
+        DepthStencil = SG_PIXELFORMAT_DEPTH_STENCIL,
+        Etc2Rg11 = SG_PIXELFORMAT_ETC2_RG11,
+        Etc2Rg11Sn = SG_PIXELFORMAT_ETC2_RG11SN,
+        Etc2Rgb8 = SG_PIXELFORMAT_ETC2_RGB8,
+        Etc2Rgb8A1 = SG_PIXELFORMAT_ETC2_RGB8A1,
+        Etc2Rgba8 = SG_PIXELFORMAT_ETC2_RGBA8,
+        None = SG_PIXELFORMAT_NONE,
+        PvrtcRgba2Bpp = SG_PIXELFORMAT_PVRTC_RGBA_2BPP,
+        PvrtcRgba24pp = SG_PIXELFORMAT_PVRTC_RGBA_4BPP,
+        PvrtcRgb2Bpp = SG_PIXELFORMAT_PVRTC_RGB_2BPP,
+        PvrtcRgb4Bpp = SG_PIXELFORMAT_PVRTC_RGB_4BPP,
+        R8 = SG_PIXELFORMAT_R8,
+        R8Si = SG_PIXELFORMAT_R8SI,
+        R8Sn = SG_PIXELFORMAT_R8SN,
+        R8Ui = SG_PIXELFORMAT_R8UI,
+        R16 = SG_PIXELFORMAT_R16,
+        R16F = SG_PIXELFORMAT_R16F,
+        R16Si = SG_PIXELFORMAT_R16SI,
+        R16Sn = SG_PIXELFORMAT_R16SN,
+        R16Ui = SG_PIXELFORMAT_R16UI,
+        R32F = SG_PIXELFORMAT_R32F,
+        R32Si = SG_PIXELFORMAT_R32SI,
+        R32Ui = SG_PIXELFORMAT_R32UI,
+        Rg8 = SG_PIXELFORMAT_RG8,
+        Rg8Si = SG_PIXELFORMAT_RG8SI,
+        Rg8Sn = SG_PIXELFORMAT_RG8SN,
+        Rg8Ui = SG_PIXELFORMAT_RG8UI,
+        Rg11B10F = SG_PIXELFORMAT_RG11B10F,
+        Rg16 = SG_PIXELFORMAT_RG16,
+        Rg16F = SG_PIXELFORMAT_RG16F,
+        Rg16Si = SG_PIXELFORMAT_RG16SI,
+        Rg16Sn = SG_PIXELFORMAT_RG16SN,
+        Rg16Ui = SG_PIXELFORMAT_RG16UI,
+        Rg32F = SG_PIXELFORMAT_RG32F,
+        Rg32Si = SG_PIXELFORMAT_RG32SI,
+        Rg32Ui = SG_PIXELFORMAT_RG32UI,
+        Rgb10A2 = SG_PIXELFORMAT_RGB10A2,
+        Rgba8 = SG_PIXELFORMAT_RGBA8,
+        Rgba8Si = SG_PIXELFORMAT_RGBA8SI,
+        Rgba8Sn = SG_PIXELFORMAT_RGBA8SN,
+        Rgba8Ui = SG_PIXELFORMAT_RGBA8UI,
+        Rgba16 = SG_PIXELFORMAT_RGBA16,
+        Rgba16F = SG_PIXELFORMAT_RGBA16F,
+        Rgba16Si = SG_PIXELFORMAT_RGBA16SI,
+        Rgba16Sn = SG_PIXELFORMAT_RGBA16SN,
+        Rgba16Ui = SG_PIXELFORMAT_RGBA16UI,
+        Rgba32F = SG_PIXELFORMAT_RGBA32F,
+        Rgba32Si = SG_PIXELFORMAT_RGBA32SI,
+        Rgba32Ui = SG_PIXELFORMAT_RGBA32UI,
+        _ForceU32 = _SG_PIXELFORMAT_FORCE_U32,
+        _Num = _SG_PIXELFORMAT_NUM,
+    }
 }
 
-/// The source and destination factors in blending operations.
-///
-/// * <https://learnopengl.com/Advanced-OpenGL/Blending>
-/// * result = src * src_factor + dst * dst_factor
-///
-/// The default value is SG_BLENDFACTOR_ONE for source
-/// factors, and SG_BLENDFACTOR_ZERO for destination factors.
-#[EnumRepr(type = "c_uint")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum BlendFactor {
-    _Default = ffi::sg_blend_factor__SG_BLENDFACTOR_DEFAULT,
-    Zero = ffi::sg_blend_factor_SG_BLENDFACTOR_ZERO,
-    One = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE,
-    Color = ffi::sg_blend_factor_SG_BLENDFACTOR_SRC_COLOR,
-    OneMinusSourceColor = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_SRC_COLOR,
-    SrcAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_SRC_ALPHA,
-    OneMinusSrcAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_SRC_ALPHA,
-    DstColor = ffi::sg_blend_factor_SG_BLENDFACTOR_DST_COLOR,
-    OneMinusDstColor = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_DST_COLOR,
-    DstAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_DST_ALPHA,
-    OneMinusDstAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_DST_ALPHA,
-    SrcAlphaSatuerd = ffi::sg_blend_factor_SG_BLENDFACTOR_SRC_ALPHA_SATURATED,
-    BlendColor = ffi::sg_blend_factor_SG_BLENDFACTOR_BLEND_COLOR,
-    OneMinusBlendColor = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_BLEND_COLOR,
-    BlendAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_BLEND_ALPHA,
-    OneMinusBlendAlpha = ffi::sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_BLEND_ALPHA,
-    _Num = ffi::sg_blend_factor__SG_BLENDFACTOR_NUM,
-    _ForceU32 = ffi::sg_blend_factor__SG_BLENDFACTOR_FORCE_U32,
+ffi_enum! {
+    /// The source and destination factors in blending operations.
+    ///
+    /// * <https://learnopengl.com/Advanced-OpenGL/Blending>
+    /// * result = src * src_factor + dst * dst_factor
+    ///
+    /// The default value is SG_BLENDFACTOR_ONE for source
+    /// factors, and SG_BLENDFACTOR_ZERO for destination factors.
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub enum BlendFactor around ffi::sg_blend_factor {
+        _Default = _SG_BLENDFACTOR_DEFAULT,
+        Zero = SG_BLENDFACTOR_ZERO,
+        One = SG_BLENDFACTOR_ONE,
+        Color = SG_BLENDFACTOR_SRC_COLOR,
+        OneMinusSourceColor = SG_BLENDFACTOR_ONE_MINUS_SRC_COLOR,
+        SrcAlpha = SG_BLENDFACTOR_SRC_ALPHA,
+        OneMinusSrcAlpha = SG_BLENDFACTOR_ONE_MINUS_SRC_ALPHA,
+        DstColor = SG_BLENDFACTOR_DST_COLOR,
+        OneMinusDstColor = SG_BLENDFACTOR_ONE_MINUS_DST_COLOR,
+        DstAlpha = SG_BLENDFACTOR_DST_ALPHA,
+        OneMinusDstAlpha = SG_BLENDFACTOR_ONE_MINUS_DST_ALPHA,
+        SrcAlphaSatuerd = SG_BLENDFACTOR_SRC_ALPHA_SATURATED,
+        BlendColor = SG_BLENDFACTOR_BLEND_COLOR,
+        OneMinusBlendColor = SG_BLENDFACTOR_ONE_MINUS_BLEND_COLOR,
+        BlendAlpha = SG_BLENDFACTOR_BLEND_ALPHA,
+        OneMinusBlendAlpha = SG_BLENDFACTOR_ONE_MINUS_BLEND_ALPHA,
+        _Num = _SG_BLENDFACTOR_NUM,
+        _ForceU32 = _SG_BLENDFACTOR_FORCE_U32,
+    }
 }
 
-/// Defines what action should be performed at the start of a render pass:
-///
-/// This is used in the [`PassAction`] structure.
-///
-/// The default action for all pass attachments is `Clear`, with the
-/// clear color rgba = {0.5f, 0.5f, 0.5f, 1.0f], depth=1.0 and stencil=0.
-///
-/// If you want to override the default behaviour, it is important to not
-/// only set the clear color, but the 'action' field as well (as long as this
-/// is in its _SG_ACTION_DEFAULT, the value fields will be ignored).
-#[EnumRepr(type = "c_uint")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum Action {
-    _Default = ffi::sg_action__SG_ACTION_DEFAULT,
-    /// Clear the render target image
-    Clear = ffi::sg_action_SG_ACTION_CLEAR,
-    /// Leave the render target image content undefined
-    DontCare = ffi::sg_action_SG_ACTION_DONTCARE,
-    /// Load the previous content of the render target image
-    Load = ffi::sg_action_SG_ACTION_LOAD,
-    _ForceU32 = ffi::sg_action__SG_ACTION_FORCE_U32,
-    _NUM = ffi::sg_action__SG_ACTION_NUM,
+ffi_enum! {
+    /// Defines what action should be performed at the start of a render pass:
+    ///
+    /// This is used in the [`PassAction`] structure.
+    ///
+    /// The default action for all pass attachments is `Clear`, with the
+    /// clear color rgba = {0.5f, 0.5f, 0.5f, 1.0f], depth=1.0 and stencil=0.
+    ///
+    /// If you want to override the default behaviour, it is important to not
+    /// only set the clear color, but the 'action' field as well (as long as this
+    /// is in its _SG_ACTION_DEFAULT, the value fields will be ignored).
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub enum Action around ffi::sg_action {
+        _Default = _SG_ACTION_DEFAULT,
+        /// Clear the render target image
+        Clear = SG_ACTION_CLEAR,
+        /// Leave the render target image content undefined
+        DontCare = SG_ACTION_DONTCARE,
+        /// Load the previous content of the render target image
+        Load = SG_ACTION_LOAD,
+        _ForceU32 = _SG_ACTION_FORCE_U32,
+        _NUM = _SG_ACTION_NUM,
+    }
 }
 
 // --------------------------------------------------------------------------------
 // Rendering enums
 
-/// `"`, `!=`, `>`, `>=`, `<`, `<=`, `true`, `false`
-#[EnumRepr(type = "c_uint")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum CompareFunc {
-    _Default = ffi::sg_compare_func__SG_COMPAREFUNC_DEFAULT,
-    Always = ffi::sg_compare_func_SG_COMPAREFUNC_ALWAYS,
-    Eq = ffi::sg_compare_func_SG_COMPAREFUNC_EQUAL,
-    Greater = ffi::sg_compare_func_SG_COMPAREFUNC_GREATER,
-    GreaterEq = ffi::sg_compare_func_SG_COMPAREFUNC_GREATER_EQUAL,
-    Less = ffi::sg_compare_func_SG_COMPAREFUNC_LESS,
-    LessEq = ffi::sg_compare_func_SG_COMPAREFUNC_LESS_EQUAL,
-    Never = ffi::sg_compare_func_SG_COMPAREFUNC_NEVER,
-    NotEq = ffi::sg_compare_func_SG_COMPAREFUNC_NOT_EQUAL,
-    _ForceU32 = ffi::sg_compare_func__SG_COMPAREFUNC_FORCE_U32,
-    _Num = ffi::sg_compare_func__SG_COMPAREFUNC_NUM,
+ffi_enum! {
+    /// `"`, `!=`, `>`, `>=`, `<`, `<=`, `true`, `false`
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub enum CompareFunc around ffi::sg_compare_func {
+        _Default = _SG_COMPAREFUNC_DEFAULT,
+        Never = SG_COMPAREFUNC_NEVER,
+        Less = SG_COMPAREFUNC_LESS,
+        Eq = SG_COMPAREFUNC_EQUAL,
+        LessEq = SG_COMPAREFUNC_LESS_EQUAL,
+        Greater = SG_COMPAREFUNC_GREATER,
+        NotEq = SG_COMPAREFUNC_NOT_EQUAL,
+        GreaterEq = SG_COMPAREFUNC_GREATER_EQUAL,
+        Always = SG_COMPAREFUNC_ALWAYS,
+        _Num = _SG_COMPAREFUNC_NUM,
+        _ForceU32 = _SG_COMPAREFUNC_FORCE_U32,
+    }
 }
 
-/// Front | Back | None
-///
-/// <https://learnopengl.com/Advanced-OpenGL/Face-culling>
-#[EnumRepr(type = "c_uint")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum CullMode {
-    _Default = ffi::sg_cull_mode__SG_CULLMODE_DEFAULT,
-    Back = ffi::sg_cull_mode_SG_CULLMODE_BACK,
-    Front = ffi::sg_cull_mode_SG_CULLMODE_FRONT,
-    None = ffi::sg_cull_mode_SG_CULLMODE_NONE,
-    _ForuceU32 = ffi::sg_cull_mode__SG_CULLMODE_FORCE_U32,
-    _Num = ffi::sg_cull_mode__SG_CULLMODE_NUM,
+ffi_enum! {
+    /// Front | Back | None
+    ///
+    /// <https://learnopengl.com/Advanced-OpenGL/Face-culling>
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub enum CullMode around ffi::sg_cull_mode {
+        _Default = _SG_CULLMODE_DEFAULT,
+        Back = SG_CULLMODE_BACK,
+        Front = SG_CULLMODE_FRONT,
+        None = SG_CULLMODE_NONE,
+        _ForuceU32 = _SG_CULLMODE_FORCE_U32,
+        _Num = _SG_CULLMODE_NUM,
+    }
 }
 
-/// CCW | CW
-///
-/// <https://learnopengl.com/Advanced-OpenGL/Face-culling>
-#[EnumRepr(type = "c_uint")]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum FaceWinding {
-    _Default = ffi::sg_face_winding__SG_FACEWINDING_DEFAULT,
-    /// Counter clockwise winding ordering (the default)
-    Ccw = ffi::sg_face_winding_SG_FACEWINDING_CCW,
-    /// Clockwise winding ordering
-    Cw = ffi::sg_face_winding_SG_FACEWINDING_CW,
-    _Num = ffi::sg_face_winding__SG_FACEWINDING_NUM,
-    _ForceU32 = ffi::sg_face_winding__SG_FACEWINDING_FORCE_U32,
+ffi_enum! {
+    /// CCW | CW
+    ///
+    /// <https://learnopengl.com/Advanced-OpenGL/Face-culling>
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub enum FaceWinding around ffi::sg_face_winding {
+        _Default = _SG_FACEWINDING_DEFAULT,
+        /// Counter clockwise winding ordering (the default)
+        Ccw = SG_FACEWINDING_CCW,
+        /// Clockwise winding ordering
+        Cw = SG_FACEWINDING_CW,
+        _Num = _SG_FACEWINDING_NUM,
+        _ForceU32 = _SG_FACEWINDING_FORCE_U32,
+    }
 }
 
 bitflags::bitflags! {
-    pub struct ColorMask: c_uint {
-        const DEFAULT = ffi::sg_color_mask__SG_COLORMASK_DEFAULT ;
-        const NONE = ffi::sg_color_mask_SG_COLORMASK_NONE ;
-        const R = ffi::sg_color_mask_SG_COLORMASK_R ;
-        const G = ffi::sg_color_mask_SG_COLORMASK_G ;
-        const RG = ffi::sg_color_mask_SG_COLORMASK_RG ;
-        const B = ffi::sg_color_mask_SG_COLORMASK_B ;
-        const RB = ffi::sg_color_mask_SG_COLORMASK_RB ;
-        const GB = ffi::sg_color_mask_SG_COLORMASK_GB ;
-        const RGB = ffi::sg_color_mask_SG_COLORMASK_RGB ;
-        const A = ffi::sg_color_mask_SG_COLORMASK_A ;
-        const RA = ffi::sg_color_mask_SG_COLORMASK_RA ;
-        const GA = ffi::sg_color_mask_SG_COLORMASK_GA ;
-        const RGA = ffi::sg_color_mask_SG_COLORMASK_RGA ;
-        const BA = ffi::sg_color_mask_SG_COLORMASK_BA ;
-        const RBA = ffi::sg_color_mask_SG_COLORMASK_RBA ;
-        const GBA = ffi::sg_color_mask_SG_COLORMASK_GBA ;
-        const RGBA = ffi::sg_color_mask_SG_COLORMASK_RGBA ;
-        const FORCE_U32 = ffi::sg_color_mask__SG_COLORMASK_FORCE_U32 ;
+    pub struct ColorMask: u32 {
+        const DEFAULT = ffi::sg_color_mask::_SG_COLORMASK_DEFAULT as u32;
+        const NONE = ffi::sg_color_mask::SG_COLORMASK_NONE as u32;
+        const R = ffi::sg_color_mask::SG_COLORMASK_R as u32;
+        const G = ffi::sg_color_mask::SG_COLORMASK_G as u32;
+        const RG = ffi::sg_color_mask::SG_COLORMASK_RG as u32;
+        const B = ffi::sg_color_mask::SG_COLORMASK_B as u32;
+        const RB = ffi::sg_color_mask::SG_COLORMASK_RB as u32;
+        const GB = ffi::sg_color_mask::SG_COLORMASK_GB as u32;
+        const RGB = ffi::sg_color_mask::SG_COLORMASK_RGB as u32;
+        const A = ffi::sg_color_mask::SG_COLORMASK_A as u32;
+        const RA = ffi::sg_color_mask::SG_COLORMASK_RA as u32;
+        const GA = ffi::sg_color_mask::SG_COLORMASK_GA as u32;
+        const RGA = ffi::sg_color_mask::SG_COLORMASK_RGA as u32;
+        const BA = ffi::sg_color_mask::SG_COLORMASK_BA as u32;
+        const RBA = ffi::sg_color_mask::SG_COLORMASK_RBA as u32;
+        const GBA = ffi::sg_color_mask::SG_COLORMASK_GBA as u32;
+        const RGBA = ffi::sg_color_mask::SG_COLORMASK_RGBA as u32;
+        const FORCE_U32 = ffi::sg_color_mask::_SG_COLORMASK_FORCE_U32 as u32;
     }
 }
 
@@ -632,7 +648,7 @@ impl PassAction {
         raw: ffi::sg_pass_action {
             _start_canary: 0,
             colors: [self::ColorAttachmentAction {
-                action: self::Action::Load as c_uint,
+                action: ffi::sg_action::SG_ACTION_LOAD,
                 value: ffi::sg_color {
                     r: 0.0,
                     g: 0.0,
@@ -641,11 +657,11 @@ impl PassAction {
                 },
             }; 4],
             depth: self::DepthAttachmentAction {
-                action: self::Action::Load as c_uint,
+                action: ffi::sg_action::SG_ACTION_LOAD,
                 value: 0.0,
             },
             stencil: self::StencilAttachmentAction {
-                action: self::Action::Load as c_uint,
+                action: ffi::sg_action::SG_ACTION_LOAD,
                 value: 0,
             },
             _end_canary: 0,
@@ -663,7 +679,7 @@ impl PassAction {
     pub fn clear(color: impl Into<Color>) -> Self {
         let mut raw = ffi::sg_pass_action::default();
         raw.colors[0] = ColorAttachmentAction {
-            action: PassActionKind::Clear as c_uint,
+            action: PassActionKind::Clear.to_ffi(),
             value: color.into(),
         };
         Self { raw }
@@ -674,7 +690,7 @@ impl PassAction {
             raw: ffi::sg_pass_action {
                 _start_canary: 0,
                 colors: [self::ColorAttachmentAction {
-                    action: self::Action::Load as c_uint,
+                    action: ffi::sg_action::SG_ACTION_LOAD,
                     value: ffi::sg_color {
                         r: color[0],
                         g: color[1],
@@ -683,11 +699,11 @@ impl PassAction {
                     },
                 }; 4],
                 depth: self::DepthAttachmentAction {
-                    action: self::Action::Load as c_uint,
+                    action: ffi::sg_action::SG_ACTION_LOAD,
                     value: 0.0,
                 },
                 stencil: self::StencilAttachmentAction {
-                    action: self::Action::Load as c_uint,
+                    action: ffi::sg_action::SG_ACTION_LOAD,
                     value: 0,
                 },
                 _end_canary: 0,
@@ -1036,7 +1052,7 @@ pub fn apply_uniforms(stage: ShaderStage, ub_index: u32, data: &[u8]) {
         size: (size_of::<u8>() * data.len()) as _,
     };
     unsafe {
-        ffi::sg_apply_uniforms(stage as c_uint, ub_index as i32, &data);
+        ffi::sg_apply_uniforms(stage.to_ffi(), ub_index as i32, &data);
     }
 }
 
@@ -1198,8 +1214,8 @@ pub unsafe fn buf_desc(
             ptr: data_ptr,
             size: data_size as _,
         },
-        type_: buffer_type as c_uint,
-        usage: usage as c_uint,
+        type_: buffer_type.to_ffi(),
+        usage: usage.to_ffi(),
         label: if label.is_empty() {
             std::ptr::null_mut()
         } else {
@@ -1213,12 +1229,10 @@ pub unsafe fn buf_desc(
 
 #[cfg(test)]
 mod test {
-    use crate::gfx::{self as rg, VertexLayout};
+    use sper::{self as rg, u32, VertexLayout};
 
     // for the derive macro:
     use crate as rokol;
-
-    use std::os::raw::c_uint;
 
     #[derive(VertexLayout)]
     #[repr(C)]
@@ -1231,15 +1245,15 @@ mod test {
     impl Vertex {
         pub fn manual_layout_desc() -> rg::LayoutDesc {
             let mut desc = rg::LayoutDesc::default();
-            desc.attrs[0].format = rg::VertexFormat::Float2 as c_uint;
-            desc.attrs[1].format = rg::VertexFormat::UByte4N as c_uint;
-            desc.attrs[2].format = rg::VertexFormat::Float2 as c_uint;
+            desc.attrs[0].format = rg::VertexFormat::Float2.to_ffi();
+            desc.attrs[1].format = rg::VertexFormat::UByte4N.to_ffi();
+            desc.attrs[2].format = rg::VertexFormat::Float2.to_ffi();
             desc
         }
     }
 
     #[test]
-    fn layout() {
+    fn layout_derive() {
         assert_eq!(Vertex::layout_desc(), Vertex::manual_layout_desc());
     }
 }

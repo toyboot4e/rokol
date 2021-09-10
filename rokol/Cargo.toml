@@ -32,5 +32,4 @@ bitflags = "1.2.1"
 
 sdl2 = { version = "0.34.3", optional = true }
 fontstash = { git = "https://github.com/toyboot4e/fontstash-rs", branch = "main", version = "0.1.6", optional = true }
-enum-repr = "0.2.6"
 

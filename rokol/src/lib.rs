@@ -28,6 +28,61 @@ NOTE: `rokol` is still early in progress: **currently only macOS + GlCore33 back
 
 pub use rokol_ffi as ffi;
 
+/// Creates an `enum` from FFI enum type (output of bindgen as a rustified enum)
+macro_rules! ffi_enum {
+    (
+        $(#[$outer:meta])*
+        $vis:vis enum $Enum:ident around $Ffi:ty {
+            $(
+                $(#[$attr:ident $($args:tt)*])*
+                $variant:ident = $ffi_variant:ident,
+            )*
+        }
+
+        $($t:tt)*
+    ) => {
+        $(#[$outer])*
+        #[repr(u32)]
+        $vis enum $Enum {
+            $(
+                $(#[$attr $($args)*])*
+                $variant = <$Ffi>::$ffi_variant as u32,
+            )*
+        }
+
+        impl $Enum {
+            pub fn from_ffi(ffi_variant: $Ffi) -> Self {
+                match ffi_variant {
+                    $(
+                        <$Ffi>::$ffi_variant => Self::$variant,
+                    )*
+                    _ => panic!("Bug: not convered FFI enum!"),
+                }
+            }
+
+            pub fn to_ffi(self) -> $Ffi {
+                match self {
+                    $(
+                        <Self>::$variant => <$Ffi>::$ffi_variant,
+                    )*
+                }
+            }
+        }
+
+        impl From<$Ffi> for $Enum {
+            fn from(ffi_variant: $Ffi) -> Self {
+                Self::from_ffi(ffi_variant)
+            }
+        }
+
+        impl Into<$Ffi> for $Enum {
+            fn into(self) -> $Ffi {
+                Self::to_ffi(self)
+            }
+        }
+    };
+}
+
 #[cfg(feature = "impl-app")]
 pub mod app;
 

@@ -889,18 +889,29 @@ impl Default for sg_range {
         unsafe { ::std::mem::zeroed() }
     }
 }
-pub const SG_INVALID_ID: ::std::os::raw::c_uint = 0;
-pub const SG_NUM_SHADER_STAGES: ::std::os::raw::c_uint = 2;
-pub const SG_NUM_INFLIGHT_FRAMES: ::std::os::raw::c_uint = 2;
-pub const SG_MAX_COLOR_ATTACHMENTS: ::std::os::raw::c_uint = 4;
-pub const SG_MAX_SHADERSTAGE_BUFFERS: ::std::os::raw::c_uint = 8;
-pub const SG_MAX_SHADERSTAGE_IMAGES: ::std::os::raw::c_uint = 12;
-pub const SG_MAX_SHADERSTAGE_UBS: ::std::os::raw::c_uint = 4;
-pub const SG_MAX_UB_MEMBERS: ::std::os::raw::c_uint = 16;
-pub const SG_MAX_VERTEX_ATTRIBUTES: ::std::os::raw::c_uint = 16;
-pub const SG_MAX_MIPMAPS: ::std::os::raw::c_uint = 16;
-pub const SG_MAX_TEXTUREARRAY_LAYERS: ::std::os::raw::c_uint = 128;
-pub type _bindgen_ty_1 = ::std::os::raw::c_uint;
+pub const SG_INVALID_ID: _bindgen_ty_1 = _bindgen_ty_1::SG_INVALID_ID;
+pub const SG_NUM_SHADER_STAGES: _bindgen_ty_1 = _bindgen_ty_1::SG_NUM_SHADER_STAGES;
+pub const SG_NUM_INFLIGHT_FRAMES: _bindgen_ty_1 = _bindgen_ty_1::SG_NUM_SHADER_STAGES;
+pub const SG_MAX_COLOR_ATTACHMENTS: _bindgen_ty_1 = _bindgen_ty_1::SG_MAX_COLOR_ATTACHMENTS;
+pub const SG_MAX_SHADERSTAGE_BUFFERS: _bindgen_ty_1 = _bindgen_ty_1::SG_MAX_SHADERSTAGE_BUFFERS;
+pub const SG_MAX_SHADERSTAGE_IMAGES: _bindgen_ty_1 = _bindgen_ty_1::SG_MAX_SHADERSTAGE_IMAGES;
+pub const SG_MAX_SHADERSTAGE_UBS: _bindgen_ty_1 = _bindgen_ty_1::SG_MAX_COLOR_ATTACHMENTS;
+pub const SG_MAX_UB_MEMBERS: _bindgen_ty_1 = _bindgen_ty_1::SG_MAX_UB_MEMBERS;
+pub const SG_MAX_VERTEX_ATTRIBUTES: _bindgen_ty_1 = _bindgen_ty_1::SG_MAX_UB_MEMBERS;
+pub const SG_MAX_MIPMAPS: _bindgen_ty_1 = _bindgen_ty_1::SG_MAX_UB_MEMBERS;
+pub const SG_MAX_TEXTUREARRAY_LAYERS: _bindgen_ty_1 = _bindgen_ty_1::SG_MAX_TEXTUREARRAY_LAYERS;
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _bindgen_ty_1 {
+    SG_INVALID_ID = 0,
+    SG_NUM_SHADER_STAGES = 2,
+    SG_MAX_COLOR_ATTACHMENTS = 4,
+    SG_MAX_SHADERSTAGE_BUFFERS = 8,
+    SG_MAX_SHADERSTAGE_IMAGES = 12,
+    SG_MAX_UB_MEMBERS = 16,
+    SG_MAX_TEXTUREARRAY_LAYERS = 128,
+}
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone, PartialEq)]
 pub struct sg_color {
@@ -962,81 +973,89 @@ fn bindgen_test_layout_sg_color() {
         )
     );
 }
-pub const sg_backend_SG_BACKEND_GLCORE33: sg_backend = 0;
-pub const sg_backend_SG_BACKEND_GLES2: sg_backend = 1;
-pub const sg_backend_SG_BACKEND_GLES3: sg_backend = 2;
-pub const sg_backend_SG_BACKEND_D3D11: sg_backend = 3;
-pub const sg_backend_SG_BACKEND_METAL_IOS: sg_backend = 4;
-pub const sg_backend_SG_BACKEND_METAL_MACOS: sg_backend = 5;
-pub const sg_backend_SG_BACKEND_METAL_SIMULATOR: sg_backend = 6;
-pub const sg_backend_SG_BACKEND_WGPU: sg_backend = 7;
-pub const sg_backend_SG_BACKEND_DUMMY: sg_backend = 8;
-pub type sg_backend = ::std::os::raw::c_uint;
-pub const sg_pixel_format__SG_PIXELFORMAT_DEFAULT: sg_pixel_format = 0;
-pub const sg_pixel_format_SG_PIXELFORMAT_NONE: sg_pixel_format = 1;
-pub const sg_pixel_format_SG_PIXELFORMAT_R8: sg_pixel_format = 2;
-pub const sg_pixel_format_SG_PIXELFORMAT_R8SN: sg_pixel_format = 3;
-pub const sg_pixel_format_SG_PIXELFORMAT_R8UI: sg_pixel_format = 4;
-pub const sg_pixel_format_SG_PIXELFORMAT_R8SI: sg_pixel_format = 5;
-pub const sg_pixel_format_SG_PIXELFORMAT_R16: sg_pixel_format = 6;
-pub const sg_pixel_format_SG_PIXELFORMAT_R16SN: sg_pixel_format = 7;
-pub const sg_pixel_format_SG_PIXELFORMAT_R16UI: sg_pixel_format = 8;
-pub const sg_pixel_format_SG_PIXELFORMAT_R16SI: sg_pixel_format = 9;
-pub const sg_pixel_format_SG_PIXELFORMAT_R16F: sg_pixel_format = 10;
-pub const sg_pixel_format_SG_PIXELFORMAT_RG8: sg_pixel_format = 11;
-pub const sg_pixel_format_SG_PIXELFORMAT_RG8SN: sg_pixel_format = 12;
-pub const sg_pixel_format_SG_PIXELFORMAT_RG8UI: sg_pixel_format = 13;
-pub const sg_pixel_format_SG_PIXELFORMAT_RG8SI: sg_pixel_format = 14;
-pub const sg_pixel_format_SG_PIXELFORMAT_R32UI: sg_pixel_format = 15;
-pub const sg_pixel_format_SG_PIXELFORMAT_R32SI: sg_pixel_format = 16;
-pub const sg_pixel_format_SG_PIXELFORMAT_R32F: sg_pixel_format = 17;
-pub const sg_pixel_format_SG_PIXELFORMAT_RG16: sg_pixel_format = 18;
-pub const sg_pixel_format_SG_PIXELFORMAT_RG16SN: sg_pixel_format = 19;
-pub const sg_pixel_format_SG_PIXELFORMAT_RG16UI: sg_pixel_format = 20;
-pub const sg_pixel_format_SG_PIXELFORMAT_RG16SI: sg_pixel_format = 21;
-pub const sg_pixel_format_SG_PIXELFORMAT_RG16F: sg_pixel_format = 22;
-pub const sg_pixel_format_SG_PIXELFORMAT_RGBA8: sg_pixel_format = 23;
-pub const sg_pixel_format_SG_PIXELFORMAT_RGBA8SN: sg_pixel_format = 24;
-pub const sg_pixel_format_SG_PIXELFORMAT_RGBA8UI: sg_pixel_format = 25;
-pub const sg_pixel_format_SG_PIXELFORMAT_RGBA8SI: sg_pixel_format = 26;
-pub const sg_pixel_format_SG_PIXELFORMAT_BGRA8: sg_pixel_format = 27;
-pub const sg_pixel_format_SG_PIXELFORMAT_RGB10A2: sg_pixel_format = 28;
-pub const sg_pixel_format_SG_PIXELFORMAT_RG11B10F: sg_pixel_format = 29;
-pub const sg_pixel_format_SG_PIXELFORMAT_RG32UI: sg_pixel_format = 30;
-pub const sg_pixel_format_SG_PIXELFORMAT_RG32SI: sg_pixel_format = 31;
-pub const sg_pixel_format_SG_PIXELFORMAT_RG32F: sg_pixel_format = 32;
-pub const sg_pixel_format_SG_PIXELFORMAT_RGBA16: sg_pixel_format = 33;
-pub const sg_pixel_format_SG_PIXELFORMAT_RGBA16SN: sg_pixel_format = 34;
-pub const sg_pixel_format_SG_PIXELFORMAT_RGBA16UI: sg_pixel_format = 35;
-pub const sg_pixel_format_SG_PIXELFORMAT_RGBA16SI: sg_pixel_format = 36;
-pub const sg_pixel_format_SG_PIXELFORMAT_RGBA16F: sg_pixel_format = 37;
-pub const sg_pixel_format_SG_PIXELFORMAT_RGBA32UI: sg_pixel_format = 38;
-pub const sg_pixel_format_SG_PIXELFORMAT_RGBA32SI: sg_pixel_format = 39;
-pub const sg_pixel_format_SG_PIXELFORMAT_RGBA32F: sg_pixel_format = 40;
-pub const sg_pixel_format_SG_PIXELFORMAT_DEPTH: sg_pixel_format = 41;
-pub const sg_pixel_format_SG_PIXELFORMAT_DEPTH_STENCIL: sg_pixel_format = 42;
-pub const sg_pixel_format_SG_PIXELFORMAT_BC1_RGBA: sg_pixel_format = 43;
-pub const sg_pixel_format_SG_PIXELFORMAT_BC2_RGBA: sg_pixel_format = 44;
-pub const sg_pixel_format_SG_PIXELFORMAT_BC3_RGBA: sg_pixel_format = 45;
-pub const sg_pixel_format_SG_PIXELFORMAT_BC4_R: sg_pixel_format = 46;
-pub const sg_pixel_format_SG_PIXELFORMAT_BC4_RSN: sg_pixel_format = 47;
-pub const sg_pixel_format_SG_PIXELFORMAT_BC5_RG: sg_pixel_format = 48;
-pub const sg_pixel_format_SG_PIXELFORMAT_BC5_RGSN: sg_pixel_format = 49;
-pub const sg_pixel_format_SG_PIXELFORMAT_BC6H_RGBF: sg_pixel_format = 50;
-pub const sg_pixel_format_SG_PIXELFORMAT_BC6H_RGBUF: sg_pixel_format = 51;
-pub const sg_pixel_format_SG_PIXELFORMAT_BC7_RGBA: sg_pixel_format = 52;
-pub const sg_pixel_format_SG_PIXELFORMAT_PVRTC_RGB_2BPP: sg_pixel_format = 53;
-pub const sg_pixel_format_SG_PIXELFORMAT_PVRTC_RGB_4BPP: sg_pixel_format = 54;
-pub const sg_pixel_format_SG_PIXELFORMAT_PVRTC_RGBA_2BPP: sg_pixel_format = 55;
-pub const sg_pixel_format_SG_PIXELFORMAT_PVRTC_RGBA_4BPP: sg_pixel_format = 56;
-pub const sg_pixel_format_SG_PIXELFORMAT_ETC2_RGB8: sg_pixel_format = 57;
-pub const sg_pixel_format_SG_PIXELFORMAT_ETC2_RGB8A1: sg_pixel_format = 58;
-pub const sg_pixel_format_SG_PIXELFORMAT_ETC2_RGBA8: sg_pixel_format = 59;
-pub const sg_pixel_format_SG_PIXELFORMAT_ETC2_RG11: sg_pixel_format = 60;
-pub const sg_pixel_format_SG_PIXELFORMAT_ETC2_RG11SN: sg_pixel_format = 61;
-pub const sg_pixel_format__SG_PIXELFORMAT_NUM: sg_pixel_format = 62;
-pub const sg_pixel_format__SG_PIXELFORMAT_FORCE_U32: sg_pixel_format = 2147483647;
-pub type sg_pixel_format = ::std::os::raw::c_uint;
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_backend {
+    SG_BACKEND_GLCORE33 = 0,
+    SG_BACKEND_GLES2 = 1,
+    SG_BACKEND_GLES3 = 2,
+    SG_BACKEND_D3D11 = 3,
+    SG_BACKEND_METAL_IOS = 4,
+    SG_BACKEND_METAL_MACOS = 5,
+    SG_BACKEND_METAL_SIMULATOR = 6,
+    SG_BACKEND_WGPU = 7,
+    SG_BACKEND_DUMMY = 8,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_pixel_format {
+    _SG_PIXELFORMAT_DEFAULT = 0,
+    SG_PIXELFORMAT_NONE = 1,
+    SG_PIXELFORMAT_R8 = 2,
+    SG_PIXELFORMAT_R8SN = 3,
+    SG_PIXELFORMAT_R8UI = 4,
+    SG_PIXELFORMAT_R8SI = 5,
+    SG_PIXELFORMAT_R16 = 6,
+    SG_PIXELFORMAT_R16SN = 7,
+    SG_PIXELFORMAT_R16UI = 8,
+    SG_PIXELFORMAT_R16SI = 9,
+    SG_PIXELFORMAT_R16F = 10,
+    SG_PIXELFORMAT_RG8 = 11,
+    SG_PIXELFORMAT_RG8SN = 12,
+    SG_PIXELFORMAT_RG8UI = 13,
+    SG_PIXELFORMAT_RG8SI = 14,
+    SG_PIXELFORMAT_R32UI = 15,
+    SG_PIXELFORMAT_R32SI = 16,
+    SG_PIXELFORMAT_R32F = 17,
+    SG_PIXELFORMAT_RG16 = 18,
+    SG_PIXELFORMAT_RG16SN = 19,
+    SG_PIXELFORMAT_RG16UI = 20,
+    SG_PIXELFORMAT_RG16SI = 21,
+    SG_PIXELFORMAT_RG16F = 22,
+    SG_PIXELFORMAT_RGBA8 = 23,
+    SG_PIXELFORMAT_RGBA8SN = 24,
+    SG_PIXELFORMAT_RGBA8UI = 25,
+    SG_PIXELFORMAT_RGBA8SI = 26,
+    SG_PIXELFORMAT_BGRA8 = 27,
+    SG_PIXELFORMAT_RGB10A2 = 28,
+    SG_PIXELFORMAT_RG11B10F = 29,
+    SG_PIXELFORMAT_RG32UI = 30,
+    SG_PIXELFORMAT_RG32SI = 31,
+    SG_PIXELFORMAT_RG32F = 32,
+    SG_PIXELFORMAT_RGBA16 = 33,
+    SG_PIXELFORMAT_RGBA16SN = 34,
+    SG_PIXELFORMAT_RGBA16UI = 35,
+    SG_PIXELFORMAT_RGBA16SI = 36,
+    SG_PIXELFORMAT_RGBA16F = 37,
+    SG_PIXELFORMAT_RGBA32UI = 38,
+    SG_PIXELFORMAT_RGBA32SI = 39,
+    SG_PIXELFORMAT_RGBA32F = 40,
+    SG_PIXELFORMAT_DEPTH = 41,
+    SG_PIXELFORMAT_DEPTH_STENCIL = 42,
+    SG_PIXELFORMAT_BC1_RGBA = 43,
+    SG_PIXELFORMAT_BC2_RGBA = 44,
+    SG_PIXELFORMAT_BC3_RGBA = 45,
+    SG_PIXELFORMAT_BC4_R = 46,
+    SG_PIXELFORMAT_BC4_RSN = 47,
+    SG_PIXELFORMAT_BC5_RG = 48,
+    SG_PIXELFORMAT_BC5_RGSN = 49,
+    SG_PIXELFORMAT_BC6H_RGBF = 50,
+    SG_PIXELFORMAT_BC6H_RGBUF = 51,
+    SG_PIXELFORMAT_BC7_RGBA = 52,
+    SG_PIXELFORMAT_PVRTC_RGB_2BPP = 53,
+    SG_PIXELFORMAT_PVRTC_RGB_4BPP = 54,
+    SG_PIXELFORMAT_PVRTC_RGBA_2BPP = 55,
+    SG_PIXELFORMAT_PVRTC_RGBA_4BPP = 56,
+    SG_PIXELFORMAT_ETC2_RGB8 = 57,
+    SG_PIXELFORMAT_ETC2_RGB8A1 = 58,
+    SG_PIXELFORMAT_ETC2_RGBA8 = 59,
+    SG_PIXELFORMAT_ETC2_RG11 = 60,
+    SG_PIXELFORMAT_ETC2_RG11SN = 61,
+    _SG_PIXELFORMAT_NUM = 62,
+    _SG_PIXELFORMAT_FORCE_U32 = 2147483647,
+}
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub struct sg_pixelformat_info {
@@ -1342,216 +1361,308 @@ fn bindgen_test_layout_sg_limits() {
         )
     );
 }
-pub const sg_resource_state_SG_RESOURCESTATE_INITIAL: sg_resource_state = 0;
-pub const sg_resource_state_SG_RESOURCESTATE_ALLOC: sg_resource_state = 1;
-pub const sg_resource_state_SG_RESOURCESTATE_VALID: sg_resource_state = 2;
-pub const sg_resource_state_SG_RESOURCESTATE_FAILED: sg_resource_state = 3;
-pub const sg_resource_state_SG_RESOURCESTATE_INVALID: sg_resource_state = 4;
-pub const sg_resource_state__SG_RESOURCESTATE_FORCE_U32: sg_resource_state = 2147483647;
-pub type sg_resource_state = ::std::os::raw::c_uint;
-pub const sg_usage__SG_USAGE_DEFAULT: sg_usage = 0;
-pub const sg_usage_SG_USAGE_IMMUTABLE: sg_usage = 1;
-pub const sg_usage_SG_USAGE_DYNAMIC: sg_usage = 2;
-pub const sg_usage_SG_USAGE_STREAM: sg_usage = 3;
-pub const sg_usage__SG_USAGE_NUM: sg_usage = 4;
-pub const sg_usage__SG_USAGE_FORCE_U32: sg_usage = 2147483647;
-pub type sg_usage = ::std::os::raw::c_uint;
-pub const sg_buffer_type__SG_BUFFERTYPE_DEFAULT: sg_buffer_type = 0;
-pub const sg_buffer_type_SG_BUFFERTYPE_VERTEXBUFFER: sg_buffer_type = 1;
-pub const sg_buffer_type_SG_BUFFERTYPE_INDEXBUFFER: sg_buffer_type = 2;
-pub const sg_buffer_type__SG_BUFFERTYPE_NUM: sg_buffer_type = 3;
-pub const sg_buffer_type__SG_BUFFERTYPE_FORCE_U32: sg_buffer_type = 2147483647;
-pub type sg_buffer_type = ::std::os::raw::c_uint;
-pub const sg_index_type__SG_INDEXTYPE_DEFAULT: sg_index_type = 0;
-pub const sg_index_type_SG_INDEXTYPE_NONE: sg_index_type = 1;
-pub const sg_index_type_SG_INDEXTYPE_UINT16: sg_index_type = 2;
-pub const sg_index_type_SG_INDEXTYPE_UINT32: sg_index_type = 3;
-pub const sg_index_type__SG_INDEXTYPE_NUM: sg_index_type = 4;
-pub const sg_index_type__SG_INDEXTYPE_FORCE_U32: sg_index_type = 2147483647;
-pub type sg_index_type = ::std::os::raw::c_uint;
-pub const sg_image_type__SG_IMAGETYPE_DEFAULT: sg_image_type = 0;
-pub const sg_image_type_SG_IMAGETYPE_2D: sg_image_type = 1;
-pub const sg_image_type_SG_IMAGETYPE_CUBE: sg_image_type = 2;
-pub const sg_image_type_SG_IMAGETYPE_3D: sg_image_type = 3;
-pub const sg_image_type_SG_IMAGETYPE_ARRAY: sg_image_type = 4;
-pub const sg_image_type__SG_IMAGETYPE_NUM: sg_image_type = 5;
-pub const sg_image_type__SG_IMAGETYPE_FORCE_U32: sg_image_type = 2147483647;
-pub type sg_image_type = ::std::os::raw::c_uint;
-pub const sg_sampler_type__SG_SAMPLERTYPE_DEFAULT: sg_sampler_type = 0;
-pub const sg_sampler_type_SG_SAMPLERTYPE_FLOAT: sg_sampler_type = 1;
-pub const sg_sampler_type_SG_SAMPLERTYPE_SINT: sg_sampler_type = 2;
-pub const sg_sampler_type_SG_SAMPLERTYPE_UINT: sg_sampler_type = 3;
-pub type sg_sampler_type = ::std::os::raw::c_uint;
-pub const sg_cube_face_SG_CUBEFACE_POS_X: sg_cube_face = 0;
-pub const sg_cube_face_SG_CUBEFACE_NEG_X: sg_cube_face = 1;
-pub const sg_cube_face_SG_CUBEFACE_POS_Y: sg_cube_face = 2;
-pub const sg_cube_face_SG_CUBEFACE_NEG_Y: sg_cube_face = 3;
-pub const sg_cube_face_SG_CUBEFACE_POS_Z: sg_cube_face = 4;
-pub const sg_cube_face_SG_CUBEFACE_NEG_Z: sg_cube_face = 5;
-pub const sg_cube_face_SG_CUBEFACE_NUM: sg_cube_face = 6;
-pub const sg_cube_face__SG_CUBEFACE_FORCE_U32: sg_cube_face = 2147483647;
-pub type sg_cube_face = ::std::os::raw::c_uint;
-pub const sg_shader_stage_SG_SHADERSTAGE_VS: sg_shader_stage = 0;
-pub const sg_shader_stage_SG_SHADERSTAGE_FS: sg_shader_stage = 1;
-pub const sg_shader_stage__SG_SHADERSTAGE_FORCE_U32: sg_shader_stage = 2147483647;
-pub type sg_shader_stage = ::std::os::raw::c_uint;
-pub const sg_primitive_type__SG_PRIMITIVETYPE_DEFAULT: sg_primitive_type = 0;
-pub const sg_primitive_type_SG_PRIMITIVETYPE_POINTS: sg_primitive_type = 1;
-pub const sg_primitive_type_SG_PRIMITIVETYPE_LINES: sg_primitive_type = 2;
-pub const sg_primitive_type_SG_PRIMITIVETYPE_LINE_STRIP: sg_primitive_type = 3;
-pub const sg_primitive_type_SG_PRIMITIVETYPE_TRIANGLES: sg_primitive_type = 4;
-pub const sg_primitive_type_SG_PRIMITIVETYPE_TRIANGLE_STRIP: sg_primitive_type = 5;
-pub const sg_primitive_type__SG_PRIMITIVETYPE_NUM: sg_primitive_type = 6;
-pub const sg_primitive_type__SG_PRIMITIVETYPE_FORCE_U32: sg_primitive_type = 2147483647;
-pub type sg_primitive_type = ::std::os::raw::c_uint;
-pub const sg_filter__SG_FILTER_DEFAULT: sg_filter = 0;
-pub const sg_filter_SG_FILTER_NEAREST: sg_filter = 1;
-pub const sg_filter_SG_FILTER_LINEAR: sg_filter = 2;
-pub const sg_filter_SG_FILTER_NEAREST_MIPMAP_NEAREST: sg_filter = 3;
-pub const sg_filter_SG_FILTER_NEAREST_MIPMAP_LINEAR: sg_filter = 4;
-pub const sg_filter_SG_FILTER_LINEAR_MIPMAP_NEAREST: sg_filter = 5;
-pub const sg_filter_SG_FILTER_LINEAR_MIPMAP_LINEAR: sg_filter = 6;
-pub const sg_filter__SG_FILTER_NUM: sg_filter = 7;
-pub const sg_filter__SG_FILTER_FORCE_U32: sg_filter = 2147483647;
-pub type sg_filter = ::std::os::raw::c_uint;
-pub const sg_wrap__SG_WRAP_DEFAULT: sg_wrap = 0;
-pub const sg_wrap_SG_WRAP_REPEAT: sg_wrap = 1;
-pub const sg_wrap_SG_WRAP_CLAMP_TO_EDGE: sg_wrap = 2;
-pub const sg_wrap_SG_WRAP_CLAMP_TO_BORDER: sg_wrap = 3;
-pub const sg_wrap_SG_WRAP_MIRRORED_REPEAT: sg_wrap = 4;
-pub const sg_wrap__SG_WRAP_NUM: sg_wrap = 5;
-pub const sg_wrap__SG_WRAP_FORCE_U32: sg_wrap = 2147483647;
-pub type sg_wrap = ::std::os::raw::c_uint;
-pub const sg_border_color__SG_BORDERCOLOR_DEFAULT: sg_border_color = 0;
-pub const sg_border_color_SG_BORDERCOLOR_TRANSPARENT_BLACK: sg_border_color = 1;
-pub const sg_border_color_SG_BORDERCOLOR_OPAQUE_BLACK: sg_border_color = 2;
-pub const sg_border_color_SG_BORDERCOLOR_OPAQUE_WHITE: sg_border_color = 3;
-pub const sg_border_color__SG_BORDERCOLOR_NUM: sg_border_color = 4;
-pub const sg_border_color__SG_BORDERCOLOR_FORCE_U32: sg_border_color = 2147483647;
-pub type sg_border_color = ::std::os::raw::c_uint;
-pub const sg_vertex_format_SG_VERTEXFORMAT_INVALID: sg_vertex_format = 0;
-pub const sg_vertex_format_SG_VERTEXFORMAT_FLOAT: sg_vertex_format = 1;
-pub const sg_vertex_format_SG_VERTEXFORMAT_FLOAT2: sg_vertex_format = 2;
-pub const sg_vertex_format_SG_VERTEXFORMAT_FLOAT3: sg_vertex_format = 3;
-pub const sg_vertex_format_SG_VERTEXFORMAT_FLOAT4: sg_vertex_format = 4;
-pub const sg_vertex_format_SG_VERTEXFORMAT_BYTE4: sg_vertex_format = 5;
-pub const sg_vertex_format_SG_VERTEXFORMAT_BYTE4N: sg_vertex_format = 6;
-pub const sg_vertex_format_SG_VERTEXFORMAT_UBYTE4: sg_vertex_format = 7;
-pub const sg_vertex_format_SG_VERTEXFORMAT_UBYTE4N: sg_vertex_format = 8;
-pub const sg_vertex_format_SG_VERTEXFORMAT_SHORT2: sg_vertex_format = 9;
-pub const sg_vertex_format_SG_VERTEXFORMAT_SHORT2N: sg_vertex_format = 10;
-pub const sg_vertex_format_SG_VERTEXFORMAT_USHORT2N: sg_vertex_format = 11;
-pub const sg_vertex_format_SG_VERTEXFORMAT_SHORT4: sg_vertex_format = 12;
-pub const sg_vertex_format_SG_VERTEXFORMAT_SHORT4N: sg_vertex_format = 13;
-pub const sg_vertex_format_SG_VERTEXFORMAT_USHORT4N: sg_vertex_format = 14;
-pub const sg_vertex_format_SG_VERTEXFORMAT_UINT10_N2: sg_vertex_format = 15;
-pub const sg_vertex_format__SG_VERTEXFORMAT_NUM: sg_vertex_format = 16;
-pub const sg_vertex_format__SG_VERTEXFORMAT_FORCE_U32: sg_vertex_format = 2147483647;
-pub type sg_vertex_format = ::std::os::raw::c_uint;
-pub const sg_vertex_step__SG_VERTEXSTEP_DEFAULT: sg_vertex_step = 0;
-pub const sg_vertex_step_SG_VERTEXSTEP_PER_VERTEX: sg_vertex_step = 1;
-pub const sg_vertex_step_SG_VERTEXSTEP_PER_INSTANCE: sg_vertex_step = 2;
-pub const sg_vertex_step__SG_VERTEXSTEP_NUM: sg_vertex_step = 3;
-pub const sg_vertex_step__SG_VERTEXSTEP_FORCE_U32: sg_vertex_step = 2147483647;
-pub type sg_vertex_step = ::std::os::raw::c_uint;
-pub const sg_uniform_type_SG_UNIFORMTYPE_INVALID: sg_uniform_type = 0;
-pub const sg_uniform_type_SG_UNIFORMTYPE_FLOAT: sg_uniform_type = 1;
-pub const sg_uniform_type_SG_UNIFORMTYPE_FLOAT2: sg_uniform_type = 2;
-pub const sg_uniform_type_SG_UNIFORMTYPE_FLOAT3: sg_uniform_type = 3;
-pub const sg_uniform_type_SG_UNIFORMTYPE_FLOAT4: sg_uniform_type = 4;
-pub const sg_uniform_type_SG_UNIFORMTYPE_MAT4: sg_uniform_type = 5;
-pub const sg_uniform_type__SG_UNIFORMTYPE_NUM: sg_uniform_type = 6;
-pub const sg_uniform_type__SG_UNIFORMTYPE_FORCE_U32: sg_uniform_type = 2147483647;
-pub type sg_uniform_type = ::std::os::raw::c_uint;
-pub const sg_cull_mode__SG_CULLMODE_DEFAULT: sg_cull_mode = 0;
-pub const sg_cull_mode_SG_CULLMODE_NONE: sg_cull_mode = 1;
-pub const sg_cull_mode_SG_CULLMODE_FRONT: sg_cull_mode = 2;
-pub const sg_cull_mode_SG_CULLMODE_BACK: sg_cull_mode = 3;
-pub const sg_cull_mode__SG_CULLMODE_NUM: sg_cull_mode = 4;
-pub const sg_cull_mode__SG_CULLMODE_FORCE_U32: sg_cull_mode = 2147483647;
-pub type sg_cull_mode = ::std::os::raw::c_uint;
-pub const sg_face_winding__SG_FACEWINDING_DEFAULT: sg_face_winding = 0;
-pub const sg_face_winding_SG_FACEWINDING_CCW: sg_face_winding = 1;
-pub const sg_face_winding_SG_FACEWINDING_CW: sg_face_winding = 2;
-pub const sg_face_winding__SG_FACEWINDING_NUM: sg_face_winding = 3;
-pub const sg_face_winding__SG_FACEWINDING_FORCE_U32: sg_face_winding = 2147483647;
-pub type sg_face_winding = ::std::os::raw::c_uint;
-pub const sg_compare_func__SG_COMPAREFUNC_DEFAULT: sg_compare_func = 0;
-pub const sg_compare_func_SG_COMPAREFUNC_NEVER: sg_compare_func = 1;
-pub const sg_compare_func_SG_COMPAREFUNC_LESS: sg_compare_func = 2;
-pub const sg_compare_func_SG_COMPAREFUNC_EQUAL: sg_compare_func = 3;
-pub const sg_compare_func_SG_COMPAREFUNC_LESS_EQUAL: sg_compare_func = 4;
-pub const sg_compare_func_SG_COMPAREFUNC_GREATER: sg_compare_func = 5;
-pub const sg_compare_func_SG_COMPAREFUNC_NOT_EQUAL: sg_compare_func = 6;
-pub const sg_compare_func_SG_COMPAREFUNC_GREATER_EQUAL: sg_compare_func = 7;
-pub const sg_compare_func_SG_COMPAREFUNC_ALWAYS: sg_compare_func = 8;
-pub const sg_compare_func__SG_COMPAREFUNC_NUM: sg_compare_func = 9;
-pub const sg_compare_func__SG_COMPAREFUNC_FORCE_U32: sg_compare_func = 2147483647;
-pub type sg_compare_func = ::std::os::raw::c_uint;
-pub const sg_stencil_op__SG_STENCILOP_DEFAULT: sg_stencil_op = 0;
-pub const sg_stencil_op_SG_STENCILOP_KEEP: sg_stencil_op = 1;
-pub const sg_stencil_op_SG_STENCILOP_ZERO: sg_stencil_op = 2;
-pub const sg_stencil_op_SG_STENCILOP_REPLACE: sg_stencil_op = 3;
-pub const sg_stencil_op_SG_STENCILOP_INCR_CLAMP: sg_stencil_op = 4;
-pub const sg_stencil_op_SG_STENCILOP_DECR_CLAMP: sg_stencil_op = 5;
-pub const sg_stencil_op_SG_STENCILOP_INVERT: sg_stencil_op = 6;
-pub const sg_stencil_op_SG_STENCILOP_INCR_WRAP: sg_stencil_op = 7;
-pub const sg_stencil_op_SG_STENCILOP_DECR_WRAP: sg_stencil_op = 8;
-pub const sg_stencil_op__SG_STENCILOP_NUM: sg_stencil_op = 9;
-pub const sg_stencil_op__SG_STENCILOP_FORCE_U32: sg_stencil_op = 2147483647;
-pub type sg_stencil_op = ::std::os::raw::c_uint;
-pub const sg_blend_factor__SG_BLENDFACTOR_DEFAULT: sg_blend_factor = 0;
-pub const sg_blend_factor_SG_BLENDFACTOR_ZERO: sg_blend_factor = 1;
-pub const sg_blend_factor_SG_BLENDFACTOR_ONE: sg_blend_factor = 2;
-pub const sg_blend_factor_SG_BLENDFACTOR_SRC_COLOR: sg_blend_factor = 3;
-pub const sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_SRC_COLOR: sg_blend_factor = 4;
-pub const sg_blend_factor_SG_BLENDFACTOR_SRC_ALPHA: sg_blend_factor = 5;
-pub const sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_SRC_ALPHA: sg_blend_factor = 6;
-pub const sg_blend_factor_SG_BLENDFACTOR_DST_COLOR: sg_blend_factor = 7;
-pub const sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_DST_COLOR: sg_blend_factor = 8;
-pub const sg_blend_factor_SG_BLENDFACTOR_DST_ALPHA: sg_blend_factor = 9;
-pub const sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_DST_ALPHA: sg_blend_factor = 10;
-pub const sg_blend_factor_SG_BLENDFACTOR_SRC_ALPHA_SATURATED: sg_blend_factor = 11;
-pub const sg_blend_factor_SG_BLENDFACTOR_BLEND_COLOR: sg_blend_factor = 12;
-pub const sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_BLEND_COLOR: sg_blend_factor = 13;
-pub const sg_blend_factor_SG_BLENDFACTOR_BLEND_ALPHA: sg_blend_factor = 14;
-pub const sg_blend_factor_SG_BLENDFACTOR_ONE_MINUS_BLEND_ALPHA: sg_blend_factor = 15;
-pub const sg_blend_factor__SG_BLENDFACTOR_NUM: sg_blend_factor = 16;
-pub const sg_blend_factor__SG_BLENDFACTOR_FORCE_U32: sg_blend_factor = 2147483647;
-pub type sg_blend_factor = ::std::os::raw::c_uint;
-pub const sg_blend_op__SG_BLENDOP_DEFAULT: sg_blend_op = 0;
-pub const sg_blend_op_SG_BLENDOP_ADD: sg_blend_op = 1;
-pub const sg_blend_op_SG_BLENDOP_SUBTRACT: sg_blend_op = 2;
-pub const sg_blend_op_SG_BLENDOP_REVERSE_SUBTRACT: sg_blend_op = 3;
-pub const sg_blend_op__SG_BLENDOP_NUM: sg_blend_op = 4;
-pub const sg_blend_op__SG_BLENDOP_FORCE_U32: sg_blend_op = 2147483647;
-pub type sg_blend_op = ::std::os::raw::c_uint;
-pub const sg_color_mask__SG_COLORMASK_DEFAULT: sg_color_mask = 0;
-pub const sg_color_mask_SG_COLORMASK_NONE: sg_color_mask = 16;
-pub const sg_color_mask_SG_COLORMASK_R: sg_color_mask = 1;
-pub const sg_color_mask_SG_COLORMASK_G: sg_color_mask = 2;
-pub const sg_color_mask_SG_COLORMASK_RG: sg_color_mask = 3;
-pub const sg_color_mask_SG_COLORMASK_B: sg_color_mask = 4;
-pub const sg_color_mask_SG_COLORMASK_RB: sg_color_mask = 5;
-pub const sg_color_mask_SG_COLORMASK_GB: sg_color_mask = 6;
-pub const sg_color_mask_SG_COLORMASK_RGB: sg_color_mask = 7;
-pub const sg_color_mask_SG_COLORMASK_A: sg_color_mask = 8;
-pub const sg_color_mask_SG_COLORMASK_RA: sg_color_mask = 9;
-pub const sg_color_mask_SG_COLORMASK_GA: sg_color_mask = 10;
-pub const sg_color_mask_SG_COLORMASK_RGA: sg_color_mask = 11;
-pub const sg_color_mask_SG_COLORMASK_BA: sg_color_mask = 12;
-pub const sg_color_mask_SG_COLORMASK_RBA: sg_color_mask = 13;
-pub const sg_color_mask_SG_COLORMASK_GBA: sg_color_mask = 14;
-pub const sg_color_mask_SG_COLORMASK_RGBA: sg_color_mask = 15;
-pub const sg_color_mask__SG_COLORMASK_FORCE_U32: sg_color_mask = 2147483647;
-pub type sg_color_mask = ::std::os::raw::c_uint;
-pub const sg_action__SG_ACTION_DEFAULT: sg_action = 0;
-pub const sg_action_SG_ACTION_CLEAR: sg_action = 1;
-pub const sg_action_SG_ACTION_LOAD: sg_action = 2;
-pub const sg_action_SG_ACTION_DONTCARE: sg_action = 3;
-pub const sg_action__SG_ACTION_NUM: sg_action = 4;
-pub const sg_action__SG_ACTION_FORCE_U32: sg_action = 2147483647;
-pub type sg_action = ::std::os::raw::c_uint;
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_resource_state {
+    SG_RESOURCESTATE_INITIAL = 0,
+    SG_RESOURCESTATE_ALLOC = 1,
+    SG_RESOURCESTATE_VALID = 2,
+    SG_RESOURCESTATE_FAILED = 3,
+    SG_RESOURCESTATE_INVALID = 4,
+    _SG_RESOURCESTATE_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_usage {
+    _SG_USAGE_DEFAULT = 0,
+    SG_USAGE_IMMUTABLE = 1,
+    SG_USAGE_DYNAMIC = 2,
+    SG_USAGE_STREAM = 3,
+    _SG_USAGE_NUM = 4,
+    _SG_USAGE_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_buffer_type {
+    _SG_BUFFERTYPE_DEFAULT = 0,
+    SG_BUFFERTYPE_VERTEXBUFFER = 1,
+    SG_BUFFERTYPE_INDEXBUFFER = 2,
+    _SG_BUFFERTYPE_NUM = 3,
+    _SG_BUFFERTYPE_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_index_type {
+    _SG_INDEXTYPE_DEFAULT = 0,
+    SG_INDEXTYPE_NONE = 1,
+    SG_INDEXTYPE_UINT16 = 2,
+    SG_INDEXTYPE_UINT32 = 3,
+    _SG_INDEXTYPE_NUM = 4,
+    _SG_INDEXTYPE_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_image_type {
+    _SG_IMAGETYPE_DEFAULT = 0,
+    SG_IMAGETYPE_2D = 1,
+    SG_IMAGETYPE_CUBE = 2,
+    SG_IMAGETYPE_3D = 3,
+    SG_IMAGETYPE_ARRAY = 4,
+    _SG_IMAGETYPE_NUM = 5,
+    _SG_IMAGETYPE_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_sampler_type {
+    _SG_SAMPLERTYPE_DEFAULT = 0,
+    SG_SAMPLERTYPE_FLOAT = 1,
+    SG_SAMPLERTYPE_SINT = 2,
+    SG_SAMPLERTYPE_UINT = 3,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_cube_face {
+    SG_CUBEFACE_POS_X = 0,
+    SG_CUBEFACE_NEG_X = 1,
+    SG_CUBEFACE_POS_Y = 2,
+    SG_CUBEFACE_NEG_Y = 3,
+    SG_CUBEFACE_POS_Z = 4,
+    SG_CUBEFACE_NEG_Z = 5,
+    SG_CUBEFACE_NUM = 6,
+    _SG_CUBEFACE_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_shader_stage {
+    SG_SHADERSTAGE_VS = 0,
+    SG_SHADERSTAGE_FS = 1,
+    _SG_SHADERSTAGE_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_primitive_type {
+    _SG_PRIMITIVETYPE_DEFAULT = 0,
+    SG_PRIMITIVETYPE_POINTS = 1,
+    SG_PRIMITIVETYPE_LINES = 2,
+    SG_PRIMITIVETYPE_LINE_STRIP = 3,
+    SG_PRIMITIVETYPE_TRIANGLES = 4,
+    SG_PRIMITIVETYPE_TRIANGLE_STRIP = 5,
+    _SG_PRIMITIVETYPE_NUM = 6,
+    _SG_PRIMITIVETYPE_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_filter {
+    _SG_FILTER_DEFAULT = 0,
+    SG_FILTER_NEAREST = 1,
+    SG_FILTER_LINEAR = 2,
+    SG_FILTER_NEAREST_MIPMAP_NEAREST = 3,
+    SG_FILTER_NEAREST_MIPMAP_LINEAR = 4,
+    SG_FILTER_LINEAR_MIPMAP_NEAREST = 5,
+    SG_FILTER_LINEAR_MIPMAP_LINEAR = 6,
+    _SG_FILTER_NUM = 7,
+    _SG_FILTER_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_wrap {
+    _SG_WRAP_DEFAULT = 0,
+    SG_WRAP_REPEAT = 1,
+    SG_WRAP_CLAMP_TO_EDGE = 2,
+    SG_WRAP_CLAMP_TO_BORDER = 3,
+    SG_WRAP_MIRRORED_REPEAT = 4,
+    _SG_WRAP_NUM = 5,
+    _SG_WRAP_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_border_color {
+    _SG_BORDERCOLOR_DEFAULT = 0,
+    SG_BORDERCOLOR_TRANSPARENT_BLACK = 1,
+    SG_BORDERCOLOR_OPAQUE_BLACK = 2,
+    SG_BORDERCOLOR_OPAQUE_WHITE = 3,
+    _SG_BORDERCOLOR_NUM = 4,
+    _SG_BORDERCOLOR_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_vertex_format {
+    SG_VERTEXFORMAT_INVALID = 0,
+    SG_VERTEXFORMAT_FLOAT = 1,
+    SG_VERTEXFORMAT_FLOAT2 = 2,
+    SG_VERTEXFORMAT_FLOAT3 = 3,
+    SG_VERTEXFORMAT_FLOAT4 = 4,
+    SG_VERTEXFORMAT_BYTE4 = 5,
+    SG_VERTEXFORMAT_BYTE4N = 6,
+    SG_VERTEXFORMAT_UBYTE4 = 7,
+    SG_VERTEXFORMAT_UBYTE4N = 8,
+    SG_VERTEXFORMAT_SHORT2 = 9,
+    SG_VERTEXFORMAT_SHORT2N = 10,
+    SG_VERTEXFORMAT_USHORT2N = 11,
+    SG_VERTEXFORMAT_SHORT4 = 12,
+    SG_VERTEXFORMAT_SHORT4N = 13,
+    SG_VERTEXFORMAT_USHORT4N = 14,
+    SG_VERTEXFORMAT_UINT10_N2 = 15,
+    _SG_VERTEXFORMAT_NUM = 16,
+    _SG_VERTEXFORMAT_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_vertex_step {
+    _SG_VERTEXSTEP_DEFAULT = 0,
+    SG_VERTEXSTEP_PER_VERTEX = 1,
+    SG_VERTEXSTEP_PER_INSTANCE = 2,
+    _SG_VERTEXSTEP_NUM = 3,
+    _SG_VERTEXSTEP_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_uniform_type {
+    SG_UNIFORMTYPE_INVALID = 0,
+    SG_UNIFORMTYPE_FLOAT = 1,
+    SG_UNIFORMTYPE_FLOAT2 = 2,
+    SG_UNIFORMTYPE_FLOAT3 = 3,
+    SG_UNIFORMTYPE_FLOAT4 = 4,
+    SG_UNIFORMTYPE_MAT4 = 5,
+    _SG_UNIFORMTYPE_NUM = 6,
+    _SG_UNIFORMTYPE_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_cull_mode {
+    _SG_CULLMODE_DEFAULT = 0,
+    SG_CULLMODE_NONE = 1,
+    SG_CULLMODE_FRONT = 2,
+    SG_CULLMODE_BACK = 3,
+    _SG_CULLMODE_NUM = 4,
+    _SG_CULLMODE_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_face_winding {
+    _SG_FACEWINDING_DEFAULT = 0,
+    SG_FACEWINDING_CCW = 1,
+    SG_FACEWINDING_CW = 2,
+    _SG_FACEWINDING_NUM = 3,
+    _SG_FACEWINDING_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_compare_func {
+    _SG_COMPAREFUNC_DEFAULT = 0,
+    SG_COMPAREFUNC_NEVER = 1,
+    SG_COMPAREFUNC_LESS = 2,
+    SG_COMPAREFUNC_EQUAL = 3,
+    SG_COMPAREFUNC_LESS_EQUAL = 4,
+    SG_COMPAREFUNC_GREATER = 5,
+    SG_COMPAREFUNC_NOT_EQUAL = 6,
+    SG_COMPAREFUNC_GREATER_EQUAL = 7,
+    SG_COMPAREFUNC_ALWAYS = 8,
+    _SG_COMPAREFUNC_NUM = 9,
+    _SG_COMPAREFUNC_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_stencil_op {
+    _SG_STENCILOP_DEFAULT = 0,
+    SG_STENCILOP_KEEP = 1,
+    SG_STENCILOP_ZERO = 2,
+    SG_STENCILOP_REPLACE = 3,
+    SG_STENCILOP_INCR_CLAMP = 4,
+    SG_STENCILOP_DECR_CLAMP = 5,
+    SG_STENCILOP_INVERT = 6,
+    SG_STENCILOP_INCR_WRAP = 7,
+    SG_STENCILOP_DECR_WRAP = 8,
+    _SG_STENCILOP_NUM = 9,
+    _SG_STENCILOP_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_blend_factor {
+    _SG_BLENDFACTOR_DEFAULT = 0,
+    SG_BLENDFACTOR_ZERO = 1,
+    SG_BLENDFACTOR_ONE = 2,
+    SG_BLENDFACTOR_SRC_COLOR = 3,
+    SG_BLENDFACTOR_ONE_MINUS_SRC_COLOR = 4,
+    SG_BLENDFACTOR_SRC_ALPHA = 5,
+    SG_BLENDFACTOR_ONE_MINUS_SRC_ALPHA = 6,
+    SG_BLENDFACTOR_DST_COLOR = 7,
+    SG_BLENDFACTOR_ONE_MINUS_DST_COLOR = 8,
+    SG_BLENDFACTOR_DST_ALPHA = 9,
+    SG_BLENDFACTOR_ONE_MINUS_DST_ALPHA = 10,
+    SG_BLENDFACTOR_SRC_ALPHA_SATURATED = 11,
+    SG_BLENDFACTOR_BLEND_COLOR = 12,
+    SG_BLENDFACTOR_ONE_MINUS_BLEND_COLOR = 13,
+    SG_BLENDFACTOR_BLEND_ALPHA = 14,
+    SG_BLENDFACTOR_ONE_MINUS_BLEND_ALPHA = 15,
+    _SG_BLENDFACTOR_NUM = 16,
+    _SG_BLENDFACTOR_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_blend_op {
+    _SG_BLENDOP_DEFAULT = 0,
+    SG_BLENDOP_ADD = 1,
+    SG_BLENDOP_SUBTRACT = 2,
+    SG_BLENDOP_REVERSE_SUBTRACT = 3,
+    _SG_BLENDOP_NUM = 4,
+    _SG_BLENDOP_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_color_mask {
+    _SG_COLORMASK_DEFAULT = 0,
+    SG_COLORMASK_NONE = 16,
+    SG_COLORMASK_R = 1,
+    SG_COLORMASK_G = 2,
+    SG_COLORMASK_RG = 3,
+    SG_COLORMASK_B = 4,
+    SG_COLORMASK_RB = 5,
+    SG_COLORMASK_GB = 6,
+    SG_COLORMASK_RGB = 7,
+    SG_COLORMASK_A = 8,
+    SG_COLORMASK_RA = 9,
+    SG_COLORMASK_GA = 10,
+    SG_COLORMASK_RGA = 11,
+    SG_COLORMASK_BA = 12,
+    SG_COLORMASK_RBA = 13,
+    SG_COLORMASK_GBA = 14,
+    SG_COLORMASK_RGBA = 15,
+    _SG_COLORMASK_FORCE_U32 = 2147483647,
+}
+#[repr(u32)]
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum sg_action {
+    _SG_ACTION_DEFAULT = 0,
+    SG_ACTION_CLEAR = 1,
+    SG_ACTION_LOAD = 2,
+    SG_ACTION_DONTCARE = 3,
+    _SG_ACTION_NUM = 4,
+    _SG_ACTION_FORCE_U32 = 2147483647,
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct sg_color_attachment_action {

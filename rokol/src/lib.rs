@@ -3,17 +3,21 @@ Wrapper of [Sokol] libraries
 
 [Sokol]: https://github.com/floooh/sokol
 
-NOTE: `rokol` is still early in progress: **currently only macOS + GlCore33 backend is considered**
-
 # Features (specified in `Cargo.toml`)
 
-* `impl-app`: imports `sokol_app.h` and enables [`app`] module
+Example settings::
+
+```toml
+rokol = { features = ["sdl", "impl-gfx", "glcore33", "fontstash"] }
+```
+
+* `impl-app`: implements `sokol_app.h` and enables `app` module
 * `sdl2`: generates [`glue`] code for `sdl2`
-* `impl-gfx`: imports `sokol_gfx.h` and enables [`gfx`] module
-  * `glcore33`: use OpenGL backend
-  * `metal`: use Metal backend
-  * `d3d11`: use DirectX11 backend
-* `fontstash`: imports `fontstash.h` and enables [`fons`] module
+* `impl-gfx`: implements `sokol_gfx.h` and enables `gfx` module
+  * `glcore33`: uses OpenGL backend
+  * `metal`: uses Metal backend
+  * `d3d11`: uses DirectX11 backend
+* `fontstash`: implements `fontstash.h` and enables `fons` module
 
 # Tips
 

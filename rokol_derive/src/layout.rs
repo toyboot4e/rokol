@@ -22,11 +22,36 @@ pub fn impl_vertex_layout(ast: DeriveInput) -> TokenStream2 {
     };
 
     let format_decls = [
-        ("f32", quote! { rg::VertexFormat::Float }),
-        ("[f32; 2]", quote! { rg::VertexFormat::Float2 }),
-        ("[f32; 3]", quote! { rg::VertexFormat::Float3 }),
-        ("[f32; 4]", quote! { rg::VertexFormat::Float4 }),
-        ("[u8; 4]", quote! { rg::VertexFormat::UByte4N }),
+        (
+            "f32",
+            quote! {
+                rokol::ffi::gfx::sg_vertex_format::SG_VERTEXFORMAT_FLOAT
+            },
+        ),
+        (
+            "[f32; 2]",
+            quote! {
+                rokol::ffi::gfx::sg_vertex_format::SG_VERTEXFORMAT_FLOAT2
+            },
+        ),
+        (
+            "[f32; 3]",
+            quote! {
+                rokol::ffi::gfx::sg_vertex_format::SG_VERTEXFORMAT_FLOAT3
+            },
+        ),
+        (
+            "[f32; 4]",
+            quote! {
+                rokol::ffi::gfx::sg_vertex_format::SG_VERTEXFORMAT_FLOAT4
+            },
+        ),
+        (
+            "[u8; 4]",
+            quote! {
+                rokol::ffi::gfx::sg_vertex_format::SG_VERTEXFORMAT_UBYTE4N
+            },
+        ),
     ];
 
     let format_defs = format_decls
@@ -52,7 +77,7 @@ pub fn impl_vertex_layout(ast: DeriveInput) -> TokenStream2 {
     let gen_desc = quote! {
         let mut desc = rokol::gfx::LayoutDesc::default();
         #(
-            desc.attrs[#i].format = #formats as u32;
+            desc.attrs[#i].format = #formats;
         )*
         desc
     };

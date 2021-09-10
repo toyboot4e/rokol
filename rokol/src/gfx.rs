@@ -1229,10 +1229,11 @@ pub unsafe fn buf_desc(
 
 #[cfg(test)]
 mod test {
-    use sper::{self as rg, u32, VertexLayout};
+    use super::VertexLayout;
 
     // for the derive macro:
     use crate as rokol;
+    use crate::gfx as rg;
 
     #[derive(VertexLayout)]
     #[repr(C)]

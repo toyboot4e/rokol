@@ -83,17 +83,11 @@ pub trait RApp {
 ///
 /// It's makes [`RApp`] a normal rusty trait. It's implemented and used under the hood.
 pub trait RAppFfiCallback {
-    #[no_mangle]
     extern "C" fn init_userdata_cb(user_data: *mut c_void);
-    #[no_mangle]
     extern "C" fn frame_userdata_cb(user_data: *mut c_void);
-    #[no_mangle]
     extern "C" fn cleanup_userdata_cb(user_data: *mut c_void);
-    #[no_mangle]
     extern "C" fn event_userdata_cb(event: *const ffi::sapp_event, user_data: *mut c_void);
-    #[no_mangle]
     extern "C" fn fail_userdata_cb(message: *const c_char, user_data: *mut c_void);
-    // #[no_mangle]
     // extern "C" fn stream_userdata_cb(
     //     buffer: *mut f32,
     //     num_frames: c_uint,
@@ -102,30 +96,22 @@ pub trait RAppFfiCallback {
     // );
 }
 
-// Why `#[no_mangle]` for C callback functions? I'm not sure, but the nomicon has some note:
-// https://doc.rust-lang.org/nomicon/ffi.html#calling-rust-code-from-c
-// Also, you might be interested in "name mangling". I would google about it.
-
 impl<T: RApp> RAppFfiCallback for T {
-    #[no_mangle]
     extern "C" fn init_userdata_cb(user_data: *mut c_void) {
         let me: &mut Self = unsafe { &mut *(user_data as *mut Self) };
         me.init();
     }
 
-    #[no_mangle]
     extern "C" fn frame_userdata_cb(user_data: *mut c_void) {
         let me: &mut Self = unsafe { &mut *(user_data as *mut Self) };
         me.frame();
     }
 
-    #[no_mangle]
     extern "C" fn cleanup_userdata_cb(user_data: *mut c_void) {
         let me: &mut Self = unsafe { &mut *(user_data as *mut Self) };
         me.cleanup();
     }
 
-    #[no_mangle]
     extern "C" fn event_userdata_cb(event: *const ffi::sapp_event, user_data: *mut c_void) {
         let me: &mut Self = unsafe { &mut *(user_data as *mut Self) };
         // note that `RAppEvent` is just an alias of `sapp_event`
@@ -134,7 +120,6 @@ impl<T: RApp> RAppFfiCallback for T {
         me.event(ev);
     }
 
-    #[no_mangle]
     extern "C" fn fail_userdata_cb(message: *const c_char, user_data: *mut c_void) {
         let msg = unsafe { CStr::from_ptr(message) };
 
@@ -150,7 +135,6 @@ impl<T: RApp> RAppFfiCallback for T {
         me.fail(msg);
     }
 
-    // #[no_mangle]
     // extern "C" fn stream_userdata_cb(
     //     buffer: *mut f32,
     //     num_frames: c_uint,

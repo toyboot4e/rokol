@@ -521,6 +521,18 @@ ffi_enum! {
 }
 
 ffi_enum! {
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub enum BlendOp around ffi::sg_blend_op {
+        _Default = _SG_BLENDOP_DEFAULT,
+        Add = SG_BLENDOP_ADD,
+        Sub = SG_BLENDOP_SUBTRACT,
+        RevSub = SG_BLENDOP_REVERSE_SUBTRACT,
+        _Num = _SG_BLENDOP_NUM,
+        _Force32 = _SG_BLENDOP_FORCE_U32,
+    }
+}
+
+ffi_enum! {
     /// Defines what action should be performed at the start of a render pass:
     ///
     /// This is used in the [`PassAction`] structure.

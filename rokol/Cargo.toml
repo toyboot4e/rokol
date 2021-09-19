@@ -12,7 +12,7 @@ keywords = ["graphics", "gamedev"]
 
 [features]
 # show off all the items
-default = ["sdl2", "impl-gfx", "glcore33", "fontstash"]
+default = ["sdl2", "impl-gfx", "serde", "glcore33", "fontstash"]
 
 impl-app = ["rokol_ffi/impl-app"]
 impl-gfx = ["rokol_ffi/impl-gfx", "rokol_derive"]
@@ -35,4 +35,5 @@ bitflags = "1.2.1"
 
 sdl2 = { version = "0.34.3", optional = true }
 fontstash = { git = "https://github.com/toyboot4e/fontstash-rs", branch = "main", version = "0.1.6", optional = true }
+serde = { version = "1.0.130", optional = true }
 

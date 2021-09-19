@@ -8,6 +8,9 @@ use std::fmt;
 
 pub use rokol_ffi::gfx::sg_context_desc as SgContextDesc;
 
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
+
 use crate::gfx as rg;
 
 /// Enum compatible with [`PixelFormat`] in `rokol::gfx`
@@ -141,12 +144,15 @@ impl fmt::Debug for WindowHandle {
     }
 }
 
+// TODO: serde
 #[derive(Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Init {
     pub title: String,
     pub w: u32,
     pub h: u32,
     pub use_high_dpi: bool,
+    #[cfg_attr(feature = "serde", serde(skip))]
     pub settings: ResourceSettings,
 }
 

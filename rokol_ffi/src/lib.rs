@@ -1,7 +1,7 @@
 /*!
 Rust FFI to [Sokol] headers for [Rokol] ([API](https://docs.rs/rokol/latest/rokol/))
 
-Last update: Dec 3, 2020 ([commit]). Sokol header declaration diffs can be seen on [GitHub][Rokol].
+Sokol header declaration diffs can be seen on [GitHub][Rokol].
 
 [Sokol]: https://github.com/floooh/sokol
 [Rokol]: https://github.com/toyboot4e/rokol

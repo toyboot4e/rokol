@@ -181,7 +181,7 @@ ffi_enum! {
         Resized = SAPP_EVENTTYPE_RESIZED,
         Iconified = SAPP_EVENTTYPE_ICONIFIED,
         Restored = SAPP_EVENTTYPE_RESTORED,
-        Focused = SAPP_EVENTTYPE_FUCOSUED,
+        Focused = SAPP_EVENTTYPE_FOCUSED,
         Unocused = SAPP_EVENTTYPE_UNFOCUSED,
         /// (Mobile)
         Suspended = SAPP_EVENTTYPE_SUSPENDED,
@@ -541,7 +541,7 @@ pub fn frame_count() -> u64 {
 }
 
 /// Frame duration in seconds averaged over a number of frames to smooth out any jittering spikes
-pub fn frame_duration() -> u64 {
+pub fn frame_duration() -> f64 {
     unsafe { ffi::sapp_frame_duration() }
 }
 

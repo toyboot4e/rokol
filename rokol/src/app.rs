@@ -181,6 +181,8 @@ ffi_enum! {
         Resized = SAPP_EVENTTYPE_RESIZED,
         Iconified = SAPP_EVENTTYPE_ICONIFIED,
         Restored = SAPP_EVENTTYPE_RESTORED,
+        Focused = SAPP_EVENTTYPE_FUCOSUED,
+        Unocused = SAPP_EVENTTYPE_UNFOCUSED,
         /// (Mobile)
         Suspended = SAPP_EVENTTYPE_SUSPENDED,
         /// (Mobile)
@@ -536,6 +538,11 @@ pub fn consume_event() {
 /// Current frame counter (for comparison with sapp_event.frame_count)
 pub fn frame_count() -> u64 {
     unsafe { ffi::sapp_frame_count() }
+}
+
+/// Frame duration in seconds averaged over a number of frames to smooth out any jittering spikes
+pub fn frame_duration() -> u64 {
+    unsafe { ffi::sapp_frame_duration() }
 }
 
 /// (Clipboard) Write string into clipboard

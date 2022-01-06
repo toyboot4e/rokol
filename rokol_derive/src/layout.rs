@@ -6,19 +6,19 @@ pub fn impl_vertex_layout(ast: DeriveInput) -> TokenStream2 {
 
     let input = match ast.data {
         Data::Struct(ref data) => data,
-        _ => panic!("`#[derive(VertexLayout)]` is for structs"),
+        _ => panic!("`#[derive(LayoutDesc)]` is only for structs"),
     };
 
     // force `#[repr(C)]`
     let repr: syn::Attribute = parse_quote!(#[repr(C)]);
     assert!(
         ast.attrs.iter().any(|a| *a == repr),
-        "`#[repr(C)]` is required to derive `VertexLayout`"
+        "`#[repr(C)]` is required to derive `LayoutDesc`"
     );
 
     let fields = match input.fields {
         Fields::Named(ref fields) => fields,
-        _ => unimplemented!("`#[derive(VertexLayout)]` is only for struct with named fields"),
+        _ => unimplemented!("`#[derive(LayoutDesc)]` is only for struct with named fields"),
     };
 
     let format_decls = [
@@ -65,7 +65,7 @@ pub fn impl_vertex_layout(ast: DeriveInput) -> TokenStream2 {
             .unwrap_or_else(|| {
                 // not found from the list
                 panic!(
-                    "Field `{}: {}` of type `{}` has unsupported type by `#[derive(VertexLayout)]`",
+                    "Field `{}: {}` of type `{}` has unsupported type by `#[derive(LayoutDesc)]`",
                     field.ident.as_ref().unwrap(),
                     field.ty.to_token_stream(),
                     ty_name,
@@ -74,18 +74,15 @@ pub fn impl_vertex_layout(ast: DeriveInput) -> TokenStream2 {
     });
 
     let i = 0usize..fields.named.len();
-    let gen_desc = quote! {
-        let mut desc = rokol::gfx::LayoutDesc::default();
-        #(
-            desc.attrs[#i].format = #formats;
-        )*
-        desc
-    };
 
     quote! {
         impl #ty_name {
             pub fn layout_desc() -> rokol::gfx::LayoutDesc {
-                #gen_desc
+                let mut desc = rokol::gfx::LayoutDesc::default();
+                #(
+                    desc.attrs[#i].format = #formats;
+                )*
+                desc
             }
         }
     }

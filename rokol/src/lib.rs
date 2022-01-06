@@ -5,7 +5,7 @@ Wrapper of [Sokol] libraries
 
 # Features (specified in `Cargo.toml`)
 
-Example settings::
+Example settings:
 
 ```toml
 rokol = { features = ["sdl", "impl-gfx", "glcore33", "fontstash"] }

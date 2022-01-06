@@ -51,7 +51,7 @@ use {
 /// Implements [`LayoutDesc`] constructor (i.e., `layout_desc` method)
 ///
 /// TODO: support more types?
-pub use rokol_derive::VertexLayout;
+pub use rokol_derive::LayoutDesc;
 
 /// Field of [`SetupDesc`]
 pub type SetupContextDesc = ffi::sg_context_desc;
@@ -342,14 +342,14 @@ ffi_enum! {
     ///
     /// Platforms which support clamp-to-border are:
     ///
-    ///     - all desktop GL platforms
-    ///     - Metal on macOS
-    ///     - D3D11
+    /// - all desktop GL platforms
+    /// - Metal on macOS
+    /// - D3D11
     ///
     /// Platforms which do not support clamp-to-border:
     ///
-    ///     - GLES2/3 and WebGL/WebGL2
-    ///     - Metal on iOS
+    /// - GLES2/3 and WebGL/WebGL2
+    /// - Metal on iOS
     #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     pub enum Wrap around ffi::sg_wrap {
         _Default = _SG_WRAP_DEFAULT,
@@ -377,14 +377,14 @@ ffi_enum! {
     ///
     /// A pixelformat name consist of three parts:
     ///
-    ///     - components (R, RG, RGB or RGBA)
-    ///     - bit width per component (8, 16 or 32)
-    ///     - component data type:
-    ///         - unsigned normalized (no postfix)
-    ///         - signed normalized (SN postfix)
-    ///         - unsigned integer (UI postfix)
-    ///         - signed integer (SI postfix)
-    ///         - float (F postfix)
+    /// - components (R, RG, RGB or RGBA)
+    /// - bit width per component (8, 16 or 32)
+    /// - component data type:
+    ///   - unsigned normalized (no postfix)
+    ///   - signed normalized (SN postfix)
+    ///   - unsigned integer (UI postfix)
+    ///   - signed integer (SI postfix)
+    ///   - float (F postfix)
     ///
     /// # Supported formats
     ///
@@ -392,16 +392,16 @@ ffi_enum! {
     /// to inspect the capabilities of a given pixelformat. The function returns
     /// an `sg_pixelformat_info` struct with the following bool members:
     ///
-    ///     - sample: the pixelformat can be sampled as texture at least with
-    ///               nearest filtering
-    ///     - filter: the pixelformat can be samples as texture with linear
-    ///               filtering
-    ///     - render: the pixelformat can be used for render targets
-    ///     - blend:  blending is supported when using the pixelformat for
-    ///               render targets
-    ///     - msaa:   multisample-antialiasing is supported when using the
-    ///               pixelformat for render targets
-    ///     - depth:  the pixelformat can be used for depth-stencil attachments
+    /// - sample: the pixelformat can be sampled as texture at least with
+    ///           nearest filtering
+    /// - filter: the pixelformat can be samples as texture with linear
+    ///           filtering
+    /// - render: the pixelformat can be used for render targets
+    /// - blend:  blending is supported when using the pixelformat for
+    ///           render targets
+    /// - msaa:   multisample-antialiasing is supported when using the
+    ///           pixelformat for render targets
+    /// - depth:  the pixelformat can be used for depth-stencil attachments
     ///
     /// When targeting GLES2/WebGL, the only safe formats to use
     /// as texture are `SG_PIXELFORMAT_R8` and `SG_PIXELFORMAT_RGBA8`. For rendering
@@ -413,8 +413,8 @@ ffi_enum! {
     /// The default pixel format for texture images is `SG_PIXELFORMAT_RGBA8`.
     ///
     /// The default pixel format for render target images is platform-dependent:
-    ///     - for Metal and D3D11 it is `SG_PIXELFORMAT_BGRA8`
-    ///     - for GL backends it is `SG_PIXELFORMAT_RGBA8`
+    /// - for Metal and D3D11 it is `SG_PIXELFORMAT_BGRA8`
+    /// - for GL backends it is `SG_PIXELFORMAT_RGBA8`
     ///
     /// This is mainly because of the default framebuffer which is setup outside
     /// of `sokol_gfx.h`. On some backends, using BGRA for the default frame buffer
@@ -1241,13 +1241,13 @@ pub unsafe fn buf_desc(
 
 #[cfg(test)]
 mod test {
-    use super::VertexLayout;
+    use super::LayoutDesc;
 
     // for the derive macro:
     use crate as rokol;
     use crate::gfx as rg;
 
-    #[derive(VertexLayout)]
+    #[derive(LayoutDesc)]
     #[repr(C)]
     pub struct Vertex {
         pub pos: [f32; 2],
